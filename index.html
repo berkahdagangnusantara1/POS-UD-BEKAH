@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Distribusi Dapur MBG - POS & Logistik</title>
+    <!-- Tailwind CSS untuk Desain Profesional ala Aronium -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 font-sans antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="bg-emerald-700 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-utensils text-2xl bg-emerald-800 p-2 rounded-lg"></i>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">DAPUR MBG DISTRIBUSI</h1>
+                    <p class="text-xs text-emerald-200">Sistem Logistik & Bahan Pangan Terpadu</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="sync-status" class="text-xs bg-emerald-800 px-3 py-1 rounded-full text-emerald-200">
+                    <i class="fa-solid fa-sync fa-spin mr-1"></i> Menghubungkan Spreadsheet...
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="container mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Kolom Kiri & Tengah: Katalog Produk (2 Kolom di layar besar) -->
+        <section class="lg:col-span-2 flex flex-col h-[85vh]">
+            <!-- Panel Kontrol: Pencarian & Kategori -->
+            <div class="bg-white p-4 rounded-t-xl shadow-sm border-b border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="relative w-full sm:w-72">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" id="search-box" placeholder="Cari bahan pangan..." 
+                        class="w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div id="category-filters" class="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <button onclick="filterCategory('Semua')" class="cat-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Semua</button>
+                </div>
+            </div>
+
+            <!-- Grid Daftar Barang -->
+            <div id="product-grid" class="bg-slate-50 p-4 flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-4 border-x border-slate-200 shadow-inner">
+                <!-- Data produk akan dimuat otomatis via JavaScript dari Spreadsheet -->
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+                    <p>Memuat data bahan pangan dari Google Spreadsheet...</p>
+                </div>
+            </div>
+
+            <!-- Footer Katalog -->
+            <div class="bg-white p-3 rounded-b-xl shadow-sm border-t border-slate-200 text-xs text-slate-500 text-center">
+                Terhubung langsung ke Google Sheets API • Dapur Makan Bergizi Gratis (MBG)
+            </div>
+        </section>
+
+        <!-- Kolom Kanan: Keranjang / Transaksi Kasir ala Aronium -->
+        <section class="bg-white rounded-xl shadow-sm flex flex-col h-[85vh] border border-slate-200">
+            <div class="p-4 bg-slate-800 text-white rounded-t-xl flex justify-between items-center">
+                <h2 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-cart-shopping mr-2"></i> Pesanan / Distribusi</h2>
+                <button onclick="clearCart()" class="text-xs text-rose-300 hover:text-rose-100 transition"><i class="fa-solid fa-trash mr-1"></i> Kosongkan</button>
+            </div>
+
+            <!-- List Item di Keranjang -->
+            <div id="cart-items" class="flex-1 overflow-y-auto p-4 divide-y divide-slate-100">
+                <div class="text-center text-slate-400 py-16">
+                    <i class="fa-solid fa-basket-shopping text-4xl mb-2 text-slate-300"></i>
+                    <p class="text-sm">Belum ada bahan pangan dipilih</p>
+                </div>
+            </div>
+
+            <!-- Ringkasan & Tombol Checkout -->
+            <div class="p-4 bg-slate-50 rounded-b-xl border-t border-slate-200 space-y-3">
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600">Total Jenis Item:</span>
+                    <span id="summary-count" class="font-semibold text-slate-800">0</span>
+                </div>
+                <div class="flex justify-between text-base font-bold text-slate-900 border-t pt-2">
+                    <span>Total Estimasi Biaya:</span>
+                    <span id="summary-total" class="text-emerald-600">Rp 0</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Proses & Kirim ke Spreadsheet</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script Utama Integrasi Google Sheets -->
+    <script>
+        // Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang sudah di-deploy
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4nrGDa3TwfHJtTJtOyoRfLjpwXgMopPjrxkpDfs8YHnUgWu1wztPV9f6AlAOXWL7bzA/exec';
+
+        let products = [];
+        let cart = [];
+        let currentCategory = 'Semua';
+
+        // Ambil Data dari Google Spreadsheet saat halaman dimuat
+        async function fetchProducts() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                products = await response.json();
+                
+                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-check-circle text-emerald-300 mr-1"></i> Terhubung ke Spreadsheet';
+                document.getElementById('sync-status').className = 'text-xs bg-emerald-900 px-3 py-1 rounded-full text-emerald-200';
+                
+                renderCategories();
+                renderProducts(products);
+            } catch (error) {
+                console.error('Gagal memuat data:', error);
+                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-300 mr-1"></i> Gagal Sinkronisasi';
+                document.getElementById('sync-status').className = 'text-xs bg-amber-800 px-3 py-1 rounded-full text-amber-200';
+                document.getElementById('product-grid').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-rose-500">
+                        <i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i>
+                        <p>Gagal memuat data dari Spreadsheet. Pastikan URL Web App Google Script sudah benar.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render Kategori Dinamis
+        function renderCategories() {
+            const categories = ['Semua', ...new Set(products.map(p => p.kategori))];
+            const container = document.getElementById('category-filters');
+            container.innerHTML = '';
+            
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `cat-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition ${cat === currentCategory ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`;
+                btn.innerText = cat;
+                btn.onclick = () => {
+                    currentCategory = cat;
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.replace('bg-emerald-600', 'bg-slate-200'));
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.replace('text-white', 'text-slate-700'));
+                    btn.classList.replace('bg-slate-200', 'bg-emerald-600');
+                    btn.classList.replace('text-slate-700', 'text-white');
+                    filterAndRenderProducts();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // Render Kartu Produk
+        function renderProducts(list) {
+            const grid = document.getElementById('product-grid');
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Tidak ada bahan pangan ditemukan.</div>`;
+                return;
+            }
+
+            grid.innerHTML = list.map(p => `
+                <div onclick="addToCart('${p.id}')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-500 cursor-pointer transition flex flex-col justify-between">
+                    <div>
+                        <div class="h-28 bg-slate-100 rounded-lg mb-2 overflow-hidden flex items-center justify-center">
+                            ${p.gambar ? `<img src="${p.gambar}" class="object-cover h-full w-full">` : '<i class="fa-solid fa-box-open text-slate-300 text-3xl"></i>'}
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm line-clamp-1">${p.nama}</h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${p.kategori}</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400">Stok: ${p.stok} ${p.satuan}</span>
+                            <p class="text-emerald-600 font-bold text-sm">Rp ${Number(p.harga).toLocaleString('id-ID')}</p>
+                        </div>
+                        <button class="bg-emerald-50 text-emerald-600 p-2 rounded-lg hover:bg-emerald-600 hover:text-white transition">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Produk Berdasarkan Kategori dan Search Box
+        function filterAndRenderProducts() {
+            const keyword = document.getElementById('search-box').value.toLowerCase();
+            const filtered = products.filter(p => {
+                const matchCategory = currentCategory === 'Semua' || p.kategori === currentCategory;
+                const matchKeyword = p.nama.toLowerCase().includes(keyword);
+                return matchCategory && matchKeyword;
+            });
+            renderProducts(filtered);
+        }
+
+        document.getElementById('search-box').addEventListener('input', filterAndRenderProducts);
+
+        // Manajemen Keranjang (Cart)
+        function addToCart(id) {
+            const product = products.find(p => p.id == id);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id == id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            renderCart();
+        }
+
+        function updateQty(id, delta) {
+            const item = cart.find(i => i.id == id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id != id);
+            }
+            renderCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-400 py-16">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-2 text-slate-300"></i>
+                        <p class="text-sm">Belum ada bahan pangan dipilih</p>
+                    </div>
+                `;
+                document.getElementById('summary-count').innerText = '0';
+                document.getElementById('summary-total').innerText = 'Rp 0';
+                return;
+            }
+
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            container.innerHTML = cart.map(item => {
+                totalItems += item.qty;
+                totalPrice += item.harga * item.qty;
+                return `
+                    <div class="py-3 flex justify-between items-center">
+                        <div class="pr-2">
+                            <h4 class="text-xs font-bold text-slate-800">${item.nama}</h4>
+                            <span class="text-xs text-slate-500">Rp ${Number(item.harga).toLocaleString('id-ID')} / ${item.satuan}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 bg-slate-200 rounded text-slate-600 hover:bg-slate-300 text-xs">-</button>
+                            <span class="text-xs font-bold w-6 text-center">${item.qty}</span>
+                            <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 bg-emerald-100 rounded text-emerald-700 hover:bg-emerald-200 text-xs">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('summary-count').innerText = totalItems;
+            document.getElementById('summary-total').innerText = 'Rp ' + totalPrice.toLocaleString('id-ID');
+        }
+
+        // Kirim Pesanan / Checkout kembali ke Google Spreadsheet
+        async function checkout() {
+            if (cart.length === 0) {
+                alert('Keranjang masih kosong!');
+                return;
+            }
+
+            if (!confirm('Proses pesanan distribusi bahan pangan ini ke sistem?')) return;
+
+            const orderData = {
+                orderId: 'MBG-' + Date.now().toString().slice(-6),
+                totalItems: cart.reduce((sum, i) => sum + i.qty, 0),
+                totalHarga: cart.reduce((sum, i) => sum + (i.harga * i.qty), 0),
+                items: cart
+            };
+
+            try {
+                const btn = event.currentTarget;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...';
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                alert('Pesanan berhasil dicatat dan dikirim ke database Spreadsheet!');
+                clearCart();
+                fetchProducts(); // Refresh stok/data
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Gagal mengirim pesanan. Periksa koneksi Anda.');
+            } finally {
+                const btn = document.querySelector('button[onclick="checkout()"]');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i> Proses & Kirim ke Spreadsheet';
+                }
+            }
+        }
+
+        // Load data pertama kali
+        fetchProducts();
+    </script>
+</body>
+</html>
