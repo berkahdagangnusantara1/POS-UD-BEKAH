@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Sistem Terpadu Dapur MBG - POS & Logistik</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,12 +14,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
@@ -28,102 +29,130 @@
             background: #cbd5e1;
             border-radius: 4px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        /* iOS Safe Area Support */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+        .pt-safe {
+            padding-top: env(safe-area-inset-top, 0px);
         }
     </style>
 </head>
-<body class="bg-slate-100 font-sans antialiased flex h-screen overflow-hidden text-slate-800">
+<body class="bg-slate-100 font-sans antialiased flex flex-col md:flex-row h-screen overflow-hidden text-slate-800">
 
-    <!-- Sidebar Navigasi -->
-    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800 shrink-0">
+    <!-- Sidebar Navigasi (Desktop / Tablet) -->
+    <aside class="hidden md:flex w-64 bg-rose-950 text-rose-100 flex-col justify-between border-r border-rose-900 shrink-0">
         <div>
-            <div class="p-5 bg-slate-950 flex items-center space-x-3 text-white border-b border-slate-800/80">
-                <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-900/30">
+            <div class="p-5 bg-rose-990 flex items-center space-x-3 text-white border-b border-rose-900">
+                <div class="bg-gradient-to-tr from-red-600 to-rose-500 p-2.5 rounded-xl shadow-lg shadow-red-950/40">
                     <i class="fa-solid fa-utensils text-lg text-white"></i>
                 </div>
                 <div>
                     <h1 class="font-extrabold text-sm tracking-wider uppercase text-white">UD BERKAH</h1>
-                    <p class="text-[11px] text-emerald-400 font-medium">Sistem Logistik & POS</p>
+                    <p class="text-[11px] text-red-300 font-medium">Sistem Logistik & POS</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5">
-                <button onclick="switchTab('pos')" id="nav-pos" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold bg-emerald-600 text-white shadow-md shadow-emerald-900/20 transition-all duration-200"><i class="fa-solid fa-cash-register w-5 text-sm"></i><span>Kasir / POS</span></button>
-                <button onclick="switchTab('stok')" id="nav-stok" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-slate-800/70 text-slate-400 hover:text-slate-200 transition-all duration-200"><i class="fa-solid fa-boxes-stacked w-5 text-sm"></i><span>Stok & Barang Masuk</span></button>
-                <button onclick="switchTab('harga')" id="nav-harga" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-slate-800/70 text-slate-400 hover:text-slate-200 transition-all duration-200"><i class="fa-solid fa-tags w-5 text-sm"></i><span>List Harga</span></button>
-                <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-slate-800/70 text-slate-400 hover:text-slate-200 transition-all duration-200"><i class="fa-solid fa-chart-line w-5 text-sm"></i><span>Laporan & BOP</span></button>
+                <button onclick="switchTab('pos')" id="nav-pos" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold bg-red-600 text-white shadow-md shadow-red-950/30 transition-all duration-200"><i class="fa-solid fa-cash-register w-5 text-sm"></i><span>Kasir / POS</span></button>
+                <button onclick="switchTab('stok')" id="nav-stok" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-boxes-stacked w-5 text-sm"></i><span>Stok & Barang Masuk</span></button>
+                <button onclick="switchTab('harga')" id="nav-harga" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-tags w-5 text-sm"></i><span>List Harga</span></button>
+                <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-chart-line w-5 text-sm"></i><span>Laporan & BOP</span></button>
             </nav>
         </div>
-        <div class="p-4 bg-slate-950 text-xs flex justify-between items-center border-t border-slate-800/80">
-            <span id="sync-status" class="text-emerald-400 font-medium flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px]"></i> Online</span>
-            <button onclick="fetchAllData()" title="Sinkronkan Data" class="text-slate-400 hover:text-white p-1.5 hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-sync"></i></button>
+        <div class="p-4 bg-rose-990 text-xs flex justify-between items-center border-t border-rose-900">
+            <span id="sync-status" class="text-red-400 font-medium flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px]"></i> Online</span>
+            <button onclick="fetchAllData()" title="Sinkronkan Data" class="text-rose-300 hover:text-white p-1.5 hover:bg-rose-900 rounded-lg transition"><i class="fa-solid fa-sync"></i></button>
         </div>
     </aside>
+
+    <!-- Header Mobile Top Bar -->
+    <header class="md:hidden bg-rose-950 text-white px-4 py-3 flex justify-between items-center shrink-0 border-b border-rose-900 pt-safe">
+        <div class="flex items-center space-x-2.5">
+            <div class="bg-red-600 p-2 rounded-lg">
+                <i class="fa-solid fa-utensils text-xs text-white"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-xs tracking-wider uppercase leading-none">UD BERKAH</h1>
+                <p class="text-[9px] text-red-300 font-medium mt-0.5">POS & Logistik</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="fetchAllData()" class="p-2 bg-rose-900 text-rose-200 hover:text-white rounded-lg text-xs">
+                <i class="fa-solid fa-sync"></i>
+            </button>
+        </div>
+    </header>
 
     <!-- Main Container -->
     <main class="flex-1 flex flex-col overflow-hidden bg-slate-50">
         
-        <!-- Header Atas -->
-        <header class="bg-white border-b border-slate-200/80 px-8 py-4 flex justify-between items-center shadow-xs">
+        <!-- Header Atas (Desktop) -->
+        <header class="hidden md:flex bg-white border-b border-slate-200/80 px-8 py-4 justify-between items-center shadow-xs">
             <h2 id="page-title" class="font-extrabold text-slate-800 text-xl tracking-tight">Kasir / POS Distribusi</h2>
             <div class="flex items-center space-x-4 text-xs font-medium text-slate-500 bg-slate-100 px-3.5 py-2 rounded-lg border border-slate-200/60">
-                <span><i class="fa-regular fa-calendar-days mr-1.5 text-emerald-600"></i> <span id="current-date"></span></span>
+                <span><i class="fa-regular fa-calendar-days mr-1.5 text-red-600"></i> <span id="current-date"></span></span>
             </div>
         </header>
 
+        <!-- Subheader Mobile (Judul Halaman Mobile) -->
+        <div class="md:hidden bg-white border-b border-slate-200 px-4 py-2.5 flex justify-between items-center shrink-0">
+            <h2 id="page-title-mobile" class="font-bold text-slate-800 text-sm">Kasir / POS Distribusi</h2>
+            <span id="sync-status-mobile" class="text-[10px] text-red-600 font-bold flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Online</span>
+        </div>
+
         <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-6 bg-slate-100/70">
+        <div class="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 bg-slate-100/70 pb-20 md:pb-6">
 
             <!-- TAB 1: KASIR / POS -->
-            <div id="tab-pos" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+            <div id="tab-pos" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 h-full">
                 <!-- Katalog Produk -->
-                <div class="lg:col-span-2 flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200/80 h-full overflow-hidden">
-                    <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between gap-3 bg-white">
+                <div class="lg:col-span-2 flex flex-col bg-white rounded-2xl shadow-xs border border-slate-200/80 h-[520px] md:h-full overflow-hidden">
+                    <div class="p-3 md:p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between gap-2.5 bg-white">
                         <div class="relative w-full sm:w-72">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="pos-search" placeholder="Cari bahan pangan..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition">
+                            <input type="text" id="pos-search" placeholder="Cari bahan pangan..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition">
                         </div>
-                        <div id="pos-categories" class="flex gap-1.5 overflow-x-auto pb-1 items-center"></div>
+                        <div id="pos-categories" class="flex gap-1.5 overflow-x-auto pb-1 items-center no-scrollbar"></div>
                     </div>
-                    <div id="pos-grid" class="p-4 flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-3.5 bg-slate-50/50"></div>
+                    <div id="pos-grid" class="p-3 md:p-4 flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2.5 md:gap-3.5 bg-slate-50/50"></div>
                 </div>
 
                 <!-- Keranjang & Checkout -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-full overflow-hidden">
-                    <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-xs uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-emerald-400"></i> Keranjang Pesanan</h3>
-                        <button onclick="clearCart()" class="text-xs text-rose-300 hover:text-rose-100 font-medium transition">Kosongkan</button>
+                <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 flex flex-col h-full overflow-hidden">
+                    <div class="p-3.5 bg-rose-950 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-xs uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-red-400"></i> Keranjang Pesanan</h3>
+                        <button onclick="clearCart()" class="text-xs text-rose-300 hover:text-white font-medium transition active:scale-95">Kosongkan</button>
                     </div>
 
                     <!-- Input Customer Manual -->
                     <div class="p-3 bg-slate-50 border-b border-slate-200 space-y-2">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Info Pelanggan / Customer</label>
-                            <input type="text" id="customer-name" placeholder="Nama Pelanggan / Pembeli (Manual)" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nama Pelanggan / Pembeli</label>
+                            <input type="text" id="customer-name" placeholder="Nama Customer (Manual)" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-red-500/50">
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <select id="jenis-penjualan" class="w-full text-xs font-semibold bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                                <select id="jenis-penjualan" class="w-full text-xs font-semibold bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500/50">
                                     <option value="BOP">Penjualan BOP (MBG)</option>
                                     <option value="Grosir">Penjualan Grosir</option>
                                 </select>
                             </div>
                             <div>
-                                <input type="text" id="customer-note" placeholder="Catatan / No HP" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                                <input type="text" id="customer-note" placeholder="Catatan / No HP" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-red-500/50">
                             </div>
                         </div>
                     </div>
 
                     <!-- List Cart Items -->
-                    <div id="cart-list" class="flex-1 overflow-y-auto p-3 divide-y divide-slate-100">
-                        <div class="text-center text-slate-400 py-16 text-xs">Keranjang masih kosong</div>
+                    <div id="cart-list" class="flex-1 overflow-y-auto p-3 divide-y divide-slate-100 min-h-[140px]">
+                        <div class="text-center text-slate-400 py-10 text-xs">Keranjang masih kosong</div>
                     </div>
 
                     <!-- Ringkasan Checkout -->
-                    <div class="p-4 bg-slate-50/80 border-t border-slate-200 space-y-2.5">
+                    <div class="p-3.5 bg-slate-50/80 border-t border-slate-200 space-y-2">
                         <div class="flex justify-between text-xs text-slate-600"><span>Total Item:</span><span id="cart-count" class="font-bold text-slate-800">0</span></div>
-                        <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-1 border-t border-slate-200/60"><span>Total Harga:</span><span id="cart-total" class="text-emerald-600 text-base">Rp 0</span></div>
-                        <button onclick="processCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold py-3 rounded-xl shadow-md shadow-emerald-600/20 transition text-xs flex items-center justify-center gap-2 mt-2">
+                        <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-1 border-t border-slate-200/60"><span>Total Harga:</span><span id="cart-total" class="text-red-600 text-base">Rp 0</span></div>
+                        <button onclick="processCheckout()" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-3 rounded-xl shadow-md shadow-red-600/20 transition text-xs flex items-center justify-center gap-2 mt-1 active:scale-[0.98]">
                             <i class="fa-solid fa-paper-plane"></i> Proses Transaksi
                         </button>
                     </div>
@@ -131,41 +160,41 @@
             </div>
 
             <!-- TAB 2: STOK & BARANG MASUK -->
-            <div id="tab-stok" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
-                    <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-emerald-600"></i> Catat Barang Masuk (Restock)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div id="tab-stok" class="tab-content hidden space-y-4 md:space-y-6">
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-xs border border-slate-200/80">
+                    <h3 class="font-bold text-slate-800 text-xs md:text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-red-600"></i> Catat Barang Masuk (Restock)</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Produk</label>
-                            <select id="barang-masuk-id" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"></select>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Pilih Produk</label>
+                            <select id="barang-masuk-id" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-red-500"></select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Masuk</label>
-                            <input type="number" id="barang-masuk-qty" placeholder="Contoh: 50" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Jumlah Masuk</label>
+                            <input type="number" id="barang-masuk-qty" placeholder="Contoh: 50" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Supplier</label>
-                            <input type="text" id="barang-masuk-ket" placeholder="Dari Supplier A" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Keterangan / Supplier</label>
+                            <input type="text" id="barang-masuk-ket" placeholder="Dari Supplier A" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
                         </div>
                         <div class="flex items-end">
-                            <button onclick="submitBarangMasuk()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-emerald-600/20 transition">Simpan Barang Masuk</button>
+                            <button onclick="submitBarangMasuk()" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-red-600/20 transition active:scale-[0.98]">Simpan Barang Masuk</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tabel Stok Akhir -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200/80 font-bold text-xs uppercase tracking-wider text-slate-700">Monitoring Stok Akhir Barang Pangan</div>
+                <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+                    <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 font-bold text-[11px] uppercase tracking-wider text-slate-700">Monitoring Stok Akhir Barang Pangan</div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
+                        <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
                             <thead>
                                 <tr class="bg-slate-100/70 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200/80">
-                                    <th class="p-3.5">ID</th>
-                                    <th class="p-3.5">Nama Bahan</th>
-                                    <th class="p-3.5">Kategori</th>
-                                    <th class="p-3.5">Harga Satuan</th>
-                                    <th class="p-3.5">Stok Akhir</th>
-                                    <th class="p-3.5">Satuan</th>
+                                    <th class="p-3">ID</th>
+                                    <th class="p-3">Nama Bahan</th>
+                                    <th class="p-3">Kategori</th>
+                                    <th class="p-3">Harga Satuan</th>
+                                    <th class="p-3">Stok Akhir</th>
+                                    <th class="p-3">Satuan</th>
                                 </tr>
                             </thead>
                             <tbody id="stok-table-body" class="divide-y divide-slate-100"></tbody>
@@ -175,23 +204,23 @@
             </div>
 
             <!-- TAB 3: LIST HARGA -->
-            <div id="tab-harga" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-200/80 flex justify-between items-center">
-                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700">Daftar Harga Bahan Pangan</h3>
-                    <div class="relative w-60">
+            <div id="tab-harga" class="tab-content hidden bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+                <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h3 class="font-bold text-[11px] uppercase tracking-wider text-slate-700">Daftar Harga Bahan Pangan</h3>
+                    <div class="relative w-full sm:w-60">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="harga-search" placeholder="Cari bahan..." class="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="harga-search" placeholder="Cari bahan..." class="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
                     </div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
+                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
                         <thead>
                             <tr class="bg-slate-100/70 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200/80">
-                                <th class="p-3.5">ID</th>
-                                <th class="p-3.5">Nama Bahan Pangan</th>
-                                <th class="p-3.5">Kategori</th>
-                                <th class="p-3.5">Harga Satuan (Rp)</th>
-                                <th class="p-3.5">Satuan</th>
+                                <th class="p-3">ID</th>
+                                <th class="p-3">Nama Bahan Pangan</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Harga Satuan (Rp)</th>
+                                <th class="p-3">Satuan</th>
                             </tr>
                         </thead>
                         <tbody id="harga-table-body" class="divide-y divide-slate-100"></tbody>
@@ -200,34 +229,34 @@
             </div>
 
             <!-- TAB 4: LAPORAN & BOP -->
-            <div id="tab-laporan" class="tab-content hidden space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Penjualan BOP (MBG)</p>
-                        <h3 id="rekap-bop" class="text-2xl font-extrabold text-emerald-600 mt-1.5">Rp 0</h3>
+            <div id="tab-laporan" class="tab-content hidden space-y-4 md:space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+                        <p class="text-[10px] md:text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Penjualan BOP (MBG)</p>
+                        <h3 id="rekap-bop" class="text-xl md:text-2xl font-extrabold text-red-600 mt-1">Rp 0</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Penjualan Grosir</p>
-                        <h3 id="rekap-grosir" class="text-2xl font-extrabold text-sky-600 mt-1.5">Rp 0</h3>
+                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+                        <p class="text-[10px] md:text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Penjualan Grosir</p>
+                        <h3 id="rekap-grosir" class="text-xl md:text-2xl font-extrabold text-rose-800 mt-1">Rp 0</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Keseluruhan Omset</p>
-                        <h3 id="rekap-total" class="text-2xl font-extrabold text-slate-800 mt-1.5">Rp 0</h3>
+                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+                        <p class="text-[10px] md:text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Keseluruhan Omset</p>
+                        <h3 id="rekap-total" class="text-xl md:text-2xl font-extrabold text-slate-900 mt-1">Rp 0</h3>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200/80 font-bold text-xs uppercase tracking-wider text-slate-700">Riwayat Transaksi Masuk</div>
+                <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+                    <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 font-bold text-[11px] uppercase tracking-wider text-slate-700">Riwayat Transaksi Masuk</div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
+                        <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
                             <thead>
                                 <tr class="bg-slate-100/70 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200/80">
-                                    <th class="p-3.5">Waktu</th>
-                                    <th class="p-3.5">Order ID</th>
-                                    <th class="p-3.5">Customer / Pembeli</th>
-                                    <th class="p-3.5">Jenis</th>
-                                    <th class="p-3.5">Total Item</th>
-                                    <th class="p-3.5">Total Harga</th>
+                                    <th class="p-3">Waktu</th>
+                                    <th class="p-3">Order ID</th>
+                                    <th class="p-3">Customer / Pembeli</th>
+                                    <th class="p-3">Jenis</th>
+                                    <th class="p-3">Total Item</th>
+                                    <th class="p-3">Total Harga</th>
                                 </tr>
                             </thead>
                             <tbody id="laporan-table-body" class="divide-y divide-slate-100"></tbody>
@@ -238,6 +267,26 @@
 
         </div>
     </main>
+
+    <!-- Bottom Navigation Bar (Khusus Layar HP / Mobile Android & iOS) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center py-2 px-1 pb-safe shadow-lg">
+        <button onclick="switchTab('pos')" id="mob-nav-pos" class="mob-nav-btn flex flex-col items-center justify-center w-full text-red-600 font-bold">
+            <i class="fa-solid fa-cash-register text-base"></i>
+            <span class="text-[10px] mt-1">Kasir</span>
+        </button>
+        <button onclick="switchTab('stok')" id="mob-nav-stok" class="mob-nav-btn flex flex-col items-center justify-center w-full text-slate-400 hover:text-slate-600 font-medium">
+            <i class="fa-solid fa-boxes-stacked text-base"></i>
+            <span class="text-[10px] mt-1">Stok</span>
+        </button>
+        <button onclick="switchTab('harga')" id="mob-nav-harga" class="mob-nav-btn flex flex-col items-center justify-center w-full text-slate-400 hover:text-slate-600 font-medium">
+            <i class="fa-solid fa-tags text-base"></i>
+            <span class="text-[10px] mt-1">Harga</span>
+        </button>
+        <button onclick="switchTab('laporan')" id="mob-nav-laporan" class="mob-nav-btn flex flex-col items-center justify-center w-full text-slate-400 hover:text-slate-600 font-medium">
+            <i class="fa-solid fa-chart-line text-base"></i>
+            <span class="text-[10px] mt-1">Laporan</span>
+        </button>
+    </nav>
 
     <!-- Script Utama -->
     <script>
@@ -250,18 +299,41 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', { dateStyle: 'full' });
 
         function switchTab(tabId) {
+            // Sembunyikan semua tab
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Un-highlight Desktop Nav
             document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('bg-emerald-600', 'text-white', 'shadow-md', 'shadow-emerald-900/20');
-                el.classList.add('hover:bg-slate-800/70', 'text-slate-400');
+                el.classList.remove('bg-red-600', 'text-white', 'shadow-md', 'shadow-red-950/30');
+                el.classList.add('hover:bg-rose-900/60', 'text-rose-300');
             });
+
+            // Un-highlight Mobile Nav
+            document.querySelectorAll('.mob-nav-btn').forEach(el => {
+                el.classList.remove('text-red-600', 'font-bold');
+                el.classList.add('text-slate-400', 'font-medium');
+            });
+
+            // Tampilkan tab aktif
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Highlight Desktop Nav
             const btn = document.getElementById(`nav-${tabId}`);
-            btn.classList.add('bg-emerald-600', 'text-white', 'shadow-md', 'shadow-emerald-900/20');
-            btn.classList.remove('hover:bg-slate-800/70', 'text-slate-400');
+            if(btn) {
+                btn.classList.add('bg-red-600', 'text-white', 'shadow-md', 'shadow-red-950/30');
+                btn.classList.remove('hover:bg-rose-900/60', 'text-rose-300');
+            }
+
+            // Highlight Mobile Nav
+            const mobBtn = document.getElementById(`mob-nav-${tabId}`);
+            if(mobBtn) {
+                mobBtn.classList.add('text-red-600', 'font-bold');
+                mobBtn.classList.remove('text-slate-400', 'font-medium');
+            }
             
             const titles = { pos: 'Kasir / POS Distribusi', stok: 'Stok & Barang Masuk', harga: 'List Harga Barang', laporan: 'Laporan Penjualan & BOP' };
             document.getElementById('page-title').innerText = titles[tabId];
+            document.getElementById('page-title-mobile').innerText = titles[tabId];
         }
 
         async function fetchAllData() {
@@ -272,10 +344,15 @@
                 renderStok();
                 renderHarga();
                 renderLaporan();
-                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-circle text-[8px] text-emerald-400 mr-1"></i> Online';
+                
+                const onlineHtml = '<i class="fa-solid fa-circle text-[6px] md:text-[8px] text-red-400 mr-1"></i> Online';
+                document.getElementById('sync-status').innerHTML = onlineHtml;
+                document.getElementById('sync-status-mobile').innerHTML = onlineHtml;
             } catch (err) {
                 console.error(err);
-                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-[10px] text-amber-400 mr-1"></i> Offline';
+                const offlineHtml = '<i class="fa-solid fa-triangle-exclamation text-[10px] text-amber-400 mr-1"></i> Offline';
+                document.getElementById('sync-status').innerHTML = offlineHtml;
+                document.getElementById('sync-status-mobile').innerHTML = offlineHtml;
             }
         }
 
@@ -284,7 +361,7 @@
             const cats = ['Semua', ...new Set(dbData.produk.map(p => p.kategori))];
             const catContainer = document.getElementById('pos-categories');
             catContainer.innerHTML = cats.map(c => `
-                <button onclick="activeCategory='${c}'; renderPOSGrid();" class="px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition ${activeCategory === c ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${c}</button>
+                <button onclick="activeCategory='${c}'; renderPOSGrid();" class="px-3 py-1.5 text-xs font-semibold rounded-xl shrink-0 transition active:scale-95 ${activeCategory === c ? 'bg-red-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${c}</button>
             `).join('');
             renderPOSGrid();
             
@@ -306,17 +383,17 @@
             }
 
             grid.innerHTML = filtered.map(p => `
-                <div onclick="addToCart('${p.id}')" class="bg-white p-3.5 rounded-2xl border border-slate-200/80 hover:border-emerald-500 hover:shadow-md cursor-pointer transition flex flex-col justify-between group">
+                <div onclick="addToCart('${p.id}')" class="bg-white p-3 rounded-2xl border border-slate-200/80 hover:border-red-500 hover:shadow-md cursor-pointer transition flex flex-col justify-between group active:scale-[0.97]">
                     <div>
-                        <h4 class="font-bold text-slate-800 text-xs line-clamp-1 group-hover:text-emerald-600 transition">${p.nama}</h4>
-                        <span class="text-[10px] font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md inline-block mt-1">${p.kategori}</span>
+                        <h4 class="font-bold text-slate-800 text-xs line-clamp-1 group-hover:text-red-600 transition">${p.nama}</h4>
+                        <span class="text-[9px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md inline-block mt-1">${p.kategori}</span>
                     </div>
-                    <div class="mt-3 flex justify-between items-end border-t border-slate-100 pt-2">
+                    <div class="mt-2.5 flex justify-between items-end border-t border-slate-100 pt-2">
                         <div>
-                            <span class="text-[10px] font-medium text-slate-400 block">Stok: ${p.stok}</span>
-                            <p class="text-emerald-600 font-extrabold text-xs mt-0.5">Rp ${Number(p.harga).toLocaleString('id-ID')}</p>
+                            <span class="text-[9px] font-medium text-slate-400 block">Stok: ${p.stok}</span>
+                            <p class="text-red-600 font-extrabold text-xs mt-0.5">Rp ${Number(p.harga).toLocaleString('id-ID')}</p>
                         </div>
-                        <span class="bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white p-2 rounded-xl text-xs transition duration-200"><i class="fa-solid fa-plus"></i></span>
+                        <span class="bg-red-50 text-red-600 group-hover:bg-red-600 group-hover:text-white p-1.5 rounded-lg text-xs transition duration-200"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
             `).join('');
@@ -334,7 +411,7 @@
         function renderCart() {
             const container = document.getElementById('cart-list');
             if (cart.length === 0) {
-                container.innerHTML = '<div class="text-center text-slate-400 py-16 text-xs">Keranjang masih kosong</div>';
+                container.innerHTML = '<div class="text-center text-slate-400 py-10 text-xs">Keranjang masih kosong</div>';
                 document.getElementById('cart-count').innerText = '0';
                 document.getElementById('cart-total').innerText = 'Rp 0';
                 return;
@@ -344,15 +421,15 @@
                 totalItem += i.qty;
                 totalPrice += i.harga * i.qty;
                 return `
-                    <div class="py-2.5 flex justify-between items-center text-xs">
-                        <div>
-                            <p class="font-bold text-slate-800">${i.nama}</p>
-                            <span class="text-slate-500 text-[11px]">Rp ${Number(i.harga).toLocaleString('id-ID')} x ${i.qty}</span>
+                    <div class="py-2 flex justify-between items-center text-xs">
+                        <div class="pr-2">
+                            <p class="font-bold text-slate-800 line-clamp-1">${i.nama}</p>
+                            <span class="text-slate-500 text-[10px]">Rp ${Number(i.harga).toLocaleString('id-ID')} x ${i.qty}</span>
                         </div>
-                        <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200/60">
-                            <button onclick="updateCartQty('${i.id}', -1)" class="w-5 h-5 bg-white rounded text-slate-600 hover:bg-slate-200 font-bold flex items-center justify-center text-xs">-</button>
-                            <span class="font-bold w-6 text-center text-slate-800">${i.qty}</span>
-                            <button onclick="updateCartQty('${i.id}', 1)" class="w-5 h-5 bg-emerald-600 rounded text-white hover:bg-emerald-700 font-bold flex items-center justify-center text-xs">+</button>
+                        <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-lg border border-slate-200/60 shrink-0">
+                            <button onclick="updateCartQty('${i.id}', -1)" class="w-6 h-6 bg-white rounded text-slate-700 hover:bg-slate-200 font-bold flex items-center justify-center text-xs active:scale-90">-</button>
+                            <span class="font-bold w-5 text-center text-slate-800">${i.qty}</span>
+                            <button onclick="updateCartQty('${i.id}', 1)" class="w-6 h-6 bg-red-600 rounded text-white hover:bg-red-700 font-bold flex items-center justify-center text-xs active:scale-90">+</button>
                         </div>
                     </div>
                 `;
@@ -410,12 +487,12 @@
             const tbody = document.getElementById('stok-table-body');
             tbody.innerHTML = dbData.produk.map(p => `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
-                    <td class="p-3.5 font-mono text-[11px] text-slate-500">${p.id}</td>
-                    <td class="p-3.5 font-bold text-slate-800">${p.nama}</td>
-                    <td class="p-3.5"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
-                    <td class="p-3.5 text-slate-700">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
-                    <td class="p-3.5 font-extrabold text-emerald-600">${p.stok}</td>
-                    <td class="p-3.5 text-slate-500">${p.satuan}</td>
+                    <td class="p-3 font-mono text-[11px] text-slate-500">${p.id}</td>
+                    <td class="p-3 font-bold text-slate-800">${p.nama}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
+                    <td class="p-3 text-slate-700">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
+                    <td class="p-3 font-extrabold text-red-600">${p.stok}</td>
+                    <td class="p-3 text-slate-500">${p.satuan}</td>
                 </tr>
             `).join('');
         }
@@ -453,11 +530,11 @@
             const tbody = document.getElementById('harga-table-body');
             tbody.innerHTML = filtered.map(p => `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
-                    <td class="p-3.5 font-mono text-[11px] text-slate-500">${p.id}</td>
-                    <td class="p-3.5 font-bold text-slate-800">${p.nama}</td>
-                    <td class="p-3.5"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
-                    <td class="p-3.5 font-bold text-emerald-600">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
-                    <td class="p-3.5 text-slate-500">${p.satuan}</td>
+                    <td class="p-3 font-mono text-[11px] text-slate-500">${p.id}</td>
+                    <td class="p-3 font-bold text-slate-800">${p.nama}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
+                    <td class="p-3 font-bold text-red-600">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-slate-500">${p.satuan}</td>
                 </tr>
             `).join('');
         }
@@ -482,12 +559,12 @@
 
                 return `
                     <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
-                        <td class="p-3.5 text-slate-500 text-[11px]">${new Date(t['Timestamp']).toLocaleString('id-ID')}</td>
-                        <td class="p-3.5 font-mono text-[11px] text-slate-500">${t['Order ID']}</td>
-                        <td class="p-3.5 font-semibold text-slate-800">${customerName}</td>
-                        <td class="p-3.5"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${t['Jenis Penjualan'] === 'BOP' ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800'}">${t['Jenis Penjualan']}</span></td>
-                        <td class="p-3.5 text-slate-700">${t['Total Item']} item</td>
-                        <td class="p-3.5 font-bold text-slate-800">Rp ${harga.toLocaleString('id-ID')}</td>
+                        <td class="p-3 text-slate-500 text-[11px]">${new Date(t['Timestamp']).toLocaleString('id-ID')}</td>
+                        <td class="p-3 font-mono text-[11px] text-slate-500">${t['Order ID']}</td>
+                        <td class="p-3 font-semibold text-slate-800">${customerName}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${t['Jenis Penjualan'] === 'BOP' ? 'bg-red-100 text-red-800' : 'bg-rose-100 text-rose-900'}">${t['Jenis Penjualan']}</span></td>
+                        <td class="p-3 text-slate-700">${t['Total Item']} item</td>
+                        <td class="p-3 font-bold text-slate-800">Rp ${harga.toLocaleString('id-ID')}</td>
                     </tr>
                 `;
             }).join('');
