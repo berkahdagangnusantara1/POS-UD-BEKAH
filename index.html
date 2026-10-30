@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS CDN untuk Ekspor Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,30 +19,16 @@
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        /* iOS Safe Area Support */
-        .pb-safe {
-            padding-bottom: env(safe-area-inset-bottom, 16px);
-        }
-        .pt-safe {
-            padding-top: env(safe-area-inset-top, 0px);
-        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
     </style>
 </head>
 <body class="bg-slate-100 font-sans antialiased flex flex-col md:flex-row h-screen overflow-hidden text-slate-800">
 
-    <!-- Sidebar Navigasi (Desktop / Tablet) -->
+    <!-- Sidebar Navigasi -->
     <aside class="hidden md:flex w-64 bg-rose-950 text-rose-100 flex-col justify-between border-r border-rose-900 shrink-0">
         <div>
             <div class="p-5 bg-rose-990 flex items-center space-x-3 text-white border-b border-rose-900">
@@ -94,7 +82,7 @@
             </div>
         </header>
 
-        <!-- Subheader Mobile (Judul Halaman Mobile) -->
+        <!-- Subheader Mobile -->
         <div class="md:hidden bg-white border-b border-slate-200 px-4 py-2.5 flex justify-between items-center shrink-0">
             <h2 id="page-title-mobile" class="font-bold text-slate-800 text-sm">Kasir / POS Distribusi</h2>
             <span id="sync-status-mobile" class="text-[10px] text-red-600 font-bold flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Online</span>
@@ -105,7 +93,6 @@
 
             <!-- TAB 1: KASIR / POS -->
             <div id="tab-pos" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 h-full">
-                <!-- Katalog Produk -->
                 <div class="lg:col-span-2 flex flex-col bg-white rounded-2xl shadow-xs border border-slate-200/80 h-[520px] md:h-full overflow-hidden">
                     <div class="p-3 md:p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between gap-2.5 bg-white">
                         <div class="relative w-full sm:w-72">
@@ -117,14 +104,12 @@
                     <div id="pos-grid" class="p-3 md:p-4 flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2.5 md:gap-3.5 bg-slate-50/50"></div>
                 </div>
 
-                <!-- Keranjang & Checkout -->
                 <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 flex flex-col h-full overflow-hidden">
                     <div class="p-3.5 bg-rose-950 text-white flex justify-between items-center">
                         <h3 class="font-bold text-xs uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-red-400"></i> Keranjang Pesanan</h3>
                         <button onclick="clearCart()" class="text-xs text-rose-300 hover:text-white font-medium transition active:scale-95">Kosongkan</button>
                     </div>
 
-                    <!-- Input Customer Manual -->
                     <div class="p-3 bg-slate-50 border-b border-slate-200 space-y-2">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nama Pelanggan / Pembeli</label>
@@ -143,12 +128,10 @@
                         </div>
                     </div>
 
-                    <!-- List Cart Items -->
                     <div id="cart-list" class="flex-1 overflow-y-auto p-3 divide-y divide-slate-100 min-h-[140px]">
                         <div class="text-center text-slate-400 py-10 text-xs">Keranjang masih kosong</div>
                     </div>
 
-                    <!-- Ringkasan Checkout -->
                     <div class="p-3.5 bg-slate-50/80 border-t border-slate-200 space-y-2">
                         <div class="flex justify-between text-xs text-slate-600"><span>Total Item:</span><span id="cart-count" class="font-bold text-slate-800">0</span></div>
                         <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-1 border-t border-slate-200/60"><span>Total Harga:</span><span id="cart-total" class="text-red-600 text-base">Rp 0</span></div>
@@ -182,7 +165,6 @@
                     </div>
                 </div>
 
-                <!-- Tabel Stok Akhir -->
                 <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
                     <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 font-bold text-[11px] uppercase tracking-wider text-slate-700">Monitoring Stok Akhir Barang Pangan</div>
                     <div class="overflow-x-auto">
@@ -228,7 +210,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: LAPORAN & BOP -->
+            <!-- TAB 4: LAPORAN & BOP (LENGKAP DENGAN EKSPOR EXCEL) -->
             <div id="tab-laporan" class="tab-content hidden space-y-4 md:space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                     <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -246,9 +228,14 @@
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
-                    <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 font-bold text-[11px] uppercase tracking-wider text-slate-700">Riwayat Transaksi Masuk</div>
+                    <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div class="font-bold text-[11px] uppercase tracking-wider text-slate-700">Riwayat Transaksi Masuk</div>
+                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition active:scale-95">
+                            <i class="fa-solid fa-file-excel text-sm"></i> Unduh Laporan Excel
+                        </button>
+                    </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
+                        <table id="laporan-table" class="w-full text-left border-collapse text-xs whitespace-nowrap">
                             <thead>
                                 <tr class="bg-slate-100/70 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200/80">
                                     <th class="p-3">Waktu</th>
@@ -268,7 +255,7 @@
         </div>
     </main>
 
-    <!-- Bottom Navigation Bar (Khusus Layar HP / Mobile Android & iOS) -->
+    <!-- Bottom Navigation Bar (Mobile) -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center py-2 px-1 pb-safe shadow-lg">
         <button onclick="switchTab('pos')" id="mob-nav-pos" class="mob-nav-btn flex flex-col items-center justify-center w-full text-red-600 font-bold">
             <i class="fa-solid fa-cash-register text-base"></i>
@@ -290,7 +277,7 @@
 
     <!-- Script Utama -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzp0DvWUeLWyog6jQueKSLPrMWWX01-40F_p4V_JrIWLWcX9FJdLdGj9oiZpqrtU1KRfA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzYNVoo49ytaE8u2tB3YHFZGkiPI3GckPzoO1zGjMkLcaiVF3OAFgknPGNIrKQaWWa2Q/exec';
 
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
@@ -299,32 +286,24 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', { dateStyle: 'full' });
 
         function switchTab(tabId) {
-            // Sembunyikan semua tab
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            
-            // Un-highlight Desktop Nav
             document.querySelectorAll('.nav-btn').forEach(el => {
                 el.classList.remove('bg-red-600', 'text-white', 'shadow-md', 'shadow-red-950/30');
                 el.classList.add('hover:bg-rose-900/60', 'text-rose-300');
             });
-
-            // Un-highlight Mobile Nav
             document.querySelectorAll('.mob-nav-btn').forEach(el => {
                 el.classList.remove('text-red-600', 'font-bold');
                 el.classList.add('text-slate-400', 'font-medium');
             });
 
-            // Tampilkan tab aktif
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
-            // Highlight Desktop Nav
             const btn = document.getElementById(`nav-${tabId}`);
             if(btn) {
                 btn.classList.add('bg-red-600', 'text-white', 'shadow-md', 'shadow-red-950/30');
                 btn.classList.remove('hover:bg-rose-900/60', 'text-rose-300');
             }
 
-            // Highlight Mobile Nav
             const mobBtn = document.getElementById(`mob-nav-${tabId}`);
             if(mobBtn) {
                 mobBtn.classList.add('text-red-600', 'font-bold');
@@ -365,7 +344,6 @@
             `).join('');
             renderPOSGrid();
             
-            // Dropdown barang masuk
             const selectMasuk = document.getElementById('barang-masuk-id');
             selectMasuk.innerHTML = dbData.produk.map(p => `<option value="${p.id}">${p.nama} (${p.satuan})</option>`).join('');
         }
@@ -474,7 +452,7 @@
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                alert('Transaksi berhasil disimpan!');
+                alert('Transaksi berhasil disimpan ke Google Sheets!');
                 clearCart();
                 fetchAllData();
             } catch (err) {
@@ -540,7 +518,7 @@
         }
         document.getElementById('harga-search').addEventListener('input', renderHarga);
 
-        // --- LAPORAN & BOP ---
+        // --- LAPORAN & EKSPOR EXCEL ---
         function renderLaporan() {
             let totalBop = 0, totalGrosir = 0;
             const tbody = document.getElementById('laporan-table-body');
@@ -574,7 +552,32 @@
             document.getElementById('rekap-total').innerText = 'Rp ' + (totalBop + totalGrosir).toLocaleString('id-ID');
         }
 
-        // Inisialisasi awal
+        // Fitur Ekspor Excel
+        function exportToExcel() {
+            if (!dbData.transaksi || dbData.transaksi.length === 0) {
+                return alert('Tidak ada data transaksi untuk diunduh.');
+            }
+
+            // Standardisasi data untuk excel
+            const dataForExcel = dbData.transaksi.map(t => ({
+                'Waktu Transaksi': new Date(t['Timestamp']).toLocaleString('id-ID'),
+                'Order ID': t['Order ID'],
+                'Nama Customer': t['Nama Customer'] || t['Customer'] || 'Umum',
+                'Jenis Penjualan': t['Jenis Penjualan'],
+                'Total Item': t['Total Item'],
+                'Total Harga (Rp)': t['Total Harga'],
+                'Catatan': t['Catatan'] || ''
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(dataForExcel);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Penjualan");
+
+            // Format tanggal untuk nama file
+            const today = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(workbook, `Laporan_Penjualan_POS_${today}.xlsx`);
+        }
+
         fetchAllData();
     </script>
 </body>
