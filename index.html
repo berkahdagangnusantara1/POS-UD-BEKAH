@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sistem Terpadu Dapur MBG - POS & Logistik</title>
+    <title>Sistem Terpadu Dapur MBG - POS & Logistik UD BERKAH</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -24,12 +24,36 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
         .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+
+        /* FORMAT KHUSUS UNTUK PRINT INVOICE STRUK THERMAL */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invoice-print-area, #invoice-print-area * {
+                visibility: visible;
+            }
+            #invoice-print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm; /* Standar Ukuran Struk Kasir Thermal */
+                padding: 10px;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 11px;
+                color: #000;
+                background: #fff;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-100 font-sans antialiased flex flex-col md:flex-row h-screen overflow-hidden text-slate-800">
 
-    <!-- Sidebar Navigasi -->
-    <aside class="hidden md:flex w-64 bg-rose-950 text-rose-100 flex-col justify-between border-r border-rose-900 shrink-0">
+    <!-- Sidebar Navigasi (Desktop / Tablet) -->
+    <aside class="hidden md:flex w-64 bg-rose-950 text-rose-100 flex-col justify-between border-r border-rose-900 shrink-0 no-print">
         <div>
             <div class="p-5 bg-rose-990 flex items-center space-x-3 text-white border-b border-rose-900">
                 <div class="bg-gradient-to-tr from-red-600 to-rose-500 p-2.5 rounded-xl shadow-lg shadow-red-950/40">
@@ -43,8 +67,8 @@
             <nav class="p-3 space-y-1.5">
                 <button onclick="switchTab('pos')" id="nav-pos" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold bg-red-600 text-white shadow-md shadow-red-950/30 transition-all duration-200"><i class="fa-solid fa-cash-register w-5 text-sm"></i><span>Kasir / POS</span></button>
                 <button onclick="switchTab('stok')" id="nav-stok" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-boxes-stacked w-5 text-sm"></i><span>Stok & Barang Masuk</span></button>
-                <button onclick="switchTab('harga')" id="nav-harga" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-tags w-5 text-sm"></i><span>List Harga</span></button>
-                <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-chart-line w-5 text-sm"></i><span>Laporan & BOP</span></button>
+                <button onclick="switchTab('harga')" id="nav-harga" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-tags w-5 text-sm"></i><span>List Harga & Modal</span></button>
+                <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-semibold hover:bg-rose-900/60 text-rose-300 hover:text-white transition-all duration-200"><i class="fa-solid fa-chart-line w-5 text-sm"></i><span>Laporan Transaksi</span></button>
             </nav>
         </div>
         <div class="p-4 bg-rose-990 text-xs flex justify-between items-center border-t border-rose-900">
@@ -54,7 +78,7 @@
     </aside>
 
     <!-- Header Mobile Top Bar -->
-    <header class="md:hidden bg-rose-950 text-white px-4 py-3 flex justify-between items-center shrink-0 border-b border-rose-900 pt-safe">
+    <header class="md:hidden bg-rose-950 text-white px-4 py-3 flex justify-between items-center shrink-0 border-b border-rose-900 pt-safe no-print">
         <div class="flex items-center space-x-2.5">
             <div class="bg-red-600 p-2 rounded-lg">
                 <i class="fa-solid fa-utensils text-xs text-white"></i>
@@ -72,7 +96,7 @@
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 flex flex-col overflow-hidden bg-slate-50">
+    <main class="flex-1 flex flex-col overflow-hidden bg-slate-50 no-print">
         
         <!-- Header Atas (Desktop) -->
         <header class="hidden md:flex bg-white border-b border-slate-200/80 px-8 py-4 justify-between items-center shadow-xs">
@@ -93,6 +117,7 @@
 
             <!-- TAB 1: KASIR / POS -->
             <div id="tab-pos" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 h-full">
+                <!-- Katalog Produk -->
                 <div class="lg:col-span-2 flex flex-col bg-white rounded-2xl shadow-xs border border-slate-200/80 h-[520px] md:h-full overflow-hidden">
                     <div class="p-3 md:p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between gap-2.5 bg-white">
                         <div class="relative w-full sm:w-72">
@@ -104,6 +129,7 @@
                     <div id="pos-grid" class="p-3 md:p-4 flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2.5 md:gap-3.5 bg-slate-50/50"></div>
                 </div>
 
+                <!-- Keranjang & Checkout -->
                 <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 flex flex-col h-full overflow-hidden">
                     <div class="p-3.5 bg-rose-950 text-white flex justify-between items-center">
                         <h3 class="font-bold text-xs uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-red-400"></i> Keranjang Pesanan</h3>
@@ -136,19 +162,29 @@
                         <div class="flex justify-between text-xs text-slate-600"><span>Total Item:</span><span id="cart-count" class="font-bold text-slate-800">0</span></div>
                         <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-1 border-t border-slate-200/60"><span>Total Harga:</span><span id="cart-total" class="text-red-600 text-base">Rp 0</span></div>
                         <button onclick="processCheckout()" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-3 rounded-xl shadow-md shadow-red-600/20 transition text-xs flex items-center justify-center gap-2 mt-1 active:scale-[0.98]">
-                            <i class="fa-solid fa-paper-plane"></i> Proses Transaksi
+                            <i class="fa-solid fa-paper-plane"></i> Proses Transaksi & Cetak
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 2: STOK & BARANG MASUK -->
+            <!-- TAB 2: STOK & RESTOCK (MENDUKUNG INPUT MANUAL) -->
             <div id="tab-stok" class="tab-content hidden space-y-4 md:space-y-6">
                 <div class="bg-white p-4 md:p-6 rounded-2xl shadow-xs border border-slate-200/80">
-                    <h3 class="font-bold text-slate-800 text-xs md:text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-red-600"></i> Catat Barang Masuk (Restock)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-800 text-xs md:text-sm flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-red-600"></i> Catat Barang Masuk (Restock)</h3>
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs font-semibold text-slate-600 cursor-pointer">
+                                <input type="checkbox" id="toggle-manual-input" onchange="toggleRestockMode()" class="rounded text-red-600 focus:ring-red-500 mr-1.5">
+                                Input Barang Baru (Manual)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- FORM RESTOCK BARANG DARI DROPDOWN (LAMA) -->
+                    <div id="form-restock-existing" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Pilih Produk</label>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Pilih Produk Dalam Stok</label>
                             <select id="barang-masuk-id" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-red-500"></select>
                         </div>
                         <div>
@@ -160,7 +196,37 @@
                             <input type="text" id="barang-masuk-ket" placeholder="Dari Supplier A" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
                         </div>
                         <div class="flex items-end">
-                            <button onclick="submitBarangMasuk()" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-red-600/20 transition active:scale-[0.98]">Simpan Barang Masuk</button>
+                            <button onclick="submitBarangMasuk(false)" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition active:scale-[0.98]">Simpan Restock</button>
+                        </div>
+                    </div>
+
+                    <!-- FORM RESTOCK BARANG BARU (MANUAL) -->
+                    <div id="form-restock-manual" class="hidden grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nama Barang Baru</label>
+                            <input type="text" id="manual-nama" placeholder="Beras Premium" class="w-full p-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kategori</label>
+                            <input type="text" id="manual-kategori" placeholder="Sembako" class="w-full p-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Harga Modal (Rp)</label>
+                            <input type="number" id="manual-modal" placeholder="10000" class="w-full p-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Harga Jual (Rp)</label>
+                            <input type="number" id="manual-jual" placeholder="12500" class="w-full p-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Jumlah Masuk & Satuan</label>
+                            <div class="flex gap-1">
+                                <input type="number" id="manual-qty" placeholder="100" class="w-2/3 p-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500">
+                                <input type="text" id="manual-satuan" placeholder="Kg" class="w-1/3 p-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500">
+                            </div>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="submitBarangMasuk(true)" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-xs shadow-md transition active:scale-[0.98]">Tambah Barang Baru</button>
                         </div>
                     </div>
                 </div>
@@ -174,7 +240,8 @@
                                     <th class="p-3">ID</th>
                                     <th class="p-3">Nama Bahan</th>
                                     <th class="p-3">Kategori</th>
-                                    <th class="p-3">Harga Satuan</th>
+                                    <th class="p-3">Harga Modal</th>
+                                    <th class="p-3">Harga Jual</th>
                                     <th class="p-3">Stok Akhir</th>
                                     <th class="p-3">Satuan</th>
                                 </tr>
@@ -185,32 +252,40 @@
                 </div>
             </div>
 
-            <!-- TAB 3: LIST HARGA -->
-            <div id="tab-harga" class="tab-content hidden bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
-                <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <h3 class="font-bold text-[11px] uppercase tracking-wider text-slate-700">Daftar Harga Bahan Pangan</h3>
-                    <div class="relative w-full sm:w-60">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="harga-search" placeholder="Cari bahan..." class="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+            <!-- TAB 3: LIST HARGA & LAPORAN MARGIN MODAL -->
+            <div id="tab-harga" class="tab-content hidden space-y-4">
+                <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+                    <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700">Daftar Harga, Modal & Kebijakan Margin Kebijakan</h3>
+                            <p class="text-[10px] text-slate-400">Otomatis tersinkron dengan sheet Margin_Harga di Google Sheets</p>
+                        </div>
+                        <div class="relative w-full sm:w-60">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="harga-search" placeholder="Cari bahan..." class="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
                     </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
-                        <thead>
-                            <tr class="bg-slate-100/70 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200/80">
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Nama Bahan Pangan</th>
-                                <th class="p-3">Kategori</th>
-                                <th class="p-3">Harga Satuan (Rp)</th>
-                                <th class="p-3">Satuan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="harga-table-body" class="divide-y divide-slate-100"></tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-slate-100/70 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200/80">
+                                    <th class="p-3">ID</th>
+                                    <th class="p-3">Nama Bahan Pangan</th>
+                                    <th class="p-3">Kategori</th>
+                                    <th class="p-3">Harga Modal (Rp)</th>
+                                    <th class="p-3">Harga Jual (Rp)</th>
+                                    <th class="p-3">Margin (Rp)</th>
+                                    <th class="p-3">Margin (%)</th>
+                                    <th class="p-3">Satuan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="harga-table-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- TAB 4: LAPORAN & BOP (LENGKAP DENGAN EKSPOR EXCEL) -->
+            <!-- TAB 4: LAPORAN PENJUALAN TRANSAKSI HARI INI -->
             <div id="tab-laporan" class="tab-content hidden space-y-4 md:space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                     <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -229,7 +304,7 @@
 
                 <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
                     <div class="p-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <div class="font-bold text-[11px] uppercase tracking-wider text-slate-700">Riwayat Transaksi Masuk</div>
+                        <div class="font-bold text-[11px] uppercase tracking-wider text-slate-700">Riwayat Penjualan (Sheet Transaksi Master)</div>
                         <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition active:scale-95">
                             <i class="fa-solid fa-file-excel text-sm"></i> Unduh Laporan Excel
                         </button>
@@ -242,8 +317,10 @@
                                     <th class="p-3">Order ID</th>
                                     <th class="p-3">Customer / Pembeli</th>
                                     <th class="p-3">Jenis</th>
-                                    <th class="p-3">Total Item</th>
-                                    <th class="p-3">Total Harga</th>
+                                    <th class="p-3">Nama Barang</th>
+                                    <th class="p-3">Qty</th>
+                                    <th class="p-3">Subtotal</th>
+                                    <th class="p-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="laporan-table-body" class="divide-y divide-slate-100"></tbody>
@@ -256,7 +333,7 @@
     </main>
 
     <!-- Bottom Navigation Bar (Mobile) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center py-2 px-1 pb-safe shadow-lg">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center py-2 px-1 pb-safe shadow-lg no-print">
         <button onclick="switchTab('pos')" id="mob-nav-pos" class="mob-nav-btn flex flex-col items-center justify-center w-full text-red-600 font-bold">
             <i class="fa-solid fa-cash-register text-base"></i>
             <span class="text-[10px] mt-1">Kasir</span>
@@ -275,11 +352,60 @@
         </button>
     </nav>
 
+    <!-- MODAL POPUP & STRUK CETAK INVOICE -->
+    <div id="invoice-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
+                <h3 class="text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-receipt mr-1.5 text-red-400"></i> Struk Invoice Penjualan</h3>
+                <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-4 overflow-y-auto flex-1 bg-slate-50">
+                <!-- PRINT AREA KHUSUS STRUK THERMAL -->
+                <div id="invoice-print-area" class="bg-white p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-3">
+                    <div class="text-center border-b pb-2 border-dashed border-slate-300">
+                        <h2 class="font-extrabold text-sm uppercase">UD BERKAH LOGISTIK</h2>
+                        <p class="text-[10px] text-slate-500">Dapur MBG & Distribusi Pangan</p>
+                        <p id="inv-date" class="text-[9px] text-slate-400 mt-1"></p>
+                    </div>
+
+                    <div class="text-[10px] space-y-0.5 border-b pb-2 border-dashed border-slate-300">
+                        <div class="flex justify-between"><span>No. Order:</span><span id="inv-order-id" class="font-bold"></span></div>
+                        <div class="flex justify-between"><span>Customer:</span><span id="inv-customer"></span></div>
+                        <div class="flex justify-between"><span>Jenis:</span><span id="inv-jenis"></span></div>
+                    </div>
+
+                    <div id="inv-items-list" class="space-y-1.5 border-b pb-2 border-dashed border-slate-300 text-[10px]">
+                        <!-- List Item akan di-render dinamis -->
+                    </div>
+
+                    <div class="text-[11px] font-bold space-y-1">
+                        <div class="flex justify-between"><span>TOTAL:</span><span id="inv-total" class="text-red-600"></span></div>
+                    </div>
+
+                    <div class="text-center pt-2 text-[9px] text-slate-400 border-t border-dashed border-slate-300">
+                        <p>Terima kasih atas kerja samanya!</p>
+                        <p>Sistem POS Dapur MBG - UD BERKAH</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-white border-t border-slate-200 flex gap-2">
+                <button onclick="window.print()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-md">
+                    <i class="fa-solid fa-print"></i> Cetak / Print Struk
+                </button>
+                <button onclick="closeInvoiceModal()" class="px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-xl text-xs font-bold">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script Utama -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzYNVoo49ytaE8u2tB3YHFZGkiPI3GckPzoO1zGjMkLcaiVF3OAFgknPGNIrKQaWWa2Q/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydqkHQQnj5_2NjRHXOXoydWHoZ_mIgYk-N88Kz3FsQX51Rm2FGdLxl-Pv3UJrTYhq56g/exec';
 
-        let dbData = { produk: [], transaksi: [] };
+        let dbData = { produk: [], transaksi: [], margin: [] };
         let cart = [];
         let activeCategory = 'Semua';
 
@@ -310,7 +436,7 @@
                 mobBtn.classList.remove('text-slate-400', 'font-medium');
             }
             
-            const titles = { pos: 'Kasir / POS Distribusi', stok: 'Stok & Barang Masuk', harga: 'List Harga Barang', laporan: 'Laporan Penjualan & BOP' };
+            const titles = { pos: 'Kasir / POS Distribusi', stok: 'Stok & Restock Barang', harga: 'List Harga & Margin Kebijakan', laporan: 'Laporan Penjualan Transaksi' };
             document.getElementById('page-title').innerText = titles[tabId];
             document.getElementById('page-title-mobile').innerText = titles[tabId];
         }
@@ -437,22 +563,27 @@
             const customer = document.getElementById('customer-name').value.trim() || 'Umum';
             const catatan = document.getElementById('customer-note').value.trim();
 
+            const orderId = 'MBG-' + Date.now().toString().slice(-6);
+            const totalHarga = cart.reduce((a, b) => a + (b.harga * b.qty), 0);
+
             if (!confirm(`Proses transaksi untuk ${customer} (Penjualan ${jenis})?`)) return;
 
             const payload = {
                 action: 'checkout',
-                orderId: 'MBG-' + Date.now().toString().slice(-6),
+                orderId: orderId,
                 namaCustomer: customer,
                 catatan: catatan,
                 jenisPenjualan: jenis,
                 totalItems: cart.reduce((a, b) => a + b.qty, 0),
-                totalHarga: cart.reduce((a, b) => a + (b.harga * b.qty), 0),
+                totalHarga: totalHarga,
                 items: cart
             };
 
             try {
+                // Tampilkan invoice langsung
+                showInvoice(orderId, customer, jenis, cart, totalHarga);
+
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                alert('Transaksi berhasil disimpan ke Google Sheets!');
                 clearCart();
                 fetchAllData();
             } catch (err) {
@@ -460,7 +591,18 @@
             }
         }
 
-        // --- STOK & BARANG MASUK ---
+        // --- STOK & BARANG MASUK MANUAL / DROPDOWN ---
+        function toggleRestockMode() {
+            const isManual = document.getElementById('toggle-manual-input').checked;
+            if (isManual) {
+                document.getElementById('form-restock-existing').classList.add('hidden');
+                document.getElementById('form-restock-manual').classList.remove('hidden');
+            } else {
+                document.getElementById('form-restock-existing').classList.remove('hidden');
+                document.getElementById('form-restock-manual').classList.add('hidden');
+            }
+        }
+
         function renderStok() {
             const tbody = document.getElementById('stok-table-body');
             tbody.innerHTML = dbData.produk.map(p => `
@@ -468,72 +610,105 @@
                     <td class="p-3 font-mono text-[11px] text-slate-500">${p.id}</td>
                     <td class="p-3 font-bold text-slate-800">${p.nama}</td>
                     <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
-                    <td class="p-3 text-slate-700">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-slate-600">Rp ${Number(p.hargaModal).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-slate-800 font-semibold">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
                     <td class="p-3 font-extrabold text-red-600">${p.stok}</td>
                     <td class="p-3 text-slate-500">${p.satuan}</td>
                 </tr>
             `).join('');
         }
 
-        async function submitBarangMasuk() {
-            const id = document.getElementById('barang-masuk-id').value;
-            const qty = document.getElementById('barang-masuk-qty').value;
-            const ket = document.getElementById('barang-masuk-ket').value;
-            if (!qty || qty <= 0) return alert('Masukkan jumlah barang masuk dengan benar!');
+        async function submitBarangMasuk(isManual) {
+            let payload = { action: 'barang_masuk', isManual: isManual };
 
-            const prod = dbData.produk.find(x => x.id == id);
-            const payload = {
-                action: 'barang_masuk',
-                idProduk: id,
-                namaProduk: prod ? prod.nama : '',
-                jumlah: qty,
-                keterangan: ket
-            };
+            if (isManual) {
+                const nama = document.getElementById('manual-nama').value.trim();
+                const qty = document.getElementById('manual-qty').value;
+                if (!nama || !qty || qty <= 0) return alert('Lengkapi Nama Barang dan Jumlah Masuk!');
+
+                payload.namaProduk = nama;
+                payload.kategori = document.getElementById('manual-kategori').value.trim() || 'Umum';
+                payload.hargaModal = document.getElementById('manual-modal').value || 0;
+                payload.hargaJual = document.getElementById('manual-jual').value || 0;
+                payload.jumlah = qty;
+                payload.satuan = document.getElementById('manual-satuan').value.trim() || 'Pcs';
+                payload.keterangan = 'Input Manual Barang Baru';
+            } else {
+                const id = document.getElementById('barang-masuk-id').value;
+                const qty = document.getElementById('barang-masuk-qty').value;
+                if (!qty || qty <= 0) return alert('Masukkan jumlah barang masuk!');
+
+                const prod = dbData.produk.find(x => x.id == id);
+                payload.idProduk = id;
+                payload.namaProduk = prod ? prod.nama : '';
+                payload.jumlah = qty;
+                payload.keterangan = document.getElementById('barang-masuk-ket').value.trim() || 'Restock Stok Lama';
+            }
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                alert('Barang masuk berhasil dicatat!');
-                document.getElementById('barang-masuk-qty').value = '';
-                document.getElementById('barang-masuk-ket').value = '';
+                alert('Data barang masuk berhasil disimpan ke Google Sheets!');
+                
+                // Reset form
+                if (isManual) {
+                    document.getElementById('manual-nama').value = '';
+                    document.getElementById('manual-qty').value = '';
+                    document.getElementById('manual-modal').value = '';
+                    document.getElementById('manual-jual').value = '';
+                } else {
+                    document.getElementById('barang-masuk-qty').value = '';
+                }
+
                 fetchAllData();
             } catch (err) {
-                alert('Gagal mencatat barang masuk.');
+                alert('Gagal menyimpan barang masuk.');
             }
         }
 
-        // --- LIST HARGA ---
+        // --- LIST HARGA & LAPORAN MARGIN MODAL ---
         function renderHarga() {
             const keyword = document.getElementById('harga-search').value.toLowerCase();
             const filtered = dbData.produk.filter(p => p.nama.toLowerCase().includes(keyword));
             const tbody = document.getElementById('harga-table-body');
-            tbody.innerHTML = filtered.map(p => `
-                <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
-                    <td class="p-3 font-mono text-[11px] text-slate-500">${p.id}</td>
-                    <td class="p-3 font-bold text-slate-800">${p.nama}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
-                    <td class="p-3 font-bold text-red-600">Rp ${Number(p.harga).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-slate-500">${p.satuan}</td>
-                </tr>
-            `).join('');
+            
+            tbody.innerHTML = filtered.map(p => {
+                const modal = Number(p.hargaModal) || 0;
+                const jual = Number(p.harga) || 0;
+                const marginRp = jual - modal;
+                const marginPct = modal > 0 ? ((marginRp / modal) * 100).toFixed(1) + '%' : '0%';
+
+                return `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
+                        <td class="p-3 font-mono text-[11px] text-slate-500">${p.id}</td>
+                        <td class="p-3 font-bold text-slate-800">${p.nama}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${p.kategori}</span></td>
+                        <td class="p-3 text-slate-600">Rp ${modal.toLocaleString('id-ID')}</td>
+                        <td class="p-3 font-bold text-red-600">Rp ${jual.toLocaleString('id-ID')}</td>
+                        <td class="p-3 font-bold text-emerald-600">Rp ${marginRp.toLocaleString('id-ID')}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800">${marginPct}</span></td>
+                        <td class="p-3 text-slate-500">${p.satuan}</td>
+                    </tr>
+                `;
+            }).join('');
         }
         document.getElementById('harga-search').addEventListener('input', renderHarga);
 
-        // --- LAPORAN & EKSPOR EXCEL ---
+        // --- LAPORAN TRANSAKSI (SATU SHEET TRANSAKSI MASTER) ---
         function renderLaporan() {
             let totalBop = 0, totalGrosir = 0;
             const tbody = document.getElementById('laporan-table-body');
             
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-xs">Belum ada data transaksi</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 text-xs">Belum ada data transaksi</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = dbData.transaksi.slice().reverse().map(t => {
-                const harga = Number(t['Total Harga']) || 0;
-                if (t['Jenis Penjualan'] === 'BOP') totalBop += harga;
-                if (t['Jenis Penjualan'] === 'Grosir') totalGrosir += harga;
+            tbody.innerHTML = dbData.transaksi.slice().reverse().map((t, idx) => {
+                const subtotal = Number(t['Subtotal']) || Number(t['Total Harga']) || 0;
+                if (t['Jenis Penjualan'] === 'BOP') totalBop += subtotal;
+                if (t['Jenis Penjualan'] === 'Grosir') totalGrosir += subtotal;
                 
-                const customerName = t['Nama Customer'] || t['Customer'] || 'Umum';
+                const customerName = t['Nama Customer'] || 'Umum';
 
                 return `
                     <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
@@ -541,8 +716,14 @@
                         <td class="p-3 font-mono text-[11px] text-slate-500">${t['Order ID']}</td>
                         <td class="p-3 font-semibold text-slate-800">${customerName}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${t['Jenis Penjualan'] === 'BOP' ? 'bg-red-100 text-red-800' : 'bg-rose-100 text-rose-900'}">${t['Jenis Penjualan']}</span></td>
-                        <td class="p-3 text-slate-700">${t['Total Item']} item</td>
-                        <td class="p-3 font-bold text-slate-800">Rp ${harga.toLocaleString('id-ID')}</td>
+                        <td class="p-3 font-medium text-slate-700">${t['Nama Barang'] || '-'}</td>
+                        <td class="p-3 text-slate-600">${t['Qty'] || 1}</td>
+                        <td class="p-3 font-bold text-slate-800">Rp ${subtotal.toLocaleString('id-ID')}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="reprintInvoice('${t['Order ID']}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-print"></i> Struk
+                            </button>
+                        </td>
                     </tr>
                 `;
             }).join('');
@@ -552,30 +733,71 @@
             document.getElementById('rekap-total').innerText = 'Rp ' + (totalBop + totalGrosir).toLocaleString('id-ID');
         }
 
+        // --- FUNGSI CETAK INVOICE / STRUK ---
+        function showInvoice(orderId, customer, jenis, items, total) {
+            document.getElementById('inv-date').innerText = new Date().toLocaleString('id-ID');
+            document.getElementById('inv-order-id').innerText = orderId;
+            document.getElementById('inv-customer').innerText = customer;
+            document.getElementById('inv-jenis').innerText = jenis;
+            document.getElementById('inv-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
+
+            const listContainer = document.getElementById('inv-items-list');
+            listContainer.innerHTML = items.map(i => `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-bold">${i.nama}</p>
+                        <p class="text-[9px] text-slate-500">${i.qty} x Rp ${Number(i.harga).toLocaleString('id-ID')}</p>
+                    </div>
+                    <span class="font-bold">Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('invoice-modal').classList.remove('hidden');
+        }
+
+        function reprintInvoice(orderId) {
+            const txs = dbData.transaksi.filter(t => t['Order ID'] === orderId);
+            if (txs.length === 0) return alert('Data transaksi tidak ditemukan.');
+
+            const first = txs[0];
+            const items = txs.map(t => ({
+                nama: t['Nama Barang'] || 'Barang Pangan',
+                qty: Number(t['Qty']) || 1,
+                harga: Number(t['Harga Satuan']) || Number(t['Subtotal']) || 0
+            }));
+            const total = txs.reduce((a, b) => a + (Number(b['Subtotal']) || 0), 0);
+
+            showInvoice(orderId, first['Nama Customer'] || 'Umum', first['Jenis Penjualan'] || 'BOP', items, total);
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').classList.add('hidden');
+        }
+
         // Fitur Ekspor Excel
         function exportToExcel() {
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
                 return alert('Tidak ada data transaksi untuk diunduh.');
             }
 
-            // Standardisasi data untuk excel
             const dataForExcel = dbData.transaksi.map(t => ({
                 'Waktu Transaksi': new Date(t['Timestamp']).toLocaleString('id-ID'),
                 'Order ID': t['Order ID'],
-                'Nama Customer': t['Nama Customer'] || t['Customer'] || 'Umum',
+                'Nama Customer': t['Nama Customer'] || 'Umum',
                 'Jenis Penjualan': t['Jenis Penjualan'],
-                'Total Item': t['Total Item'],
-                'Total Harga (Rp)': t['Total Harga'],
+                'Nama Barang': t['Nama Barang'],
+                'Qty': t['Qty'],
+                'Harga Satuan (Rp)': t['Harga Satuan'],
+                'Subtotal (Rp)': t['Subtotal'],
                 'Catatan': t['Catatan'] || ''
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(dataForExcel);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Penjualan");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Transaksi Master");
 
-            // Format tanggal untuk nama file
             const today = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(workbook, `Laporan_Penjualan_POS_${today}.xlsx`);
+            XLSX.writeFile(workbook, `Laporan_Transaksi_Master_${today}.xlsx`);
         }
 
         fetchAllData();
