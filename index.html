@@ -44,7 +44,7 @@
         @media print {
             body * { visibility: hidden; }
             #invoice-print-area, #invoice-print-area *, #stock-opname-print-area, #stock-opname-print-area * {
-                visibility: visible;
+                visibility: visible !important;
             }
             #invoice-print-area {
                 position: absolute; left: 0; top: 0;
@@ -53,6 +53,7 @@
                 font-size: 11px; color: #000; background: #fff;
             }
             #stock-opname-print-area {
+                display: block !important;
                 position: absolute; left: 0; top: 0;
                 width: 100%; padding: 20px;
                 font-family: sans-serif; font-size: 12px; color: #000; background: #fff;
@@ -255,7 +256,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL MANAGEMENT (DARI TOMBOL TITIK TIGA) ================= -->
+    <!-- ================= MODAL MANAGEMENT ================= -->
     <div id="management-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 no-print">
         <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden shadow-2xl">
             
@@ -284,10 +285,8 @@
 
             <div class="flex-1 overflow-y-auto p-4 bg-[#0F172A]">
                 
-                <!-- TAB 1: PRODUK (DENGAN 2 FORM: BARANG BARU & RESTOCK LAMA) -->
+                <!-- TAB 1: PRODUK -->
                 <div id="mgt-tab-produk" class="mgt-content space-y-4">
-                    
-                    <!-- FORM 1: INPUT BARANG MASUK BARU -->
                     <div class="pos-card p-4 rounded-lg">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase tracking-wider mb-3"><i class="fa-solid fa-plus-circle mr-1"></i> (1) Form Input Barang Masuk Baru</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
@@ -322,7 +321,6 @@
                         </div>
                     </div>
 
-                    <!-- FORM 2: TABEL RESTOCK BARANG LAMA -->
                     <div class="pos-card p-4 rounded-lg space-y-3">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-bold text-[#10B981] uppercase tracking-wider"><i class="fa-solid fa-boxes-packing mr-1"></i> (2) Restock Barang Lama</h4>
@@ -343,7 +341,6 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- TAB 2: PRICE LIST -->
@@ -371,7 +368,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: STOCK CONTROL DENGAN TOMBOL PRINT STOCK OPNAME -->
+                <!-- TAB 3: STOCK CONTROL -->
                 <div id="mgt-tab-stock" class="mgt-content hidden space-y-3">
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase">MONITORING & KONTROL STOK BARANG</h4>
@@ -415,9 +412,9 @@
 
                     <div class="pos-card rounded-lg overflow-hidden">
                         <div class="p-2.5 bg-[#1E293B] flex justify-between items-center text-xs border-b border-[#334155]">
-                            <span class="font-bold text-slate-200">RIWAYAT TRANSAKSI PENJUALAN</span>
+                            <span class="font-bold text-slate-200">RIWAYAT TRANSAKSI PENJUALAN (GABUNGAN REGULER & HARGA MANUAL)</span>
                             <button onclick="exportToExcel()" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-3 py-1 rounded font-bold flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-file-excel"></i> Export Excel
+                                <i class="fa-solid fa-file-excel"></i> Export Excel (Laba Rugi)
                             </button>
                         </div>
                         <div class="overflow-x-auto">
@@ -426,10 +423,12 @@
                                     <tr>
                                         <th class="p-2.5">Waktu</th>
                                         <th class="p-2.5">Order ID</th>
+                                        <th class="p-2.5">Tipe Transaksi</th>
                                         <th class="p-2.5">Customer</th>
                                         <th class="p-2.5">Jenis</th>
                                         <th class="p-2.5">Nama Barang</th>
                                         <th class="p-2.5">Qty</th>
+                                        <th class="p-2.5">Harga Deal</th>
                                         <th class="p-2.5">Subtotal</th>
                                         <th class="p-2.5 text-center">Struk</th>
                                     </tr>
@@ -496,13 +495,13 @@
         <table style="width: 100%; border-collapse: collapse; font-size: 11px;" border="1" cellpadding="5">
             <thead>
                 <tr style="background-color: #f1f5f9;">
-                    <th>No</th>
-                    <th>ID Barang</th>
-                    <th>Nama Barang</th>
-                    <th>Kategori</th>
-                    <th>Stok Sistem</th>
-                    <th style="width: 100px;">Stok Fisik</th>
-                    <th style="width: 120px;">Keterangan</th>
+                    <th style="padding: 6px;">No</th>
+                    <th style="padding: 6px;">ID Barang</th>
+                    <th style="padding: 6px;">Nama Barang</th>
+                    <th style="padding: 6px;">Kategori</th>
+                    <th style="padding: 6px;">Stok Sistem</th>
+                    <th style="width: 100px; padding: 6px;">Stok Fisik</th>
+                    <th style="width: 120px; padding: 6px;">Keterangan</th>
                 </tr>
             </thead>
             <tbody id="so-print-table-body"></tbody>
@@ -511,7 +510,7 @@
 
     <!-- SCRIPT UTAMA LOGIKA APLIKASI -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzftt4SIrRM-FfdHSL3wR6RAO2Ibh5_9KeoGI5V-bG6fu1JTNyRM77WbEegKUVvgIr_Q/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPJP_ZZ0RMLieYvJd1DxGG8MrjP4lTEW5SkjSkI4QcMDnBPvjbmXyGX4QpM73KG09G/exec';
 
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
@@ -537,7 +536,6 @@
             }
         }
 
-        // 1. PENCARIAN & FILTERING KATALOG REALTIME
         function handleSearchInput() {
             const query = document.getElementById('pos-search').value.toLowerCase().trim();
             renderPOSGrid(query);
@@ -595,7 +593,6 @@
             `).join('');
         }
 
-        // 2. KERANJANG BELANJA
         function addToCart(id) {
             const p = dbData.produk.find(x => String(x.id) === String(id));
             if (!p) return;
@@ -664,7 +661,6 @@
 
         function clearCart() { cart = []; renderCart(); }
 
-        // 3. EDIT HARGA MANUAL SAAT BAYAR & VERIFIKASI 2 LANGKAH
         function openPaymentReviewModal() {
             if (cart.length === 0) return alert('Keranjang belanja masih kosong!');
             
@@ -787,7 +783,6 @@
             showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total);
         }
 
-        // 4. RESTOCK BARANG LAMA
         function renderRestockTable() {
             const keyword = (document.getElementById('restock-search')?.value || '').toLowerCase();
             const tbody = document.getElementById('restock-table-body');
@@ -825,27 +820,32 @@
             } catch (err) { alert('Gagal restock barang.'); }
         }
 
-        // 5. CETAK LEMBAR STOCK OPNAME
+        // FIX CETAK LEMBAR STOCK OPNAME
         function printStockOpname() {
             document.getElementById('so-print-date').innerText = new Date().toLocaleString('id-ID');
             const tbody = document.getElementById('so-print-table-body');
 
             tbody.innerHTML = dbData.produk.map((p, i) => `
-                <tr>
-                    <td style="text-align: center;">${i + 1}</td>
-                    <td>${p.id}</td>
-                    <td><b>${p.nama}</b></td>
-                    <td>${p.kategori}</td>
-                    <td style="text-align: center;">${p.stok} ${p.satuan}</td>
-                    <td></td>
-                    <td></td>
+                <tr style="border-bottom: 1px solid #cbd5e1;">
+                    <td style="text-align: center; padding: 6px;">${i + 1}</td>
+                    <td style="padding: 6px;">${p.id}</td>
+                    <td style="padding: 6px;"><b>${p.nama}</b></td>
+                    <td style="padding: 6px;">${p.kategori}</td>
+                    <td style="text-align: center; padding: 6px;">${p.stok} ${p.satuan}</td>
+                    <td style="padding: 6px;"></td>
+                    <td style="padding: 6px;"></td>
                 </tr>
             `).join('');
 
-            window.print();
+            const area = document.getElementById('stock-opname-print-area');
+            area.classList.remove('hidden');
+            
+            setTimeout(() => {
+                window.print();
+                area.classList.add('hidden');
+            }, 300);
         }
 
-        // 6. MANAGEMENT MODAL LOGIC
         function openManagementModal() { document.getElementById('management-modal').classList.remove('hidden'); }
         function closeManagementModal() { document.getElementById('management-modal').classList.add('hidden'); }
 
@@ -944,32 +944,42 @@
             `).join('');
         }
 
+        // RENDER LAPORAN DENGAN PENANDA WARNA BADGE HARGA MANUAL
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
             const now = new Date();
 
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = dbData.transaksi.slice().reverse().map(t => {
                 const subtotal = Number(t['Subtotal']) || 0;
                 const tDate = new Date(t['Timestamp']);
+                const isManual = t.IsManual;
                 totalOmset += subtotal;
 
                 if (tDate.toDateString() === now.toDateString()) omsetHarian += subtotal;
                 if (tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear()) omsetBulanan += subtotal;
 
                 return `
-                    <tr class="hover:bg-[#0F172A]">
+                    <tr class="hover:bg-[#0F172A] ${isManual ? 'bg-[#F59E0B]/10' : ''}">
                         <td class="p-2.5 text-slate-400">${tDate.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 font-mono text-white">${t['Order ID']}</td>
+                        <td class="p-2.5">
+                            ${isManual 
+                                ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/40"><i class="fa-solid fa-pen-to-square mr-1"></i>EDIT MANUAL</span>' 
+                                : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700 text-slate-300">REGULER</span>'}
+                        </td>
                         <td class="p-2.5 font-bold text-white">${t['Nama Customer'] || 'Umum'}</td>
                         <td class="p-2.5 text-[#06B6D4]">${t['Jenis Penjualan']}</td>
                         <td class="p-2.5 text-slate-200">${t['Nama Barang'] || '-'}</td>
                         <td class="p-2.5 font-mono">${t['Qty'] || 1}</td>
+                        <td class="p-2.5 font-mono font-bold ${isManual ? 'text-[#F59E0B]' : 'text-slate-300'}">
+                            Rp ${Number(t['Harga Satuan']).toLocaleString('id-ID')}
+                        </td>
                         <td class="p-2.5 font-mono font-bold text-[#10B981]">Rp ${subtotal.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 text-center">
                             <button onclick="reprintInvoice('${t['Order ID']}')" class="bg-[#334155] hover:bg-[#475569] text-white px-2 py-1 rounded text-[10px]">
@@ -1008,12 +1018,70 @@
 
         function closeInvoiceModal() { document.getElementById('invoice-modal').classList.add('hidden'); }
 
+        // EXPORT EXCEL DENGAN PERHITUNGAN LABA RUGI & TOTAL
         function exportToExcel() {
-            if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data.');
-            const worksheet = XLSX.utils.json_to_sheet(dbData.transaksi);
+            if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data transaksi.');
+
+            let totalOmset = 0;
+            let totalModal = 0;
+            let totalLabaKotor = 0;
+
+            const reportRows = dbData.transaksi.map(t => {
+                const qty = Number(t['Qty']) || 1;
+                const hargaDeal = Number(t['Harga Satuan']) || 0;
+                const hargaModalSatuan = Number(t['HargaModal']) || 0;
+
+                const subtotalOmset = Number(t['Subtotal']) || (qty * hargaDeal);
+                const subtotalModal = qty * hargaModalSatuan;
+                const labaKotor = subtotalOmset - subtotalModal;
+                const marginPct = subtotalModal > 0 ? ((labaKotor / subtotalModal) * 100).toFixed(2) + '%' : '0%';
+
+                totalOmset += subtotalOmset;
+                totalModal += subtotalModal;
+                totalLabaKotor += labaKotor;
+
+                return {
+                    'Waktu Transaksi': new Date(t['Timestamp']).toLocaleString('id-ID'),
+                    'Order ID': t['Order ID'],
+                    'Tipe Harga': t.IsManual ? 'Edit Manual' : 'Reguler',
+                    'Customer': t['Nama Customer'] || 'Umum',
+                    'Jenis Penjualan': t['Jenis Penjualan'],
+                    'Nama Barang': t['Nama Barang'] || '-',
+                    'Qty': qty,
+                    'Harga Modal Satuan (Rp)': hargaModalSatuan,
+                    'Harga Jual Satuan (Rp)': hargaDeal,
+                    'Total Modal / HPP (Rp)': subtotalModal,
+                    'Total Omset (Rp)': subtotalOmset,
+                    'Laba Kotor (Rp)': labaKotor,
+                    'Margin (%)': marginPct,
+                    'Catatan': t['Catatan'] || ''
+                };
+            });
+
+            // Tambahkan baris Total Laba Rugi di bagian bawah
+            const avgMargin = totalModal > 0 ? ((totalLabaKotor / totalModal) * 100).toFixed(2) + '%' : '0%';
+            reportRows.push({}); // Baris Kosong
+            reportRows.push({
+                'Waktu Transaksi': 'TOTAL / REKAP LABA RUGI',
+                'Order ID': '-',
+                'Tipe Harga': '-',
+                'Customer': '-',
+                'Jenis Penjualan': '-',
+                'Nama Barang': '-',
+                'Qty': '-',
+                'Harga Modal Satuan (Rp)': '-',
+                'Harga Jual Satuan (Rp)': '-',
+                'Total Modal / HPP (Rp)': totalModal,
+                'Total Omset (Rp)': totalOmset,
+                'Laba Kotor (Rp)': totalLabaKotor,
+                'Margin (%)': avgMargin,
+                'Catatan': 'Ringkasan Akhir Laba Rugi'
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(reportRows);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Master");
-            XLSX.writeFile(workbook, `Laporan_POS_BERKAH_${new Date().toISOString().split('T')[0]}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Laba Rugi Master");
+            XLSX.writeFile(workbook, `Laporan_Laba_Rugi_POS_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
 
         window.addEventListener('keydown', (e) => {
