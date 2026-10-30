@@ -88,17 +88,15 @@
         <!-- SISI KIRI: PEMANGGILAN BARANG (SEARCH), KATALOG KATEGORI, & GRID KATALOG -->
         <div class="flex-1 flex flex-col space-y-3 overflow-hidden">
             
-            <!-- SEARCH TAB UNTUK MEMANGGIL BARANG REAL-TIME & DROPDOWN RESULT -->
+            <!-- SEARCH TAB UNTUK MEMANGGIL & MEMFILTER BARANG REAL-TIME -->
             <div class="relative z-30">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="pos-search" oninput="handleSearchInput()" placeholder="Panggil / Cari barang berdasarkan nama atau kode (Tekan F3)..." class="w-full bg-[#1E293B] text-sm text-white pl-10 pr-10 py-2.5 border border-[#334155] rounded-lg focus:outline-none focus:border-[#06B6D4] shadow-lg">
+                    <input type="text" id="pos-search" oninput="handleSearchInput()" placeholder="Ketik nama atau ID barang untuk memfilter (Tekan F3)..." class="w-full bg-[#1E293B] text-sm text-white pl-10 pr-10 py-2.5 border border-[#334155] rounded-lg focus:outline-none focus:border-[#06B6D4] shadow-lg">
                     <button onclick="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-                <!-- LIVE DROPDOWN RESULT SEARCH -->
-                <div id="search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-[#1E293B] border border-[#334155] rounded-lg shadow-2xl max-h-60 overflow-y-auto divide-y divide-[#334155] z-50"></div>
             </div>
 
             <!-- FILTER KATEGORI PRODUK -->
@@ -128,7 +126,7 @@
                 <div id="empty-cart-msg" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
                     <i class="fa-solid fa-cart-flatbed text-3xl mb-2 text-slate-600"></i>
                     <h4 class="text-sm font-bold text-slate-400">Keranjang Kosong</h4>
-                    <p class="text-xs">Cari barang di atas atau klik katalog untuk menambahkan</p>
+                    <p class="text-xs">Ketik pencarian di atas atau klik katalog untuk menambahkan</p>
                 </div>
             </div>
 
@@ -156,12 +154,15 @@
                 </div>
             </div>
 
-            <!-- TOMBOL AKSI UTAMA -->
-            <div class="p-2 bg-[#0F172A] border-t border-[#334155] grid grid-cols-3 gap-2">
-                <button onclick="clearCart()" class="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-2.5 rounded text-xs flex flex-col items-center justify-center transition">
+            <!-- TOMBOL AKSI UTAMA DENGAN DUA TOMBOL TERPISAH (BAYAR & CETAK RESI) -->
+            <div class="p-2 bg-[#0F172A] border-t border-[#334155] grid grid-cols-12 gap-2">
+                <button onclick="clearCart()" class="col-span-3 bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-2.5 rounded text-xs flex flex-col items-center justify-center transition">
                     <i class="fa-solid fa-trash-can mb-0.5"></i> Clear
                 </button>
-                <button onclick="processCheckout()" class="col-span-2 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-black py-2.5 rounded text-sm flex items-center justify-center gap-2 transition shadow-lg">
+                <button onclick="openLastReceipt()" class="col-span-4 bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold py-2.5 rounded text-xs flex items-center justify-center gap-1 transition">
+                    <i class="fa-solid fa-receipt"></i> CETAK RESI
+                </button>
+                <button onclick="processCheckout()" class="col-span-5 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-black py-2.5 rounded text-xs flex items-center justify-center gap-1 transition shadow-lg">
                     <i class="fa-solid fa-money-bill-wave"></i> BAYAR (F10)
                 </button>
             </div>
@@ -169,6 +170,28 @@
         </div>
 
     </main>
+
+    <!-- NOTIFIKASI PEMBAYARAN BERHASIL (POPUP MODAL) -->
+    <div id="success-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#1E293B] border border-[#10B981] rounded-xl p-6 w-full max-w-sm text-center shadow-2xl space-y-4">
+            <div class="w-16 h-16 bg-[#10B981]/20 text-[#10B981] border-2 border-[#10B981] rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-white">Pembayaran Berhasil!</h3>
+                <p class="text-xs text-slate-400 mt-1">Transaksi telah berhasil disimpan dan stok otomatis diperbarui.</p>
+                <div class="mt-3 p-2 bg-[#0F172A] rounded border border-[#334155] text-xs font-mono text-[#06B6D4]" id="success-order-info"></div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="closeSuccessModalAndPrint()" class="flex-1 bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold py-2 rounded text-xs flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-print"></i> Cetak Struk
+                </button>
+                <button onclick="closeSuccessModal()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold py-2 rounded text-xs">
+                    Selesai
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ================= MODAL MANAGEMENT (DARI TOMBOL TITIK TIGA) ================= -->
     <div id="management-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 no-print">
@@ -385,6 +408,7 @@
         let dbData = { produk: [], transaksi: [], priceList: [] };
         let cart = [];
         let selectedCategory = 'All';
+        let lastTransactionData = null;
 
         async function fetchAllData() {
             try {
@@ -404,51 +428,14 @@
             }
         }
 
-        // 1. PANGGIL BARANG REAL-TIME DARI SEARCH TAB
+        // 1. FILTER & SEMBUNYIKAN BARANG SAAT MENGETIK NAMA BARANG
         function handleSearchInput() {
             const query = document.getElementById('pos-search').value.toLowerCase().trim();
-            const dropdown = document.getElementById('search-dropdown');
-
-            if (!query) {
-                dropdown.classList.add('hidden');
-                renderPOSGrid();
-                return;
-            }
-
-            const matches = dbData.produk.filter(p => 
-                p.nama.toLowerCase().includes(query) || p.id.toLowerCase().includes(query)
-            );
-
-            if (matches.length > 0) {
-                dropdown.innerHTML = matches.map(p => `
-                    <div onclick="selectProductFromSearch('${p.id}')" class="p-2.5 hover:bg-[#334155] cursor-pointer flex justify-between items-center transition">
-                        <div>
-                            <span class="font-bold text-white text-xs block">${p.nama}</span>
-                            <span class="text-[10px] text-slate-400">ID: ${p.id} | Kategori: ${p.kategori}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[#06B6D4] font-mono font-bold text-xs block">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
-                            <span class="text-[10px] text-slate-400">Stok: ${p.stok} ${p.satuan}</span>
-                        </div>
-                    </div>
-                `).join('');
-                dropdown.classList.remove('hidden');
-            } else {
-                dropdown.innerHTML = `<div class="p-3 text-center text-xs text-slate-400">Barang tidak ditemukan</div>`;
-                dropdown.classList.remove('hidden');
-            }
-
             renderPOSGrid(query);
-        }
-
-        function selectProductFromSearch(id) {
-            addToCart(id);
-            clearSearch();
         }
 
         function clearSearch() {
             document.getElementById('pos-search').value = '';
-            document.getElementById('search-dropdown').classList.add('hidden');
             renderPOSGrid();
         }
 
@@ -466,10 +453,10 @@
         function filterCategory(cat) {
             selectedCategory = cat;
             renderCategoryBar();
-            renderPOSGrid();
+            renderPOSGrid(document.getElementById('pos-search').value.toLowerCase().trim());
         }
 
-        // 3. RENDER KATALOG GRID
+        // 3. RENDER KATALOG GRID DENGAN PENYEMBUNYIAN ITEM
         function renderPOSGrid(searchQuery = '') {
             let filtered = dbData.produk;
 
@@ -478,12 +465,15 @@
             }
 
             if (searchQuery) {
-                filtered = filtered.filter(p => p.nama.toLowerCase().includes(searchQuery));
+                filtered = filtered.filter(p => 
+                    p.nama.toLowerCase().includes(searchQuery) || 
+                    p.id.toLowerCase().includes(searchQuery)
+                );
             }
 
             const grid = document.getElementById('pos-grid');
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-8 text-xs">Tidak ada produk</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-8 text-xs"><i class="fa-solid fa-box-open text-2xl mb-1 block"></i>Barang tidak ditemukan / disembunyikan</div>`;
                 return;
             }
 
@@ -491,19 +481,26 @@
                 <div onclick="addToCart('${p.id}')" class="pos-card p-2.5 rounded-lg cursor-pointer hover:border-[#06B6D4] flex flex-col justify-between h-20 transition active:scale-95">
                     <span class="font-bold text-white text-xs line-clamp-1">${p.nama}</span>
                     <div class="flex justify-between items-end text-[10px] text-slate-400">
-                        <span>Stok: ${p.stok}</span>
+                        <span class="${p.stok <= 0 ? 'text-red-400 font-bold' : ''}">Stok: ${p.stok}</span>
                         <span class="text-[#06B6D4] font-mono font-bold text-xs">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // 4. LOGIKA PERHITUNGAN KERANJANG / TABEL KASIR
+        // 4. LOGIKA PERHITUNGAN KERANJANG
         function addToCart(id) {
             const p = dbData.produk.find(x => x.id == id);
             if (!p) return;
+            if (p.stok <= 0) return alert('Stok barang ini telah habis!');
+
             const exist = cart.find(x => x.id == id);
-            if (exist) { exist.qty += 1; } else { cart.push({ ...p, qty: 1 }); }
+            if (exist) {
+                if (exist.qty + 1 > p.stok) return alert('Jumlah melebihi stok yang tersedia!');
+                exist.qty += 1;
+            } else {
+                cart.push({ ...p, qty: 1 });
+            }
             renderCart();
         }
 
@@ -514,7 +511,7 @@
                     <div id="empty-cart-msg" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
                         <i class="fa-solid fa-cart-flatbed text-3xl mb-2 text-slate-600"></i>
                         <h4 class="text-sm font-bold text-slate-400">Keranjang Kosong</h4>
-                        <p class="text-xs">Cari barang di atas atau klik katalog untuk menambahkan</p>
+                        <p class="text-xs">Ketik pencarian di atas atau klik katalog untuk menambahkan</p>
                     </div>`;
                 document.getElementById('cart-total').innerText = 'Rp 0';
                 document.getElementById('cart-item-count').innerText = '0 Items';
@@ -549,6 +546,10 @@
         function updateCartQty(id, delta) {
             const item = cart.find(x => x.id == id);
             if (!item) return;
+            const p = dbData.produk.find(x => x.id == id);
+            
+            if (delta > 0 && item.qty + 1 > p.stok) return alert('Jumlah melebihi stok tersedia!');
+            
             item.qty += delta;
             if (item.qty <= 0) cart = cart.filter(x => x.id != id);
             renderCart();
@@ -556,7 +557,7 @@
 
         function clearCart() { cart = []; renderCart(); }
 
-        // 5. PROCESS CHECKOUT TRANSAKSI
+        // 5. PROSES CHECKOUT TRANSAKSI & NOTIFIKASI BERHASIL
         async function processCheckout() {
             if (cart.length === 0) return alert('Keranjang belanja masih kosong!');
             const jenis = document.getElementById('jenis-penjualan').value;
@@ -566,6 +567,8 @@
             const orderId = 'UB-' + Date.now().toString().slice(-6);
             const totalHarga = cart.reduce((a, b) => a + (b.harga * b.qty), 0);
 
+            const checkoutItems = [...cart];
+
             const payload = {
                 action: 'checkout',
                 orderId: orderId,
@@ -573,15 +576,53 @@
                 catatan: catatan,
                 jenisPenjualan: jenis,
                 totalHarga: totalHarga,
-                items: cart
+                items: checkoutItems
             };
 
+            // PERBARUI STOK LOKAL SECARA INSTAN & PREPARE LAST TRANSAKSI
+            checkoutItems.forEach(ci => {
+                const prod = dbData.produk.find(p => p.id == ci.id);
+                if (prod) prod.stok = Math.max(0, prod.stok - ci.qty);
+            });
+
+            lastTransactionData = {
+                orderId: orderId,
+                customer: customer,
+                jenis: jenis,
+                items: checkoutItems,
+                total: totalHarga
+            };
+
+            // TAMPILKAN NOTIFIKASI SUKSES
+            document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')}`;
+            document.getElementById('success-modal').classList.remove('hidden');
+
+            // AUTO KOSONGKAN KERANJANG
+            clearCart();
+            renderPOSGrid();
+            renderStockTable();
+
+            // KIRIM DATA KE BACKEND GOOGLE APPS SCRIPT
             try {
-                showInvoice(orderId, customer, jenis, cart, totalHarga);
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                clearCart();
                 fetchAllData();
-            } catch (err) { alert('Gagal menyimpan transaksi.'); }
+            } catch (err) { console.error('Error Sync:', err); }
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        function closeSuccessModalAndPrint() {
+            closeSuccessModal();
+            if (lastTransactionData) {
+                showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total);
+            }
+        }
+
+        function openLastReceipt() {
+            if (!lastTransactionData) return alert('Belum ada transaksi terakhir untuk dicetak!');
+            showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total);
         }
 
         // 6. MANAGEMENT MODAL LOGIC (TOMBOL TITIK TIGA)
@@ -645,7 +686,7 @@
                         <td class="p-2.5 font-bold text-[#10B981]">${marginPct}</td>
                         <td class="p-2.5 text-center">
                             <button onclick="quickUpdatePrice('${p.id}', ${modal}, ${jual})" class="bg-[#334155] hover:bg-[#475569] text-white px-2 py-1 rounded text-[10px]">
-                                <i class="fa-solid fa-[#06B6D4] fa-pen"></i> Edit Harga
+                                <i class="fa-solid fa-pen text-[#06B6D4]"></i> Edit Harga
                             </button>
                         </td>
                     </tr>
@@ -796,4 +837,4 @@
         fetchAllData();
     </script>
 </body>
-</html
+</html>
