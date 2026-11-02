@@ -39,14 +39,12 @@
             font-weight: 700;
         }
 
-        /* MENCEGAH ZOOM-IN OTOMATIS DI IOS SAFARI SAAT INPUT FOKUS */
         @media screen and (max-width: 768px) {
             input, select, textarea {
                 font-size: 16px !important;
             }
         }
 
-        /* FORMAT CETAK KERTAS A4 REVISI */
         @media print {
             body * { visibility: hidden; }
             #invoice-print-area, #invoice-print-area *, #stock-opname-print-area, #stock-opname-print-area * {
@@ -136,10 +134,9 @@
             </div>
         </div>
 
-        <!-- SISI KANAN: KERANJANG BELANJA (DRAWER RESPONSIVE DI MOBILE) -->
+        <!-- SISI KANAN: KERANJANG BELANJA -->
         <div id="cart-container" class="fixed inset-0 z-50 lg:z-auto lg:static lg:w-[380px] xl:w-[420px] flex flex-col bg-[#1E293B] border-t lg:border border-[#334155] lg:rounded-lg overflow-hidden shrink-0 hidden lg:flex transition-all duration-300">
             
-            <!-- HEADER KERANJANG DI MOBILE -->
             <div class="bg-[#0F172A] px-3 py-2.5 border-b border-[#334155] flex justify-between items-center lg:hidden">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-200">
                     <i class="fa-solid fa-cart-shopping text-[#06B6D4]"></i> KERANJANG BELANJA
@@ -201,7 +198,7 @@
 
     </main>
 
-    <!-- MODAL PILIHAN STRATA HARGA (ECER VS GROSIR) -->
+    <!-- MODAL PILIHAN STRATA HARGA -->
     <div id="price-choice-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-4 no-print">
         <div class="bg-[#1E293B] border border-[#06B6D4] rounded-xl p-5 md:p-6 w-full max-w-md text-center shadow-2xl space-y-4">
             <div class="w-12 h-12 md:w-14 md:h-14 bg-[#06B6D4]/20 text-[#06B6D4] border-2 border-[#06B6D4] rounded-full flex items-center justify-center mx-auto text-xl md:text-2xl">
@@ -209,14 +206,14 @@
             </div>
             <div>
                 <h3 class="text-base md:text-lg font-black text-white">Pilih Strata Harga Penjualan</h3>
-                <p class="text-xs text-slate-300 mt-1">Silakan pilih skema harga yang akan diterapkan untuk transaksi ini:</p>
+                <p class="text-xs text-slate-300 mt-1">Pilih skema harga jual & modal untuk transaksi ini:</p>
             </div>
 
             <div class="grid grid-cols-1 gap-3 pt-2">
                 <button onclick="selectPriceTier('ecer')" class="w-full bg-[#334155] hover:bg-[#06B6D4] hover:text-slate-950 border border-[#06B6D4] text-white p-3.5 rounded-lg text-left transition flex items-center justify-between group active:scale-95">
                     <div>
                         <div class="font-bold text-sm group-hover:text-slate-950">(1) Jual Harga Ecer</div>
-                        <div class="text-[11px] text-slate-400 group-hover:text-slate-800">Rumus: Harga Modal + 3% Margin</div>
+                        <div class="text-[11px] text-slate-400 group-hover:text-slate-800">Harga Jual Normal | Modal = Asli + 3%</div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-sm"></i>
                 </button>
@@ -224,7 +221,7 @@
                 <button onclick="selectPriceTier('grosir')" class="w-full bg-[#334155] hover:bg-[#10B981] hover:text-slate-950 border border-[#10B981] text-white p-3.5 rounded-lg text-left transition flex items-center justify-between group active:scale-95">
                     <div>
                         <div class="font-bold text-sm group-hover:text-slate-950">(2) Jual Harga Grosir</div>
-                        <div class="text-[11px] text-slate-400 group-hover:text-slate-800">Rumus: Harga Normal / Standar</div>
+                        <div class="text-[11px] text-slate-400 group-hover:text-slate-800">Harga Jual Normal | Modal = Modal Asli</div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-sm"></i>
                 </button>
@@ -236,7 +233,7 @@
         </div>
     </div>
 
-    <!-- REVIEW & VERIFIKASI MODAL MOBILE OPTIMIZED -->
+    <!-- REVIEW & VERIFIKASI MODAL -->
     <div id="payment-review-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-3 no-print">
         <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex justify-between items-center">
@@ -254,8 +251,8 @@
                             <tr>
                                 <th class="p-2">Nama Barang</th>
                                 <th class="p-2 text-center">Qty</th>
-                                <th class="p-2">Harga Strata</th>
-                                <th class="p-2">Harga Final</th>
+                                <th class="p-2">Strata</th>
+                                <th class="p-2">Harga Jual</th>
                                 <th class="p-2 text-right">Subtotal</th>
                             </tr>
                         </thead>
@@ -320,7 +317,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL MANAGEMENT MOBILE RESPONSIVE ================= -->
+    <!-- MANAGEMENT MODAL -->
     <div id="management-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-3 no-print">
         <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-5xl h-[92vh] md:h-[88vh] flex flex-col overflow-hidden shadow-2xl">
             
@@ -337,7 +334,7 @@
                     <i class="fa-solid fa-box-open"></i> Produk Masuk
                 </button>
                 <button onclick="switchMgtTab('pricelist')" id="mgt-btn-pricelist" class="px-3 py-3 hover:text-white flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-tags"></i> Price List (+3%)
+                    <i class="fa-solid fa-tags"></i> Price List
                 </button>
                 <button onclick="switchMgtTab('stock')" id="mgt-btn-stock" class="px-3 py-3 hover:text-white flex items-center gap-1.5 shrink-0">
                     <i class="fa-solid fa-cubes"></i> Stok Barang
@@ -363,11 +360,11 @@
                                 <input type="text" id="mgt-kategori-produk" placeholder="Sembako / Sayuran" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Harga Modal (Rp)</label>
+                                <label class="block text-slate-400 mb-1">Harga Modal Asli (Rp)</label>
                                 <input type="number" id="mgt-modal-produk" placeholder="50000" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Harga Jual Normal (Grosir)</label>
+                                <label class="block text-slate-400 mb-1">Harga Jual (Rp)</label>
                                 <input type="number" id="mgt-jual-produk" placeholder="62000" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                             </div>
                             <div>
@@ -407,10 +404,10 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: PRICE LIST & MARGIN -->
+                <!-- TAB 2: PRICE LIST -->
                 <div id="mgt-tab-pricelist" class="mgt-content hidden space-y-3">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
-                        <h4 class="text-xs font-bold text-[#06B6D4] uppercase">PRICE LIST & STRATA HARGA (ECER VS GROSIR)</h4>
+                        <h4 class="text-xs font-bold text-[#06B6D4] uppercase">PRICE LIST & DUAL STRATA MODAL</h4>
                         <input type="text" id="mgt-price-search" oninput="renderPriceListTable()" placeholder="Cari barang..." class="w-full sm:w-auto bg-[#1E293B] text-xs text-white border border-[#334155] px-3 py-1.5 rounded">
                     </div>
                     <div class="pos-card rounded-lg overflow-x-auto">
@@ -418,9 +415,9 @@
                             <thead class="bg-[#1E293B] text-slate-400 border-b border-[#334155]">
                                 <tr>
                                     <th class="p-2.5">Nama Barang</th>
-                                    <th class="p-2.5">Harga Modal</th>
-                                    <th class="p-2.5">Harga Eceran (Modal+3%)</th>
-                                    <th class="p-2.5">Harga Grosir (Normal)</th>
+                                    <th class="p-2.5">Harga Modal Asli</th>
+                                    <th class="p-2.5">Modal Ecer (+3%)</th>
+                                    <th class="p-2.5">Harga Jual</th>
                                     <th class="p-2.5">Profit Grosir</th>
                                     <th class="p-2.5 text-center">Aksi Edit</th>
                                 </tr>
@@ -455,7 +452,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: LAPORAN TRANSAKSI -->
+                <!-- TAB 4: LAPORAN -->
                 <div id="mgt-tab-laporan" class="mgt-content hidden space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#06B6D4]">
@@ -503,7 +500,7 @@
         </div>
     </div>
 
-    <!-- AREA STRUK / NOTA KERTAS A4 PRINT -->
+    <!-- AREA STRUK A4 -->
     <div id="invoice-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-4">
         <div class="bg-[#1E293B] border border-[#334155] rounded-lg w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden shadow-2xl">
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex justify-between items-center">
@@ -512,9 +509,7 @@
             </div>
             
             <div class="p-3 md:p-4 bg-slate-800 overflow-y-auto flex-1 flex justify-center">
-                <!-- ELEMEN KERTAS A4 -->
                 <div id="invoice-print-area" class="bg-white text-black p-4 md:p-8 rounded shadow-lg border w-full max-w-[210mm] text-slate-900 font-sans">
-                    <!-- KOP SURAT UD BERKAH -->
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
                         <div>
                             <h1 class="font-black text-xl md:text-2xl tracking-wide text-slate-900">UD BERKAH</h1>
@@ -528,7 +523,6 @@
                         </div>
                     </div>
 
-                    <!-- INFORMASI PELANGGAN -->
                     <div class="grid grid-cols-2 gap-2 md:gap-4 mb-4 text-xs bg-slate-50 p-2.5 rounded border border-slate-200">
                         <div>
                             <span class="text-slate-500 block font-semibold text-[10px] md:text-xs">PELANGGAN:</span>
@@ -540,7 +534,6 @@
                         </div>
                     </div>
 
-                    <!-- TABEL DAFTAR BARANG A4 -->
                     <table class="w-full border-collapse border border-slate-300 text-xs mb-6">
                         <thead>
                             <tr class="bg-slate-100 text-slate-800">
@@ -560,7 +553,6 @@
                         </tfoot>
                     </table>
 
-                    <!-- TANDA TANGAN -->
                     <div class="grid grid-cols-2 gap-4 text-xs pt-4 border-t border-dashed border-slate-300">
                         <div class="text-center">
                             <p class="mb-10 font-semibold">Tanda Tangan Penerima,</p>
@@ -587,7 +579,7 @@
         </div>
     </div>
 
-    <!-- AREA CETAK STOCK OPNAME A4 -->
+    <!-- AREA CETAK STOCK OPNAME -->
     <div id="stock-opname-print-area" class="hidden">
         <div style="text-align: center; margin-bottom: 15px;">
             <h2 style="font-size: 16px; font-weight: bold; margin: 0;">LEMBAR STOCK OPNAME FISIK - UD BERKAH</h2>
@@ -609,17 +601,16 @@
         </table>
     </div>
 
-    <!-- SCRIPT LOGIKA POS RESPONSIVE & STRATA HARGA (ECER & GROSIR) -->
+    <!-- SCRIPT POS FRONTEND -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyskw2RIV72Oc9sH1DBo0k5sEQZ42TtzxgAEnQIY399ONgX37OAmhk3Qu4Ii4vdTQ8uHg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx4rrDr1YOTqrX0-mujhIvablK1mGwJ-72esrKuxQ614gDHGE58A7cpL3QXQqxiXTf4Hg/exec';
 
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
         let selectedCategory = 'All';
         let lastTransactionData = null;
-        let selectedPriceTierMode = 'grosir'; // default 'ecer' atau 'grosir'
+        let selectedPriceTierMode = 'grosir';
 
-        // FUNGSI FORMAT TANGGAL DD/MM/YYYY KETAT
         function formatDateOnly(dateVal) {
             if (!dateVal || dateVal === "undefined" || dateVal === "null") {
                 const d = new Date();
@@ -628,9 +619,7 @@
                 const year = d.getFullYear();
                 return `${day}/${month}/${year}`;
             }
-
             const strVal = String(dateVal).trim();
-
             const dObj = new Date(strVal);
             if (!isNaN(dObj.getTime())) {
                 const day = String(dObj.getDate()).padStart(2, '0');
@@ -638,7 +627,6 @@
                 const year = dObj.getFullYear();
                 return `${day}/${month}/${year}`;
             }
-
             if (strVal.includes('/')) {
                 const parts = strVal.split(' ')[0].split('/');
                 if (parts.length === 3) {
@@ -648,11 +636,9 @@
                     return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
                 }
             }
-
             return strVal;
         }
 
-        // TOGGLE DRAWER KERANJANG PADA TAMPILAN MOBILE
         function toggleMobileCart() {
             const cartContainer = document.getElementById('cart-container');
             if (cartContainer.classList.contains('hidden')) {
@@ -709,18 +695,15 @@
 
         function renderPOSGrid(searchQuery = '') {
             let filtered = dbData.produk;
-
             if (selectedCategory !== 'All') {
                 filtered = filtered.filter(p => (p.kategori || 'Umum') === selectedCategory);
             }
-
             if (searchQuery) {
                 filtered = filtered.filter(p => 
                     p.nama.toLowerCase().includes(searchQuery) || 
                     String(p.id).toLowerCase().includes(searchQuery)
                 );
             }
-
             const grid = document.getElementById('pos-grid');
             if (filtered.length === 0) {
                 grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-8 text-xs"><i class="fa-solid fa-box-open text-2xl mb-1 block"></i>Barang tidak ditemukan</div>`;
@@ -728,22 +711,13 @@
             }
 
             grid.innerHTML = filtered.map(p => {
-                const hargaModal = Number(p.hargaModal) || 0;
-                const hargaEceran = Math.round(hargaModal + (hargaModal * 0.03));
-                const hargaGrosir = Number(p.harga) || 0;
-
+                const hargaJual = Number(p.harga) || 0;
                 return `
-                    <div onclick="addToCart('${p.id}')" class="pos-card p-2.5 rounded-lg cursor-pointer hover:border-[#06B6D4] flex flex-col justify-between h-24 md:h-26 transition active:scale-95 shadow">
+                    <div onclick="addToCart('${p.id}')" class="pos-card p-2.5 rounded-lg cursor-pointer hover:border-[#06B6D4] flex flex-col justify-between h-20 md:h-22 transition active:scale-95 shadow">
                         <span class="font-bold text-white text-xs line-clamp-2 leading-tight">${p.nama}</span>
-                        <div class="flex flex-col text-[10px] mt-1 space-y-0.5">
-                            <div class="flex justify-between text-slate-400">
-                                <span>Ecer (+3%):</span>
-                                <span class="font-mono text-amber-400 font-semibold">Rp ${hargaEceran.toLocaleString('id-ID')}</span>
-                            </div>
-                            <div class="flex justify-between items-end">
-                                <span class="${p.stok <= 0 ? 'text-red-400 font-bold' : 'text-slate-400'}">Stok: ${p.stok}</span>
-                                <span class="text-[#06B6D4] font-mono font-bold text-xs">Rp ${hargaGrosir.toLocaleString('id-ID')}</span>
-                            </div>
+                        <div class="flex justify-between items-end text-[10px] text-slate-400 mt-1">
+                            <span class="${p.stok <= 0 ? 'text-red-400 font-bold' : ''}">Stok: ${p.stok}</span>
+                            <span class="text-[#06B6D4] font-mono font-bold text-xs">Rp ${hargaJual.toLocaleString('id-ID')}</span>
                         </div>
                     </div>
                 `;
@@ -760,17 +734,14 @@
                 if (exist.qty + 1 > p.stok) return alert('Jumlah melebihi stok yang tersedia!');
                 exist.qty += 1;
             } else {
-                const hargaModal = Number(p.hargaModal) || 0;
-                const hargaEceran = Math.round(hargaModal + (hargaModal * 0.03));
-                const hargaGrosir = Number(p.harga) || 0;
+                const hargaModalAsli = Number(p.hargaModal) || 0;
+                const hargaJualStandar = Number(p.harga) || 0;
 
                 cart.push({
                     ...p,
-                    hargaModal: hargaModal,
-                    hargaEceran: hargaEceran,
-                    hargaGrosir: hargaGrosir,
-                    hargaNormal: hargaGrosir,
-                    harga: hargaGrosir, // Default sementara
+                    hargaModal: hargaModalAsli,
+                    hargaNormal: hargaJualStandar,
+                    harga: hargaJualStandar,
                     qty: 1
                 });
             }
@@ -834,7 +805,6 @@
 
         function clearCart() { cart = []; renderCart(); }
 
-        // MENAMPILKAN MODAL PILIHAN STRATA HARGA
         function openPriceChoiceModal() {
             if (cart.length === 0) return alert('Keranjang belanja masih kosong!');
             document.getElementById('price-choice-modal').classList.remove('hidden');
@@ -844,20 +814,14 @@
             document.getElementById('price-choice-modal').classList.add('hidden');
         }
 
-        // MEMILIH STRATA HARGA (ECER ATAU GROSIR)
         function selectPriceTier(tier) {
             selectedPriceTierMode = tier;
             closePriceChoiceModal();
 
-            // Terapkan harga sesuai strata yang dipilih ke keranjang
             cart.forEach(item => {
-                if (tier === 'ecer') {
-                    item.harga = item.hargaEceran;
-                    item.hargaStrataName = 'Harga Ecer';
-                } else {
-                    item.harga = item.hargaGrosir;
-                    item.hargaStrataName = 'Harga Grosir';
-                }
+                // Harga jual ecer dan grosir sama (menggunakan harga normal)
+                item.harga = item.hargaNormal;
+                item.hargaStrataName = tier === 'ecer' ? 'Jual Ecer' : 'Jual Grosir';
             });
 
             renderCart();
@@ -870,10 +834,7 @@
                 <tr class="hover:bg-[#0F172A]">
                     <td class="p-2 font-bold text-white">${item.nama}</td>
                     <td class="p-2 text-center font-mono">${item.qty}</td>
-                    <td class="p-2 font-mono text-slate-400 text-[11px]">
-                        ${item.hargaStrataName}<br>
-                        <span class="text-[#06B6D4]">Rp ${Number(item.harga).toLocaleString('id-ID')}</span>
-                    </td>
+                    <td class="p-2 font-mono text-amber-400 text-[11px]">${item.hargaStrataName}</td>
                     <td class="p-2">
                         <input type="number" value="${item.harga}" onchange="updateCartItemManualPrice(${idx}, this.value)" class="w-24 bg-[#0F172A] border border-[#06B6D4] text-xs p-1.5 text-white rounded font-mono">
                     </td>
@@ -907,11 +868,11 @@
         function triggerVerification2Step() {
             closePaymentReviewModal();
             const total = cart.reduce((a, b) => a + (b.qty * b.harga), 0);
-            const strataText = selectedPriceTierMode === 'ecer' ? 'Jual Harga Ecer (Modal + 3%)' : 'Jual Harga Grosir (Harga Normal)';
+            const strataText = selectedPriceTierMode === 'ecer' ? 'Jual Harga Ecer (Modal Asli + 3%)' : 'Jual Harga Grosir (Modal Asli)';
 
             document.getElementById('verification-summary-text').innerHTML = `
                 <div>• Customer: <b>${document.getElementById('customer-name').value || 'Umum'}</b></div>
-                <div>• Skema Harga: <b class="text-amber-400">${strataText}</b></div>
+                <div>• Skema: <b class="text-amber-400">${strataText}</b></div>
                 <div>• Kategori: <b>${document.getElementById('jenis-penjualan').value}</b></div>
                 <div>• Total Item: <b>${cart.reduce((a,b)=>a+b.qty,0)} Barang</b></div>
                 <div>• Total Bayar: <b class="text-[#10B981]">Rp ${total.toLocaleString('id-ID')}</b></div>
@@ -935,7 +896,7 @@
 
             const orderId = 'UB-' + Date.now().toString().slice(-6);
             const totalHarga = cart.reduce((a, b) => a + (b.harga * b.qty), 0);
-            const isManualPriceUsed = cart.some(i => Number(i.harga) !== Number(selectedPriceTierMode === 'ecer' ? i.hargaEceran : i.hargaGrosir));
+            const isManualPriceUsed = cart.some(i => Number(i.harga) !== Number(i.hargaNormal));
 
             const checkoutItems = cart.map(i => ({
                 ...i,
@@ -967,8 +928,7 @@
                 total: totalHarga
             };
 
-            document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')}
-[${strataLabel}]`;
+            document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
             document.getElementById('success-modal').classList.remove('hidden');
 
             clearCart();
@@ -1001,7 +961,7 @@
             const tbody = document.getElementById('restock-table-body');
             const filtered = dbData.produk.filter(p => p.nama.toLowerCase().includes(keyword));
 
-            tbody.innerHTML = filtered.map((p, idx) => `
+            tbody.innerHTML = filtered.map(p => `
                 <tr class="hover:bg-[#0F172A]">
                     <td class="p-2 font-mono text-slate-400">${p.id}</td>
                     <td class="p-2 font-bold text-white">${p.nama}</td>
@@ -1100,19 +1060,19 @@
 
             tbody.innerHTML = filtered.map(p => {
                 const modal = Number(p.hargaModal) || 0;
-                const grosir = Number(p.harga) || 0;
-                const eceran = Math.round(modal + (modal * 0.03));
-                const profitGrosir = grosir - modal;
+                const jual = Number(p.harga) || 0;
+                const modalEcer = modal + (modal * 0.03);
+                const profitGrosir = jual - modal;
 
                 return `
                     <tr class="hover:bg-[#0F172A]">
                         <td class="p-2.5 font-bold text-white">${p.nama}</td>
                         <td class="p-2.5 font-mono text-slate-300">Rp ${modal.toLocaleString('id-ID')}</td>
-                        <td class="p-2.5 font-mono text-amber-400 font-bold">Rp ${eceran.toLocaleString('id-ID')}</td>
-                        <td class="p-2.5 font-mono text-[#06B6D4]">Rp ${grosir.toLocaleString('id-ID')}</td>
+                        <td class="p-2.5 font-mono text-amber-400 font-bold">Rp ${modalEcer.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td>
+                        <td class="p-2.5 font-mono text-[#06B6D4]">Rp ${jual.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 font-mono font-bold text-[#10B981]">Rp ${profitGrosir.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 text-center">
-                            <button onclick="quickUpdatePrice('${p.id}', ${modal}, ${grosir})" class="bg-[#334155] hover:bg-[#475569] text-white px-2 py-1 rounded text-[10px]">
+                            <button onclick="quickUpdatePrice('${p.id}', ${modal}, ${jual})" class="bg-[#334155] hover:bg-[#475569] text-white px-2 py-1 rounded text-[10px]">
                                 <i class="fa-solid fa-pen text-[#06B6D4]"></i> Edit
                             </button>
                         </td>
@@ -1124,7 +1084,7 @@
         async function quickUpdatePrice(id, currentModal, currentJual) {
             const newModal = prompt('Harga Modal Baru (Rp):', currentModal);
             if (newModal === null) return;
-            const newJual = prompt('Harga Jual Grosir Baru (Rp):', currentJual);
+            const newJual = prompt('Harga Jual Baru (Rp):', currentJual);
             if (newJual === null) return;
 
             const payload = { action: 'update_harga', idProduk: id, hargaModal: newModal, hargaJual: newJual };
@@ -1168,7 +1128,7 @@
                 const subtotal = Number(t['Sub Total']) || 0;
                 const formattedDate = formatDateOnly(t['Tanggal']);
                 const isManual = t['IsManual'] || false;
-                const strataStr = t['StrataHarga'] || (t['Jenis Penjualan'] && t['Jenis Penjualan'].includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir');
+                const strataStr = t['Jenis Penjualan'] && t['Jenis Penjualan'].includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
 
@@ -1260,7 +1220,7 @@
                 const subtotalModal = qty * hargaModal;
                 const profit = subtotalOmset - subtotalModal;
                 const isManual = t['IsManual'] || false;
-                const strataStr = t['StrataHarga'] || (t['Jenis Penjualan'] && t['Jenis Penjualan'].includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir');
+                const strataStr = t['Jenis Penjualan'] && t['Jenis Penjualan'].includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
 
                 totalQtyAll += qty;
                 totalModalAll += subtotalModal;
@@ -1275,11 +1235,11 @@
                     'Jenis Penjualan': t['Jenis Penjualan'] || 'Eceran',
                     'Nama Barang': t['Nama Barang'] || '-',
                     'Qty': qty,
-                    'Harga Modal': 'Rp ' + hargaModal.toLocaleString('id-ID'),
+                    'Harga Modal Laporan': 'Rp ' + hargaModal.toLocaleString('id-ID', {maximumFractionDigits: 0}),
                     'Harga Jual': 'Rp ' + hargaJual.toLocaleString('id-ID'),
-                    'Sub Total Modal': 'Rp ' + subtotalModal.toLocaleString('id-ID'),
+                    'Sub Total Modal': 'Rp ' + subtotalModal.toLocaleString('id-ID', {maximumFractionDigits: 0}),
                     'Sub Total Omset': 'Rp ' + subtotalOmset.toLocaleString('id-ID'),
-                    'Profit / Laba': 'Rp ' + profit.toLocaleString('id-ID')
+                    'Profit / Laba': 'Rp ' + profit.toLocaleString('id-ID', {maximumFractionDigits: 0})
                 };
             });
 
@@ -1291,11 +1251,11 @@
                 'Jenis Penjualan': '',
                 'Nama Barang': '',
                 'Qty': totalQtyAll,
-                'Harga Modal': '',
+                'Harga Modal Laporan': '',
                 'Harga Jual': '',
-                'Sub Total Modal': 'Rp ' + totalModalAll.toLocaleString('id-ID'),
+                'Sub Total Modal': 'Rp ' + totalModalAll.toLocaleString('id-ID', {maximumFractionDigits: 0}),
                 'Sub Total Omset': 'Rp ' + totalOmsetAll.toLocaleString('id-ID'),
-                'Profit / Laba': 'Rp ' + totalProfitAll.toLocaleString('id-ID')
+                'Profit / Laba': 'Rp ' + totalProfitAll.toLocaleString('id-ID', {maximumFractionDigits: 0})
             });
 
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
@@ -1307,7 +1267,7 @@
                 { wch: 18 },
                 { wch: 28 },
                 { wch: 10 },
-                { wch: 16 },
+                { wch: 20 },
                 { wch: 16 },
                 { wch: 18 },
                 { wch: 18 },
