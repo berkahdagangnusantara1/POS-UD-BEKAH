@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistem Kasir POS - UD BERKAH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sistem Kasir POS - UD BERKAH Mobile</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -14,27 +14,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
+        * {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #0F172A;
             color: #F8FAFC;
         }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #1E293B; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
         .pos-card { background-color: #1E293B; border: 1px solid #334155; }
         .pos-btn { background-color: #334155; color: #F8FAFC; transition: all 0.15s ease; }
         .pos-btn:hover { background-color: #475569; }
-        .pos-btn:active { transform: scale(0.98); }
+        .pos-btn:active { transform: scale(0.96); }
         .mgt-tab-active {
             border-bottom: 3px solid #06B6D4;
             color: #06B6D4 !important;
             font-weight: 700;
         }
 
-        /* FORMAT CETAK KERTAS A4 REVISI TOTAL */
+        /* MENCEGAH ZOOM-IN OTOMATIS DI IOS SAFARI SAAT INPUT FOKUS */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* FORMAT CETAK KERTAS A4 REVISI */
         @media print {
             body * { visibility: hidden; }
             #invoice-print-area, #invoice-print-area *, #stock-opname-print-area, #stock-opname-print-area * {
@@ -60,56 +72,84 @@
 <body class="h-screen flex flex-col overflow-hidden select-none bg-[#0F172A] text-[#F8FAFC]">
 
     <!-- HEADER TOP BAR -->
-    <header class="bg-[#1E293B] border-b border-[#334155] px-4 py-2.5 flex justify-between items-center shrink-0 no-print">
-        <div class="flex items-center space-x-3">
-            <div class="bg-[#06B6D4] text-slate-900 px-2.5 py-1 rounded font-black text-sm tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-store"></i> UD BERKAH POS
+    <header class="bg-[#1E293B] border-b border-[#334155] px-3 md:px-4 py-2.5 flex justify-between items-center shrink-0 no-print">
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <div class="bg-[#06B6D4] text-slate-900 px-2 py-1 rounded font-black text-xs md:text-sm tracking-wider flex items-center gap-1">
+                <i class="fa-solid fa-store"></i> UD BERKAH
             </div>
-            <span id="sync-status" class="text-[#10B981] text-xs font-semibold flex items-center gap-1.5 ml-2">
-                <i class="fa-solid fa-circle text-[8px]"></i> Online
+            <span id="sync-status" class="text-[#10B981] text-[10px] md:text-xs font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-circle text-[7px]"></i> Online
             </span>
         </div>
 
-        <div class="flex items-center space-x-2">
-            <button onclick="fetchAllData()" title="Sinkronkan Data" class="pos-btn px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5">
-                <i class="fa-solid fa-rotate"></i> Refresh
+        <div class="flex items-center space-x-1.5 md:space-x-2">
+            <button onclick="fetchAllData()" title="Sinkronkan Data" class="pos-btn px-2.5 py-1.5 rounded text-xs font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Refresh</span>
             </button>
-            <button onclick="openManagementModal()" title="Menu Management" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1.5 transition">
-                <i class="fa-solid fa-ellipsis-vertical text-sm"></i> Management
+            <button onclick="openManagementModal()" title="Menu Management" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold px-2.5 py-1.5 rounded text-xs flex items-center gap-1 transition">
+                <i class="fa-solid fa-ellipsis-vertical text-xs md:text-sm"></i> <span>Management</span>
             </button>
         </div>
     </header>
 
     <!-- DASHBOARD MAIN LAYOUT -->
-    <main class="flex-1 overflow-hidden p-3 flex flex-col lg:flex-row gap-3 no-print">
+    <main class="flex-1 overflow-hidden p-2 md:p-3 flex flex-col lg:flex-row gap-2 md:gap-3 no-print relative">
         
         <!-- SISI KIRI: KATALOG & FILTER -->
-        <div class="flex-1 flex flex-col space-y-3 overflow-hidden">
+        <div class="flex-1 flex flex-col space-y-2 md:space-y-3 overflow-hidden">
             
             <div class="relative z-30">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="pos-search" onkeyup="handleSearchInput()" oninput="handleSearchInput()" placeholder="Ketik nama atau ID barang untuk memfilter langsung (Tekan F3)..." class="w-full bg-[#1E293B] text-sm text-white pl-10 pr-10 py-2.5 border border-[#334155] rounded-lg focus:outline-none focus:border-[#06B6D4] shadow-lg">
-                    <button onclick="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                    <input type="text" id="pos-search" onkeyup="handleSearchInput()" oninput="handleSearchInput()" placeholder="Cari nama / ID barang (F3)..." class="w-full bg-[#1E293B] text-xs md:text-sm text-white pl-10 pr-10 py-2.5 border border-[#334155] rounded-lg focus:outline-none focus:border-[#06B6D4] shadow-lg">
+                    <button onclick="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 shrink-0" id="category-bar">
-                <button onclick="filterCategory('All')" class="category-btn bg-[#06B6D4] text-slate-950 font-bold px-3 py-1 rounded-full text-xs shrink-0">Semua</button>
+            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 shrink-0 scrollbar-none" id="category-bar">
+                <button onclick="filterCategory('All')" class="category-btn bg-[#06B6D4] text-slate-950 font-bold px-3 py-1.5 rounded-full text-xs shrink-0">Semua</button>
             </div>
 
-            <div class="flex-1 bg-[#1E293B] border border-[#334155] rounded-lg p-3 overflow-y-auto">
-                <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5"></div>
+            <!-- GRID PRODUK KATALOG MOBILE OPTIMIZED -->
+            <div class="flex-1 bg-[#1E293B] border border-[#334155] rounded-lg p-2 md:p-3 overflow-y-auto pb-20 lg:pb-3">
+                <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-2.5"></div>
             </div>
 
         </div>
 
-        <!-- SISI KANAN: KERANJANG BELANJA -->
-        <div class="w-full lg:w-[420px] flex flex-col bg-[#1E293B] border border-[#334155] rounded-lg overflow-hidden shrink-0">
+        <!-- FLOATING BAR KERANJANG DI MOBILE (ANDROID & IOS) -->
+        <div id="mobile-cart-bar" onclick="toggleMobileCart()" class="lg:hidden fixed bottom-2 left-2 right-2 z-40 bg-[#06B6D4] text-slate-950 font-bold p-3 rounded-xl shadow-2xl flex justify-between items-center cursor-pointer active:scale-98 transition">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-slate-950 text-[#06B6D4] w-8 h-8 rounded-full flex items-center justify-center text-xs font-black">
+                    <span id="mobile-cart-badge">0</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-900 opacity-80 leading-none">Keranjang</span>
+                    <span id="mobile-cart-total" class="text-sm font-black font-mono">Rp 0</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs font-black">
+                <span>Lihat Detail</span>
+                <i class="fa-solid fa-chevron-up text-xs"></i>
+            </div>
+        </div>
+
+        <!-- SISI KANAN: KERANJANG BELANJA (DRAWER RESPONSIVE DI MOBILE) -->
+        <div id="cart-container" class="fixed inset-0 z-50 lg:z-auto lg:static lg:w-[380px] xl:w-[420px] flex flex-col bg-[#1E293B] border-t lg:border border-[#334155] lg:rounded-lg overflow-hidden shrink-0 hidden lg:flex transition-all duration-300">
             
-            <div class="bg-[#0F172A] px-3 py-2 text-xs font-bold text-slate-300 border-b border-[#334155] grid grid-cols-12">
+            <!-- HEADER KERANJANG DI MOBILE -->
+            <div class="bg-[#0F172A] px-3 py-2.5 border-b border-[#334155] flex justify-between items-center lg:hidden">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-200">
+                    <i class="fa-solid fa-cart-shopping text-[#06B6D4]"></i> KERANJANG BELANJA
+                </div>
+                <button onclick="toggleMobileCart()" class="text-slate-400 hover:text-white p-1 text-base">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="bg-[#0F172A] px-3 py-2 text-xs font-bold text-slate-300 border-b border-[#334155] grid grid-cols-12 hidden lg:grid">
                 <span class="col-span-5">Produk</span>
                 <span class="col-span-3 text-center">Qty</span>
                 <span class="col-span-4 text-right">Subtotal</span>
@@ -119,7 +159,7 @@
                 <div id="empty-cart-msg" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
                     <i class="fa-solid fa-cart-flatbed text-3xl mb-2 text-slate-600"></i>
                     <h4 class="text-sm font-bold text-slate-400">Keranjang Kosong</h4>
-                    <p class="text-xs">Ketik pencarian di atas atau klik katalog untuk menambahkan</p>
+                    <p class="text-xs">Klik katalog untuk menambahkan barang</p>
                 </div>
             </div>
 
@@ -138,7 +178,7 @@
             <div class="bg-[#0F172A] p-3 border-t border-[#334155] flex justify-between items-center">
                 <div>
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">TOTAL BAYAR</span>
-                    <span id="cart-total" class="text-2xl font-black text-[#06B6D4] font-mono">Rp 0</span>
+                    <span id="cart-total" class="text-xl md:text-2xl font-black text-[#06B6D4] font-mono">Rp 0</span>
                 </div>
                 <div class="text-right">
                     <span id="cart-item-count" class="text-xs text-slate-400 block">0 Items</span>
@@ -146,13 +186,13 @@
             </div>
 
             <div class="p-2 bg-[#0F172A] border-t border-[#334155] grid grid-cols-12 gap-2">
-                <button onclick="clearCart()" class="col-span-3 bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-2.5 rounded text-xs flex flex-col items-center justify-center transition">
+                <button onclick="clearCart()" class="col-span-3 bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3 rounded text-xs flex flex-col items-center justify-center transition active:scale-95">
                     <i class="fa-solid fa-trash-can mb-0.5"></i> Clear
                 </button>
-                <button onclick="openLastReceipt()" class="col-span-4 bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold py-2.5 rounded text-xs flex items-center justify-center gap-1 transition">
-                    <i class="fa-solid fa-file-invoice"></i> CETAK STRUK A4
+                <button onclick="openLastReceipt()" class="col-span-4 bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold py-3 rounded text-xs flex items-center justify-center gap-1 transition active:scale-95">
+                    <i class="fa-solid fa-file-invoice"></i> STRUK A4
                 </button>
-                <button onclick="openPaymentReviewModal()" class="col-span-5 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-black py-2.5 rounded text-xs flex items-center justify-center gap-1 transition shadow-lg">
+                <button onclick="openPaymentReviewModal()" class="col-span-5 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-black py-3 rounded text-xs flex items-center justify-center gap-1 transition shadow-lg active:scale-95">
                     <i class="fa-solid fa-money-bill-wave"></i> BAYAR (F10)
                 </button>
             </div>
@@ -161,61 +201,63 @@
 
     </main>
 
-    <!-- REVIEW & VERIFIKASI MODAL -->
-    <div id="payment-review-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 no-print">
-        <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-2xl overflow-hidden flex flex-col shadow-2xl">
+    <!-- REVIEW & VERIFIKASI MODAL MOBILE OPTIMIZED -->
+    <div id="payment-review-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-3 no-print">
+        <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-[#06B6D4]"></i>
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Review Transaksi & Edit Harga Manual</h3>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Review & Edit Harga Manual</h3>
                 </div>
-                <button onclick="closePaymentReviewModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closePaymentReviewModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
-            <div class="p-4 space-y-3 overflow-y-auto max-h-[65vh]">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-[#0F172A] text-slate-400 border-b border-[#334155]">
-                        <tr>
-                            <th class="p-2">Nama Barang</th>
-                            <th class="p-2 text-center">Qty</th>
-                            <th class="p-2">Harga Normal</th>
-                            <th class="p-2">Harga Deal (Manual)</th>
-                            <th class="p-2 text-right">Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody id="payment-review-table-body" class="divide-y divide-[#334155]"></tbody>
-                </table>
+            <div class="p-3 md:p-4 space-y-3 overflow-y-auto max-h-[60vh]">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs min-w-[400px]">
+                        <thead class="bg-[#0F172A] text-slate-400 border-b border-[#334155]">
+                            <tr>
+                                <th class="p-2">Nama Barang</th>
+                                <th class="p-2 text-center">Qty</th>
+                                <th class="p-2">Normal</th>
+                                <th class="p-2">Harga Manual</th>
+                                <th class="p-2 text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payment-review-table-body" class="divide-y divide-[#334155]"></tbody>
+                    </table>
+                </div>
 
                 <div class="p-3 bg-[#0F172A] rounded border border-[#334155] flex justify-between items-center">
                     <span class="text-xs text-slate-400 font-bold uppercase">TOTAL BAYAR AKHIR:</span>
-                    <span id="review-total-harga" class="text-xl font-black text-[#06B6D4] font-mono">Rp 0</span>
+                    <span id="review-total-harga" class="text-lg md:text-xl font-black text-[#06B6D4] font-mono">Rp 0</span>
                 </div>
             </div>
 
             <div class="p-3 bg-[#0F172A] border-t border-[#334155] flex justify-end gap-2">
-                <button onclick="closePaymentReviewModal()" class="px-4 py-2 bg-[#334155] text-white rounded text-xs">Batal</button>
-                <button onclick="triggerVerification2Step()" class="px-5 py-2 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold rounded text-xs flex items-center gap-1.5">
-                    <i class="fa-solid fa-shield-check"></i> Lanjut Verifikasi 2 Langkah
+                <button onclick="closePaymentReviewModal()" class="px-4 py-2.5 bg-[#334155] text-white rounded text-xs font-bold">Batal</button>
+                <button onclick="triggerVerification2Step()" class="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold rounded text-xs flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-shield-check"></i> Lanjut Verifikasi
                 </button>
             </div>
         </div>
     </div>
 
     <!-- KONFIRMASI VERIFIKASI MODAL -->
-    <div id="confirm-verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
-        <div class="bg-[#1E293B] border border-[#F59E0B] rounded-xl p-5 w-full max-w-md text-center shadow-2xl space-y-4">
-            <div class="w-14 h-14 bg-[#F59E0B]/20 text-[#F59E0B] border-2 border-[#F59E0B] rounded-full flex items-center justify-center mx-auto text-2xl">
+    <div id="confirm-verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-4 no-print">
+        <div class="bg-[#1E293B] border border-[#F59E0B] rounded-xl p-4 md:p-5 w-full max-w-md text-center shadow-2xl space-y-4">
+            <div class="w-12 h-12 md:w-14 md:h-14 bg-[#F59E0B]/20 text-[#F59E0B] border-2 border-[#F59E0B] rounded-full flex items-center justify-center mx-auto text-xl md:text-2xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div>
-                <h3 class="text-base font-bold text-white">Konfirmasi Verifikasi 2 Langkah</h3>
+                <h3 class="text-sm md:text-base font-bold text-white">Konfirmasi Verifikasi 2 Langkah</h3>
                 <p class="text-xs text-slate-300 mt-1">Apakah data transaksi sudah benar dan siap diproses?</p>
-                <div id="verification-summary-text" class="mt-3 p-2 bg-[#0F172A] rounded border border-[#334155] text-xs font-mono text-[#06B6D4] text-left space-y-1"></div>
+                <div id="verification-summary-text" class="mt-3 p-2.5 bg-[#0F172A] rounded border border-[#334155] text-xs font-mono text-[#06B6D4] text-left space-y-1"></div>
             </div>
             <div class="flex gap-2">
-                <button onclick="closeVerificationModal()" class="flex-1 bg-[#334155] text-white py-2 rounded text-xs font-bold">Periksa Kembali</button>
-                <button onclick="executeFinalCheckout()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold py-2 rounded text-xs flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-check"></i> Ya, Proses Pembayaran
+                <button onclick="closeVerificationModal()" class="flex-1 bg-[#334155] text-white py-2.5 rounded text-xs font-bold">Periksa Kembali</button>
+                <button onclick="executeFinalCheckout()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold py-2.5 rounded text-xs flex items-center justify-center gap-1 active:scale-95">
+                    <i class="fa-solid fa-check"></i> Ya, Proses
                 </button>
             </div>
         </div>
@@ -223,58 +265,58 @@
 
     <!-- NOTIFIKASI SUKSES -->
     <div id="success-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
-        <div class="bg-[#1E293B] border border-[#10B981] rounded-xl p-6 w-full max-w-sm text-center shadow-2xl space-y-4">
-            <div class="w-16 h-16 bg-[#10B981]/20 text-[#10B981] border-2 border-[#10B981] rounded-full flex items-center justify-center mx-auto text-3xl">
+        <div class="bg-[#1E293B] border border-[#10B981] rounded-xl p-5 md:p-6 w-full max-w-sm text-center shadow-2xl space-y-4">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-[#10B981]/20 text-[#10B981] border-2 border-[#10B981] rounded-full flex items-center justify-center mx-auto text-2xl md:text-3xl">
                 <i class="fa-solid fa-check"></i>
             </div>
             <div>
-                <h3 class="text-lg font-black text-white">Pembayaran Berhasil!</h3>
+                <h3 class="text-base md:text-lg font-black text-white">Pembayaran Berhasil!</h3>
                 <p class="text-xs text-slate-400 mt-1">Transaksi disimpan dan stok diperbarui.</p>
                 <div class="mt-3 p-2 bg-[#0F172A] rounded border border-[#334155] text-xs font-mono text-[#06B6D4]" id="success-order-info"></div>
             </div>
             <div class="flex gap-2">
-                <button onclick="closeSuccessModalAndPrint()" class="flex-1 bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold py-2 rounded text-xs flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-print"></i> Cetak Struk A4
+                <button onclick="closeSuccessModalAndPrint()" class="flex-1 bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold py-2.5 rounded text-xs flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-print"></i> Struk A4
                 </button>
-                <button onclick="closeSuccessModal()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold py-2 rounded text-xs">
+                <button onclick="closeSuccessModal()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold py-2.5 rounded text-xs">
                     Selesai
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ================= MODAL MANAGEMENT ================= -->
-    <div id="management-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 no-print">
-        <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+    <!-- ================= MODAL MANAGEMENT MOBILE RESPONSIVE ================= -->
+    <div id="management-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-3 no-print">
+        <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-5xl h-[92vh] md:h-[88vh] flex flex-col overflow-hidden shadow-2xl">
             
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-sliders text-[#06B6D4] text-lg"></i>
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">PANEL MANAGEMENT SISTEM</h3>
+                    <i class="fa-solid fa-sliders text-[#06B6D4] text-base md:text-lg"></i>
+                    <h3 class="text-xs md:text-sm font-bold text-white uppercase tracking-wider">PANEL MANAGEMENT SISTEM</h3>
                 </div>
-                <button onclick="closeManagementModal()" class="text-slate-400 hover:text-white text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeManagementModal()" class="text-slate-400 hover:text-white text-base md:text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <nav class="bg-[#0F172A] border-b border-[#334155] flex text-xs font-semibold text-slate-400 px-3">
-                <button onclick="switchMgtTab('produk')" id="mgt-btn-produk" class="px-4 py-3 mgt-tab-active flex items-center gap-2">
-                    <i class="fa-solid fa-box-open"></i> Produk (Barang Masuk)
+            <nav class="bg-[#0F172A] border-b border-[#334155] flex overflow-x-auto text-xs font-semibold text-slate-400 px-2 scrollbar-none shrink-0">
+                <button onclick="switchMgtTab('produk')" id="mgt-btn-produk" class="px-3 py-3 mgt-tab-active flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-box-open"></i> Produk Masuk
                 </button>
-                <button onclick="switchMgtTab('pricelist')" id="mgt-btn-pricelist" class="px-4 py-3 hover:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-tags"></i> Price List & Margin
+                <button onclick="switchMgtTab('pricelist')" id="mgt-btn-pricelist" class="px-3 py-3 hover:text-white flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-tags"></i> Price List (+3%)
                 </button>
-                <button onclick="switchMgtTab('stock')" id="mgt-btn-stock" class="px-4 py-3 hover:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-cubes"></i> Stock Control
+                <button onclick="switchMgtTab('stock')" id="mgt-btn-stock" class="px-3 py-3 hover:text-white flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-cubes"></i> Stok Barang
                 </button>
-                <button onclick="switchMgtTab('laporan')" id="mgt-btn-laporan" class="px-4 py-3 hover:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie"></i> Laporan Transaksi
+                <button onclick="switchMgtTab('laporan')" id="mgt-btn-laporan" class="px-3 py-3 hover:text-white flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-chart-pie"></i> Laporan Laba Rugi
                 </button>
             </nav>
 
-            <div class="flex-1 overflow-y-auto p-4 bg-[#0F172A]">
+            <div class="flex-1 overflow-y-auto p-3 md:p-4 bg-[#0F172A]">
                 
                 <!-- TAB 1: PRODUK -->
                 <div id="mgt-tab-produk" class="mgt-content space-y-4">
-                    <div class="pos-card p-4 rounded-lg">
+                    <div class="pos-card p-3 md:p-4 rounded-lg">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase tracking-wider mb-3"><i class="fa-solid fa-plus-circle mr-1"></i> (1) Form Input Barang Masuk Baru</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
                             <div>
@@ -301,26 +343,26 @@
                                 </div>
                             </div>
                             <div class="flex items-end">
-                                <button onclick="saveNewProduct()" class="w-full bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold p-2 rounded text-xs transition">
+                                <button onclick="saveNewProduct()" class="w-full bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 font-bold p-2.5 rounded text-xs transition active:scale-95">
                                     <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Produk Baru
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="pos-card p-4 rounded-lg space-y-3">
-                        <div class="flex justify-between items-center">
+                    <div class="pos-card p-3 md:p-4 rounded-lg space-y-3">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <h4 class="text-xs font-bold text-[#10B981] uppercase tracking-wider"><i class="fa-solid fa-boxes-packing mr-1"></i> (2) Restock Barang Lama</h4>
-                            <input type="text" id="restock-search" oninput="renderRestockTable()" placeholder="Cari barang lama..." class="bg-[#0F172A] text-xs border border-[#334155] px-2.5 py-1 rounded">
+                            <input type="text" id="restock-search" oninput="renderRestockTable()" placeholder="Cari barang lama..." class="w-full sm:w-auto bg-[#0F172A] text-xs border border-[#334155] px-2.5 py-1.5 rounded">
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs whitespace-nowrap">
+                            <table class="w-full text-left text-xs whitespace-nowrap min-w-[500px]">
                                 <thead class="bg-[#0F172A] text-slate-400">
                                     <tr>
                                         <th class="p-2">ID</th>
                                         <th class="p-2">Nama Barang</th>
                                         <th class="p-2">Stok Saat Ini</th>
-                                        <th class="p-2">Tambah Stok Masuk</th>
+                                        <th class="p-2">Tambah Stok</th>
                                         <th class="p-2 text-center">Aksi Restock</th>
                                     </tr>
                                 </thead>
@@ -332,12 +374,12 @@
 
                 <!-- TAB 2: PRICE LIST & MARGIN -->
                 <div id="mgt-tab-pricelist" class="mgt-content hidden space-y-3">
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="text-xs font-bold text-[#06B6D4] uppercase">DAFTAR PRICE LIST & PERHITUNGAN HARGA (+3%)</h4>
-                        <input type="text" id="mgt-price-search" oninput="renderPriceListTable()" placeholder="Cari barang..." class="bg-[#1E293B] text-xs text-white border border-[#334155] px-3 py-1.5 rounded">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+                        <h4 class="text-xs font-bold text-[#06B6D4] uppercase">PRICE LIST & HARGA MODAL (+3%)</h4>
+                        <input type="text" id="mgt-price-search" oninput="renderPriceListTable()" placeholder="Cari barang..." class="w-full sm:w-auto bg-[#1E293B] text-xs text-white border border-[#334155] px-3 py-1.5 rounded">
                     </div>
                     <div class="pos-card rounded-lg overflow-x-auto">
-                        <table class="w-full text-left text-xs whitespace-nowrap">
+                        <table class="w-full text-left text-xs whitespace-nowrap min-w-[600px]">
                             <thead class="bg-[#1E293B] text-slate-400 border-b border-[#334155]">
                                 <tr>
                                     <th class="p-2.5">Nama Barang</th>
@@ -355,14 +397,14 @@
 
                 <!-- TAB 3: STOCK CONTROL -->
                 <div id="mgt-tab-stock" class="mgt-content hidden space-y-3">
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase">MONITORING & KONTROL STOK BARANG</h4>
-                        <button onclick="printStockOpname()" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-3 py-1.5 rounded font-bold text-xs flex items-center gap-1.5 shadow">
-                            <i class="fa-solid fa-print"></i> Cetak Lembar Stock Opname
+                        <button onclick="printStockOpname()" class="w-full sm:w-auto bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-3 py-1.5 rounded font-bold text-xs flex items-center justify-center gap-1.5 shadow">
+                            <i class="fa-solid fa-print"></i> Cetak Stock Opname
                         </button>
                     </div>
                     <div class="pos-card rounded-lg overflow-x-auto">
-                        <table class="w-full text-left text-xs whitespace-nowrap">
+                        <table class="w-full text-left text-xs whitespace-nowrap min-w-[500px]">
                             <thead class="bg-[#1E293B] text-slate-400 border-b border-[#334155]">
                                 <tr>
                                     <th class="p-2.5">ID</th>
@@ -380,30 +422,30 @@
 
                 <!-- TAB 4: LAPORAN TRANSAKSI -->
                 <div id="mgt-tab-laporan" class="mgt-content hidden space-y-3">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#06B6D4]">
-                            <span class="text-slate-400 text-[11px] block">REKAP OMSET HARIAN</span>
-                            <span id="mgt-rekap-harian" class="text-lg font-black font-mono text-[#06B6D4]">Rp 0</span>
+                            <span class="text-slate-400 text-[10px] md:text-[11px] block">REKAP OMSET HARIAN</span>
+                            <span id="mgt-rekap-harian" class="text-base md:text-lg font-black font-mono text-[#06B6D4]">Rp 0</span>
                         </div>
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#10B981]">
-                            <span class="text-slate-400 text-[11px] block">REKAP OMSET BULANAN</span>
-                            <span id="mgt-rekap-bulanan" class="text-lg font-black font-mono text-[#10B981]">Rp 0</span>
+                            <span class="text-slate-400 text-[10px] md:text-[11px] block">REKAP OMSET BULANAN</span>
+                            <span id="mgt-rekap-bulanan" class="text-base md:text-lg font-black font-mono text-[#10B981]">Rp 0</span>
                         </div>
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#F59E0B]">
-                            <span class="text-slate-400 text-[11px] block">TOTAL OMSET KESELURUHAN</span>
-                            <span id="mgt-rekap-total" class="text-lg font-black font-mono text-[#F59E0B]">Rp 0</span>
+                            <span class="text-slate-400 text-[10px] md:text-[11px] block">TOTAL OMSET KESELURUHAN</span>
+                            <span id="mgt-rekap-total" class="text-base md:text-lg font-black font-mono text-[#F59E0B]">Rp 0</span>
                         </div>
                     </div>
 
                     <div class="pos-card rounded-lg overflow-hidden">
-                        <div class="p-2.5 bg-[#1E293B] flex justify-between items-center text-xs border-b border-[#334155]">
+                        <div class="p-2.5 bg-[#1E293B] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs border-b border-[#334155]">
                             <span class="font-bold text-slate-200">RIWAYAT TRANSAKSI PENJUALAN</span>
-                            <button onclick="exportToExcel()" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-3 py-1 rounded font-bold flex items-center gap-1.5 transition">
+                            <button onclick="exportToExcel()" class="w-full sm:w-auto bg-[#10B981] hover:bg-[#059669] text-slate-950 px-3 py-1.5 rounded font-bold flex items-center justify-center gap-1.5 transition">
                                 <i class="fa-solid fa-file-excel"></i> Export Excel (Laba Rugi)
                             </button>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs whitespace-nowrap">
+                            <table class="w-full text-left text-xs whitespace-nowrap min-w-[650px]">
                                 <thead class="bg-[#0F172A] text-slate-400">
                                     <tr>
                                         <th class="p-2.5">Tanggal</th>
@@ -426,39 +468,39 @@
     </div>
 
     <!-- AREA STRUK / NOTA KERTAS A4 PRINT -->
-    <div id="invoice-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#1E293B] border border-[#334155] rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+    <div id="invoice-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-4">
+        <div class="bg-[#1E293B] border border-[#334155] rounded-lg w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden shadow-2xl">
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex justify-between items-center">
-                <span class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-file-invoice text-[#06B6D4] mr-1"></i> Pratinjau Struk / Nota Faktur A4</span>
-                <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <span class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-file-invoice text-[#06B6D4] mr-1"></i> Pratinjau Struk Faktur A4</span>
+                <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
-            <div class="p-4 bg-slate-800 overflow-y-auto flex-1 flex justify-center">
+            <div class="p-3 md:p-4 bg-slate-800 overflow-y-auto flex-1 flex justify-center">
                 <!-- ELEMEN KERTAS A4 -->
-                <div id="invoice-print-area" class="bg-white text-black p-8 rounded shadow-lg border w-full max-w-[210mm] text-slate-900 font-sans">
+                <div id="invoice-print-area" class="bg-white text-black p-4 md:p-8 rounded shadow-lg border w-full max-w-[210mm] text-slate-900 font-sans">
                     <!-- KOP SURAT UD BERKAH -->
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
                         <div>
-                            <h1 class="font-black text-2xl tracking-wide text-slate-900">UD BERKAH</h1>
-                            <p class="text-xs text-slate-700">Dapur MBG & Logistik Pangan</p>
-                            <p class="text-[11px] text-slate-600">Jl. Raya Mataram - Lombok, West Nusa Tenggara</p>
+                            <h1 class="font-black text-xl md:text-2xl tracking-wide text-slate-900">UD BERKAH</h1>
+                            <p class="text-[11px] md:text-xs text-slate-700">Dapur MBG & Logistik Pangan</p>
+                            <p class="text-[10px] md:text-[11px] text-slate-600">Jl. Raya Mataram - Lombok, NTB</p>
                         </div>
                         <div class="text-right">
-                            <h2 class="font-extrabold text-xl text-slate-800 uppercase">FAKTUR / NOTA</h2>
-                            <p class="text-xs text-slate-600 font-mono">No: <span id="inv-order-id" class="font-bold text-slate-900"></span></p>
-                            <p class="text-xs text-slate-600">Tanggal: <span id="inv-date" class="font-bold text-slate-900"></span></p>
+                            <h2 class="font-extrabold text-base md:text-xl text-slate-800 uppercase">FAKTUR / NOTA</h2>
+                            <p class="text-[11px] text-slate-600 font-mono">No: <span id="inv-order-id" class="font-bold text-slate-900"></span></p>
+                            <p class="text-[11px] text-slate-600">Tgl: <span id="inv-date" class="font-bold text-slate-900"></span></p>
                         </div>
                     </div>
 
-                    <!-- INFORMASI PELANGGAN & PENJUALAN -->
-                    <div class="grid grid-cols-2 gap-4 mb-4 text-xs bg-slate-50 p-3 rounded border border-slate-200">
+                    <!-- INFORMASI PELANGGAN -->
+                    <div class="grid grid-cols-2 gap-2 md:gap-4 mb-4 text-xs bg-slate-50 p-2.5 rounded border border-slate-200">
                         <div>
-                            <span class="text-slate-500 block font-semibold">PELANGGAN / CUSTOMER:</span>
-                            <span id="inv-customer" class="font-bold text-sm text-slate-900"></span>
+                            <span class="text-slate-500 block font-semibold text-[10px] md:text-xs">PELANGGAN:</span>
+                            <span id="inv-customer" class="font-bold text-xs md:text-sm text-slate-900"></span>
                         </div>
                         <div class="text-right">
-                            <span class="text-slate-500 block font-semibold">JENIS PENJUALAN:</span>
-                            <span id="inv-jenis" class="font-bold text-sm text-slate-900"></span>
+                            <span class="text-slate-500 block font-semibold text-[10px] md:text-xs">JENIS PENJUALAN:</span>
+                            <span id="inv-jenis" class="font-bold text-xs md:text-sm text-slate-900"></span>
                         </div>
                     </div>
 
@@ -466,45 +508,45 @@
                     <table class="w-full border-collapse border border-slate-300 text-xs mb-6">
                         <thead>
                             <tr class="bg-slate-100 text-slate-800">
-                                <th class="border border-slate-300 p-2 text-center w-10">No</th>
-                                <th class="border border-slate-300 p-2 text-left">Nama Barang</th>
-                                <th class="border border-slate-300 p-2 text-center w-20">Qty</th>
-                                <th class="border border-slate-300 p-2 text-right w-32">Harga Satuan</th>
-                                <th class="border border-slate-300 p-2 text-right w-36">Sub Total</th>
+                                <th class="border border-slate-300 p-1.5 md:p-2 text-center w-8">No</th>
+                                <th class="border border-slate-300 p-1.5 md:p-2 text-left">Nama Barang</th>
+                                <th class="border border-slate-300 p-1.5 md:p-2 text-center w-16">Qty</th>
+                                <th class="border border-slate-300 p-1.5 md:p-2 text-right w-24 md:w-32">Harga Satuan</th>
+                                <th class="border border-slate-300 p-1.5 md:p-2 text-right w-28 md:w-36">Sub Total</th>
                             </tr>
                         </thead>
                         <tbody id="inv-items-list"></tbody>
                         <tfoot>
                             <tr class="bg-slate-50 font-bold">
-                                <td colspan="4" class="border border-slate-300 p-2.5 text-right uppercase">TOTAL BAYAR:</td>
-                                <td id="inv-total" class="border border-slate-300 p-2.5 text-right text-sm font-black text-slate-900"></td>
+                                <td colspan="4" class="border border-slate-300 p-2 text-right uppercase text-[11px] md:text-xs">TOTAL BAYAR:</td>
+                                <td id="inv-total" class="border border-slate-300 p-2 text-right text-xs md:text-sm font-black text-slate-900"></td>
                             </tr>
                         </tfoot>
                     </table>
 
-                    <!-- TANDA TANGAN & CATATAN -->
-                    <div class="grid grid-cols-2 gap-8 text-xs pt-4 border-t border-dashed border-slate-300">
+                    <!-- TANDA TANGAN -->
+                    <div class="grid grid-cols-2 gap-4 text-xs pt-4 border-t border-dashed border-slate-300">
                         <div class="text-center">
-                            <p class="mb-12 font-semibold">Tanda Tangan Penerima,</p>
-                            <p class="font-bold border-t border-slate-400 pt-1 w-40 mx-auto">( .................................... )</p>
+                            <p class="mb-10 font-semibold">Tanda Tangan Penerima,</p>
+                            <p class="font-bold border-t border-slate-400 pt-1 w-32 md:w-40 mx-auto">( .................... )</p>
                         </div>
                         <div class="text-center">
-                            <p class="mb-12 font-semibold">Hormat Kami (Kasir),</p>
-                            <p class="font-bold border-t border-slate-400 pt-1 w-40 mx-auto">UD BERKAH</p>
+                            <p class="mb-10 font-semibold">Hormat Kami (Kasir),</p>
+                            <p class="font-bold border-t border-slate-400 pt-1 w-32 md:w-40 mx-auto">UD BERKAH</p>
                         </div>
                     </div>
 
-                    <div class="text-center mt-8 text-[10px] text-slate-500">
+                    <div class="text-center mt-6 text-[10px] text-slate-500">
                         <p>Terima kasih atas kerja sama dan kepercayaan Anda!</p>
                     </div>
                 </div>
             </div>
 
             <div class="p-3 bg-[#0F172A] flex gap-2">
-                <button onclick="window.print()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 py-2.5 rounded text-xs font-bold flex items-center justify-center gap-1.5 shadow">
-                    <i class="fa-solid fa-print"></i> Cetak Dokumen Struk A4
+                <button onclick="window.print()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 py-2.5 rounded text-xs font-bold flex items-center justify-center gap-1.5 shadow active:scale-95">
+                    <i class="fa-solid fa-print"></i> Cetak Struk A4
                 </button>
-                <button onclick="closeInvoiceModal()" class="px-5 bg-[#334155] text-white py-2.5 rounded text-xs">Tutup</button>
+                <button onclick="closeInvoiceModal()" class="px-4 bg-[#334155] text-white py-2.5 rounded text-xs font-bold">Tutup</button>
             </div>
         </div>
     </div>
@@ -531,7 +573,7 @@
         </table>
     </div>
 
-    <!-- SCRIPT LOGIKA POS -->
+    <!-- SCRIPT LOGIKA POS RESPONSIVE & FIX TANGGAL -->
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwh06zfU-9na_huL9psT38LhEMZvUw7K-2xYw9HIpMrYizP7-JEtQwlpbPz-h94ATarkA/exec';
 
@@ -540,7 +582,7 @@
         let selectedCategory = 'All';
         let lastTransactionData = null;
 
-        // HELPER PERBAIKAN FORMAT TANGGAL DD/MM/YYYY (MENCEGAH NAMA HARI FRI, MON, DLL)
+        // FUNGSI FORMAT TANGGAL DD/MM/YYYY KETAT (MENCEGAH NAMA HARI FRI/MON DI ANDROID & IOS)
         function formatDateOnly(dateVal) {
             if (!dateVal || dateVal === "undefined" || dateVal === "null") {
                 const d = new Date();
@@ -552,16 +594,14 @@
 
             const strVal = String(dateVal).trim();
 
-            // Jika string mengandung nama hari (Fri, Mon, dsb), ubah via JavaScript Date Object
-            const parsedDate = new Date(strVal);
-            if (!isNaN(parsedDate.getTime()) && (strVal.includes('GMT') || strVal.includes('00:00') || strVal.length > 15)) {
-                const day = String(parsedDate.getDate()).padStart(2, '0');
-                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
-                const year = parsedDate.getFullYear();
+            const dObj = new Date(strVal);
+            if (!isNaN(dObj.getTime())) {
+                const day = String(dObj.getDate()).padStart(2, '0');
+                const month = String(dObj.getMonth() + 1).padStart(2, '0');
+                const year = dObj.getFullYear();
                 return `${day}/${month}/${year}`;
             }
 
-            // Jika format sudah DD/MM/YYYY
             if (strVal.includes('/')) {
                 const parts = strVal.split(' ')[0].split('/');
                 if (parts.length === 3) {
@@ -572,18 +612,17 @@
                 }
             }
 
-            // Jika format YYYY-MM-DD
-            if (strVal.includes('-')) {
-                const parts = strVal.split('T')[0].split(' ')[0].split('-');
-                if (parts.length === 3) {
-                    if (parts[0].length === 4) {
-                        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
-                    }
-                    return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
-                }
-            }
-
             return strVal;
+        }
+
+        // TOGGLE DRAWER KERANJANG PADA TAMPILAN MOBILE
+        function toggleMobileCart() {
+            const cartContainer = document.getElementById('cart-container');
+            if (cartContainer.classList.contains('hidden')) {
+                cartContainer.classList.remove('hidden');
+            } else {
+                cartContainer.classList.add('hidden');
+            }
         }
 
         async function fetchAllData() {
@@ -598,10 +637,10 @@
                 renderStockTable();
                 renderLaporanTable();
                 
-                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-circle text-[8px] text-[#10B981]"></i> Online';
+                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-circle text-[7px] text-[#10B981]"></i> Online';
             } catch (err) {
                 console.error(err);
-                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-circle text-[8px] text-[#EF4444]"></i> Offline';
+                document.getElementById('sync-status').innerHTML = '<i class="fa-solid fa-circle text-[7px] text-[#EF4444]"></i> Offline';
             }
         }
 
@@ -625,7 +664,7 @@
             const categories = ['All', ...new Set(dbData.produk.map(p => p.kategori || 'Umum'))];
             const bar = document.getElementById('category-bar');
             bar.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${cat}')" class="category-btn ${selectedCategory === cat ? 'bg-[#06B6D4] text-slate-950 font-bold' : 'bg-[#1E293B] text-slate-300 hover:bg-[#334155]'} px-3 py-1 rounded-full text-xs shrink-0 transition">
+                <button onclick="filterCategory('${cat}')" class="category-btn ${selectedCategory === cat ? 'bg-[#06B6D4] text-slate-950 font-bold' : 'bg-[#1E293B] text-slate-300 hover:bg-[#334155]'} px-3 py-1.5 rounded-full text-xs shrink-0 transition">
                     ${cat === 'All' ? 'Semua' : cat}
                 </button>
             `).join('');
@@ -652,9 +691,9 @@
             }
 
             grid.innerHTML = filtered.map(p => `
-                <div onclick="addToCart('${p.id}')" class="pos-card p-2.5 rounded-lg cursor-pointer hover:border-[#06B6D4] flex flex-col justify-between h-20 transition active:scale-95">
-                    <span class="font-bold text-white text-xs line-clamp-1">${p.nama}</span>
-                    <div class="flex justify-between items-end text-[10px] text-slate-400">
+                <div onclick="addToCart('${p.id}')" class="pos-card p-2.5 rounded-lg cursor-pointer hover:border-[#06B6D4] flex flex-col justify-between h-20 md:h-22 transition active:scale-95 shadow">
+                    <span class="font-bold text-white text-xs line-clamp-2 leading-tight">${p.nama}</span>
+                    <div class="flex justify-between items-end text-[10px] text-slate-400 mt-1">
                         <span class="${p.stok <= 0 ? 'text-red-400 font-bold' : ''}">Stok: ${p.stok}</span>
                         <span class="text-[#06B6D4] font-mono font-bold text-xs">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
                     </div>
@@ -684,10 +723,12 @@
                     <div id="empty-cart-msg" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
                         <i class="fa-solid fa-cart-flatbed text-3xl mb-2 text-slate-600"></i>
                         <h4 class="text-sm font-bold text-slate-400">Keranjang Kosong</h4>
-                        <p class="text-xs">Ketik pencarian di atas atau klik katalog untuk menambahkan</p>
+                        <p class="text-xs">Klik katalog untuk menambahkan barang</p>
                     </div>`;
                 document.getElementById('cart-total').innerText = 'Rp 0';
                 document.getElementById('cart-item-count').innerText = '0 Items';
+                document.getElementById('mobile-cart-total').innerText = 'Rp 0';
+                document.getElementById('mobile-cart-badge').innerText = '0';
                 return;
             }
 
@@ -701,11 +742,11 @@
 
                 return `
                     <div class="p-2 text-xs grid grid-cols-12 items-center hover:bg-[#0F172A] rounded transition">
-                        <div class="col-span-5 font-bold text-white line-clamp-1">${i.nama}</div>
+                        <div class="col-span-5 font-bold text-white line-clamp-2 pr-1">${i.nama}</div>
                         <div class="col-span-3 flex items-center justify-center gap-1 font-mono">
-                            <button onclick="updateCartQty('${i.id}', -1)" class="w-5 h-5 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center"><i class="fa-solid fa-minus text-[9px]"></i></button>
-                            <span class="w-6 text-center">${i.qty}</span>
-                            <button onclick="updateCartQty('${i.id}', 1)" class="w-5 h-5 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center"><i class="fa-solid fa-plus text-[9px]"></i></button>
+                            <button onclick="updateCartQty('${i.id}', -1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-minus text-[9px]"></i></button>
+                            <span class="w-5 text-center font-bold text-xs">${i.qty}</span>
+                            <button onclick="updateCartQty('${i.id}', 1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-plus text-[9px]"></i></button>
                         </div>
                         <div class="col-span-4 text-right font-mono font-bold text-[#06B6D4]">Rp ${subtotal.toLocaleString('id-ID')}</div>
                     </div>
@@ -714,6 +755,8 @@
 
             document.getElementById('cart-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
             document.getElementById('cart-item-count').innerText = `${itemCount} Items`;
+            document.getElementById('mobile-cart-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
+            document.getElementById('mobile-cart-badge').innerText = itemCount;
         }
 
         function updateCartQty(id, delta) {
@@ -740,7 +783,7 @@
                     <td class="p-2 text-center font-mono">${item.qty}</td>
                     <td class="p-2 font-mono text-slate-400">Rp ${Number(item.hargaNormal).toLocaleString('id-ID')}</td>
                     <td class="p-2">
-                        <input type="number" value="${item.harga}" onchange="updateCartItemManualPrice(${idx}, this.value)" class="w-28 bg-[#0F172A] border border-[#06B6D4] text-xs p-1 text-white rounded font-mono">
+                        <input type="number" value="${item.harga}" onchange="updateCartItemManualPrice(${idx}, this.value)" class="w-24 bg-[#0F172A] border border-[#06B6D4] text-xs p-1.5 text-white rounded font-mono">
                     </td>
                     <td class="p-2 text-right font-mono font-bold text-[#06B6D4]" id="subtotal-review-${idx}">
                         Rp ${(item.qty * item.harga).toLocaleString('id-ID')}
@@ -779,7 +822,7 @@
                 <div>• Jenis: <b>${document.getElementById('jenis-penjualan').value}</b></div>
                 <div>• Total Item: <b>${cart.reduce((a,b)=>a+b.qty,0)} Barang</b></div>
                 <div>• Total Bayar: <b class="text-[#10B981]">Rp ${total.toLocaleString('id-ID')}</b></div>
-                <div>• Kategori Transaksi: <b class="${isManual ? 'text-[#F59E0B]' : 'text-slate-300'}">${isManual ? 'Transaksi Harga Manual' : 'Transaksi Reguler'}</b></div>
+                <div>• Transaksi: <b class="${isManual ? 'text-[#F59E0B]' : 'text-slate-300'}">${isManual ? 'Harga Manual' : 'Reguler'}</b></div>
             `;
 
             document.getElementById('confirm-verification-modal').classList.remove('hidden');
@@ -832,6 +875,9 @@
             clearCart();
             renderPOSGrid();
             renderStockTable();
+            
+            // Tutup keranjang mobile jika terbuka
+            document.getElementById('cart-container').classList.add('hidden');
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
@@ -863,10 +909,10 @@
                     <td class="p-2 font-bold text-white">${p.nama}</td>
                     <td class="p-2 font-mono text-[#06B6D4]">${p.stok} ${p.satuan}</td>
                     <td class="p-2">
-                        <input type="number" id="restock-qty-${p.id}" placeholder="Jumlah" class="w-24 bg-[#0F172A] border border-[#334155] p-1 text-white rounded">
+                        <input type="number" id="restock-qty-${p.id}" placeholder="Jumlah" class="w-20 bg-[#0F172A] border border-[#334155] p-1 text-white rounded">
                     </td>
                     <td class="p-2 text-center">
-                        <button onclick="submitRestock('${p.id}')" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-2.5 py-1 rounded font-bold text-[11px]">
+                        <button onclick="submitRestock('${p.id}')" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-2 py-1 rounded font-bold text-[11px] active:scale-95">
                             + Restock
                         </button>
                     </td>
@@ -883,7 +929,7 @@
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                alert('Restock barang lama berhasil disimpan!');
+                alert('Restock barang berhasil disimpan!');
                 input.value = '';
                 fetchAllData();
             } catch (err) { alert('Gagal restock barang.'); }
@@ -1010,7 +1056,6 @@
             `).join('');
         }
 
-        // RENDER TABEL LAPORAN REVISI (PENANDA HARGA MANUAL & FORMAT TANGGAL DD/MM/YYYY)
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1036,14 +1081,14 @@
                         <td class="p-2.5 text-slate-300 font-mono">${formattedDate}</td>
                         <td class="p-2.5 font-bold text-white">
                             ${t['Customer'] || 'Umum'}
-                            ${isManual ? '<span class="ml-1.5 px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded text-[9px] font-mono">[Manual]</span>' : ''}
+                            ${isManual ? '<span class="ml-1 px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded text-[9px] font-mono">[Manual]</span>' : ''}
                         </td>
                         <td class="p-2.5 text-slate-200">${t['Nama Barang'] || '-'}</td>
                         <td class="p-2.5 font-mono">${t['Qty'] || 1}</td>
                         <td class="p-2.5 font-mono text-slate-300">Rp ${Number(t['Harga Jual']).toLocaleString('id-ID')}</td>
                         <td class="p-2.5 font-mono font-bold text-[#10B981]">Rp ${subtotal.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 text-center">
-                            <button onclick="reprintInvoiceFromReport('${t['Order ID']}')" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-2.5 py-1 rounded text-[10px] font-bold transition">
+                            <button onclick="reprintInvoiceFromReport('${t['Order ID']}')" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-2 py-1 rounded text-[10px] font-bold transition active:scale-95">
                                 <i class="fa-solid fa-print"></i> Struk
                             </button>
                         </td>
@@ -1081,11 +1126,11 @@
             const listContainer = document.getElementById('inv-items-list');
             listContainer.innerHTML = items.map((i, index) => `
                 <tr class="hover:bg-slate-50">
-                    <td class="border border-slate-300 p-2 text-center font-mono text-slate-600">${index + 1}</td>
-                    <td class="border border-slate-300 p-2 font-bold text-slate-900">${i.nama}</td>
-                    <td class="border border-slate-300 p-2 text-center font-mono">${i.qty}</td>
-                    <td class="border border-slate-300 p-2 text-right font-mono">Rp ${Number(i.harga).toLocaleString('id-ID')}</td>
-                    <td class="border border-slate-300 p-2 text-right font-mono font-bold text-slate-900">Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</td>
+                    <td class="border border-slate-300 p-1.5 md:p-2 text-center font-mono text-slate-600">${index + 1}</td>
+                    <td class="border border-slate-300 p-1.5 md:p-2 font-bold text-slate-900">${i.nama}</td>
+                    <td class="border border-slate-300 p-1.5 md:p-2 text-center font-mono">${i.qty}</td>
+                    <td class="border border-slate-300 p-1.5 md:p-2 text-right font-mono">Rp ${Number(i.harga).toLocaleString('id-ID')}</td>
+                    <td class="border border-slate-300 p-1.5 md:p-2 text-right font-mono font-bold text-slate-900">Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</td>
                 </tr>
             `).join('');
 
@@ -1094,7 +1139,6 @@
 
         function closeInvoiceModal() { document.getElementById('invoice-modal').classList.add('hidden'); }
 
-        // REVISI EXPORT TO EXCEL: TABEL RAPI + BARIS TOTAL DI BAWAH + LEBAR KOLOM AUTOMATIS
         function exportToExcel() {
             if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data transaksi untuk di-export.');
 
@@ -1133,7 +1177,6 @@
                 };
             });
 
-            // BARIS TOTAL KESELURUHAN DI BAWAH TABEL
             reportRows.push({
                 'Tanggal': 'TOTAL KESELURUHAN',
                 'Order ID': '',
@@ -1149,20 +1192,18 @@
             });
 
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
-
-            // SETTING LEBAR KOLOM AUTOMATIS AGAR EXCEL RAPI
             worksheet['!cols'] = [
-                { wch: 14 }, // Tanggal
-                { wch: 16 }, // Order ID
-                { wch: 22 }, // Customer
-                { wch: 18 }, // Jenis Penjualan
-                { wch: 28 }, // Nama Barang
-                { wch: 10 }, // Qty
-                { wch: 16 }, // Harga Modal
-                { wch: 16 }, // Harga Jual
-                { wch: 18 }, // Sub Total Modal
-                { wch: 18 }, // Sub Total Omset
-                { wch: 18 }  // Profit / Laba
+                { wch: 14 },
+                { wch: 16 },
+                { wch: 22 },
+                { wch: 18 },
+                { wch: 28 },
+                { wch: 10 },
+                { wch: 16 },
+                { wch: 16 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 18 }
             ];
 
             const workbook = XLSX.utils.book_new();
