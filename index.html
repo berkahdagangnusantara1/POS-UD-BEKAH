@@ -330,7 +330,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: PRICE LIST & MARGIN (REVISI KOLOM BARU) -->
+                <!-- TAB 2: PRICE LIST & MARGIN -->
                 <div id="mgt-tab-pricelist" class="mgt-content hidden space-y-3">
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase">DAFTAR PRICE LIST & PERHITUNGAN HARGA (+3%)</h4>
@@ -378,7 +378,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: LAPORAN TRANSAKSI (REVISI KOLOM BARU & CETAK STRUK A4) -->
+                <!-- TAB 4: LAPORAN TRANSAKSI (REVISI PENANDA HARGA MANUAL & TANGGAL DD/MM/YYYY) -->
                 <div id="mgt-tab-laporan" class="mgt-content hidden space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#06B6D4]">
@@ -533,12 +533,54 @@
 
     <!-- SCRIPT LOGIKA POS -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxj5XGW48fOMvhnbglLzqcaFe98v8-S1TO2l8M6oZ4aFOVoCN3mnuSehpDVPCqNZGUxmA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwh06zfU-9na_huL9psT38LhEMZvUw7K-2xYw9HIpMrYizP7-JEtQwlpbPz-h94ATarkA/exec';
 
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
         let selectedCategory = 'All';
         let lastTransactionData = null;
+
+        // HELPER FORMAT TANGGAL KE DD/MM/YYYY
+        function formatDateOnly(dateVal) {
+            if (!dateVal) {
+                const d = new Date();
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const year = d.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            const strVal = String(dateVal);
+            if (strVal.includes('/')) {
+                const parts = strVal.split(' ')[0].split('/');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+                    }
+                    return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+                }
+            }
+
+            if (strVal.includes('-')) {
+                const parts = strVal.split('T')[0].split(' ')[0].split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+                    }
+                    return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+                }
+            }
+
+            const d = new Date(dateVal);
+            if (!isNaN(d.getTime())) {
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const year = d.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            return strVal;
+        }
 
         async function fetchAllData() {
             try {
@@ -844,7 +886,7 @@
         }
 
         function printStockOpname() {
-            document.getElementById('so-print-date').innerText = new Date().toLocaleDateString('id-ID');
+            document.getElementById('so-print-date').innerText = formatDateOnly(new Date());
             const tbody = document.getElementById('so-print-table-body');
 
             tbody.innerHTML = dbData.produk.map((p, i) => `
@@ -903,7 +945,6 @@
             } catch (err) { alert('Gagal menyimpan barang baru.'); }
         }
 
-        // RENDER TABEL PRICE LIST REVISI (| Nama Barang | Harga Modal | Harga Jual | Profit | Harga Modal + 3% | Aksi |)
         function renderPriceListTable() {
             const keyword = (document.getElementById('mgt-price-search')?.value || '').toLowerCase();
             const tbody = document.getElementById('mgt-price-table-body');
@@ -965,12 +1006,11 @@
             `).join('');
         }
 
-        // RENDER TABEL LAPORAN REVISI (| Tanggal | Customer | Nama Barang | Qty | Harga Jual | Sub Total | Struk |)
+        // RENDER TABEL LAPORAN REVISI (PENANDA HARGA MANUAL & FORMAT TANGGAL DD/MM/YYYY)
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
-            const now = new Date();
-            const todayStr = now.toISOString().split('T')[0];
+            const todayFormatted = formatDateOnly(new Date());
 
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
@@ -979,16 +1019,21 @@
 
             tbody.innerHTML = dbData.transaksi.map(t => {
                 const subtotal = Number(t['Sub Total']) || 0;
-                const dateOnly = t['Tanggal'] || '-';
+                const formattedDate = formatDateOnly(t['Tanggal']);
+                const isManual = t['IsManual'] || false;
+                
                 totalOmset += subtotal;
 
-                if (dateOnly === todayStr) omsetHarian += subtotal;
-                if (dateOnly.startsWith(todayStr.slice(0, 7))) omsetBulanan += subtotal;
+                if (formattedDate === todayFormatted) omsetHarian += subtotal;
+                if (formattedDate.endsWith(todayFormatted.slice(3))) omsetBulanan += subtotal;
 
                 return `
                     <tr class="hover:bg-[#0F172A]">
-                        <td class="p-2.5 text-slate-300 font-mono">${dateOnly}</td>
-                        <td class="p-2.5 font-bold text-white">${t['Customer'] || 'Umum'}</td>
+                        <td class="p-2.5 text-slate-300 font-mono">${formattedDate}</td>
+                        <td class="p-2.5 font-bold text-white">
+                            ${t['Customer'] || 'Umum'}
+                            ${isManual ? '<span class="ml-1.5 px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded text-[9px] font-mono">[Manual]</span>' : ''}
+                        </td>
                         <td class="p-2.5 text-slate-200">${t['Nama Barang'] || '-'}</td>
                         <td class="p-2.5 font-mono">${t['Qty'] || 1}</td>
                         <td class="p-2.5 font-mono text-slate-300">Rp ${Number(t['Harga Jual']).toLocaleString('id-ID')}</td>
@@ -1007,7 +1052,6 @@
             document.getElementById('mgt-rekap-total').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
         }
 
-        // FUNGSI MENCETAK STRUK BERDASARKAN ORDER ID DARI LAPORAN
         function reprintInvoiceFromReport(orderId) {
             const matches = dbData.transaksi.filter(t => String(t['Order ID']) === String(orderId));
             if (!matches || matches.length === 0) return alert('Data transaksi tidak ditemukan!');
@@ -1020,11 +1064,11 @@
             }));
 
             const total = matches.reduce((acc, curr) => acc + Number(curr['Sub Total']), 0);
-            showInvoice(first['Order ID'], first['Customer'], first['Jenis Penjualan'], items, total, first['Tanggal']);
+            showInvoice(first['Order ID'], first['Customer'], first['Jenis Penjualan'], items, total, formatDateOnly(first['Tanggal']));
         }
 
         function showInvoice(orderId, customer, jenis, items, total, dateParam) {
-            document.getElementById('inv-date').innerText = dateParam || new Date().toLocaleDateString('id-ID');
+            document.getElementById('inv-date').innerText = formatDateOnly(dateParam);
             document.getElementById('inv-order-id').innerText = orderId;
             document.getElementById('inv-customer').innerText = customer || 'Umum';
             document.getElementById('inv-jenis').innerText = jenis || 'Eceran';
@@ -1046,11 +1090,9 @@
 
         function closeInvoiceModal() { document.getElementById('invoice-modal').classList.add('hidden'); }
 
+        // EXPORT TO EXCEL DENGAN FORMAT STRING RP (Contoh: Rp 50.000)
         function exportToExcel() {
             if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data transaksi.');
-
-            let totalOmset = 0;
-            let totalModal = 0;
 
             const reportRows = dbData.transaksi.map(t => {
                 const qty = Number(t['Qty']) || 1;
@@ -1059,28 +1101,29 @@
 
                 const subtotalOmset = Number(t['Sub Total']) || (qty * hargaJual);
                 const subtotalModal = qty * hargaModal;
-
-                totalOmset += subtotalOmset;
-                totalModal += subtotalModal;
+                const profit = subtotalOmset - subtotalModal;
+                const isManual = t['IsManual'] || false;
 
                 return {
-                    'Tanggal': t['Tanggal'],
+                    'Tanggal': formatDateOnly(t['Tanggal']),
                     'Order ID': t['Order ID'],
-                    'Customer': t['Customer'] || 'Umum',
+                    'Customer': (t['Customer'] || 'Umum') + (isManual ? ' [Harga Manual]' : ''),
                     'Jenis Penjualan': t['Jenis Penjualan'],
                     'Nama Barang': t['Nama Barang'] || '-',
                     'Qty': qty,
-                    'Harga Modal (Rp)': hargaModal,
-                    'Harga Jual (Rp)': hargaJual,
-                    'Sub Total (Rp)': subtotalOmset,
-                    'Profit (Rp)': subtotalOmset - subtotalModal
+                    'Harga Modal': 'Rp ' + hargaModal.toLocaleString('id-ID'),
+                    'Harga Jual': 'Rp ' + hargaJual.toLocaleString('id-ID'),
+                    'Sub Total': 'Rp ' + subtotalOmset.toLocaleString('id-ID'),
+                    'Profit': 'Rp ' + profit.toLocaleString('id-ID')
                 };
             });
 
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Transaksi Master");
-            XLSX.writeFile(workbook, `Laporan_POS_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            const todayStr = formatDateOnly(new Date()).replace(/\//g, '-');
+            XLSX.writeFile(workbook, `Laporan_POS_UD_BERKAH_${todayStr}.xlsx`);
         }
 
         window.addEventListener('keydown', (e) => {
