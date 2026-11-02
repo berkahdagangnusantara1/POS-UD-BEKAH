@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sistem Kasir POS - UD BERKAH Mobile</title>
+    <title>Sistem Kasir POS - UD BERKAH Mobile Multi-Invoice</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -45,6 +45,7 @@
             }
         }
 
+        /* VARIASI ORIENTASI CETAK (PORTRAIT / LANDSCAPE) */
         @media print {
             body * { visibility: hidden; }
             #invoice-print-area, #invoice-print-area *, #stock-opname-print-area, #stock-opname-print-area * {
@@ -52,7 +53,7 @@
             }
             #invoice-print-area {
                 position: absolute; left: 0; top: 0;
-                width: 210mm; min-height: 297mm;
+                width: 100%; min-height: 100%;
                 padding: 10mm 15mm;
                 font-family: Arial, Helvetica, sans-serif;
                 font-size: 11pt; color: #000; background: #fff;
@@ -64,6 +65,25 @@
                 font-family: sans-serif; font-size: 12px; color: #000; background: #fff;
             }
             .no-print { display: none !important; }
+        }
+
+        /* ORIENTASI DINAMIS CETAK */
+        .print-portrait {
+            width: 210mm !important;
+            min-height: 297mm !important;
+        }
+        .print-landscape {
+            width: 297mm !important;
+            min-height: 210mm !important;
+        }
+
+        @page landscape-mode {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+        @page portrait-mode {
+            size: A4 portrait;
+            margin: 10mm;
         }
     </style>
 </head>
@@ -117,7 +137,7 @@
 
         </div>
 
-        <!-- FLOATING BAR KERANJANG DI MOBILE (ANDROID & IOS) -->
+        <!-- FLOATING BAR KERANJANG DI MOBILE -->
         <div id="mobile-cart-bar" onclick="toggleMobileCart()" class="lg:hidden fixed bottom-2 left-2 right-2 z-40 bg-[#06B6D4] text-slate-950 font-bold p-3 rounded-xl shadow-2xl flex justify-between items-center cursor-pointer active:scale-98 transition">
             <div class="flex items-center gap-2.5">
                 <div class="bg-slate-950 text-[#06B6D4] w-8 h-8 rounded-full flex items-center justify-center text-xs font-black">
@@ -346,7 +366,7 @@
 
             <div class="flex-1 overflow-y-auto p-3 md:p-4 bg-[#0F172A]">
                 
-                <!-- TAB 1: PRODUK Masuk -->
+                <!-- TAB 1: PRODUK -->
                 <div id="mgt-tab-produk" class="mgt-content space-y-4">
                     <div class="pos-card p-3 md:p-4 rounded-lg">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase tracking-wider mb-3"><i class="fa-solid fa-plus-circle mr-1"></i> (1) Form Input Barang Masuk Baru</h4>
@@ -452,7 +472,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: LAPORAN -->
+                <!-- TAB 4: LAPORAN OMSET -->
                 <div id="mgt-tab-laporan" class="mgt-content hidden space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#06B6D4]">
@@ -508,24 +528,30 @@
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 no-print">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-file-invoice text-[#06B6D4] text-base"></i>
-                    <span class="text-xs font-bold text-white uppercase tracking-wider">FORMAT CETAK FAKTUR / NOTA:</span>
+                    <span class="text-xs font-bold text-white uppercase tracking-wider">FORMAT & ORIENTASI:</span>
                     <select id="invoice-template-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-[#06B6D4] border border-[#06B6D4] px-2.5 py-1.5 rounded-lg font-bold focus:outline-none">
-                        <option value="berkah_mandiri">1. UD BERKAH MANDIRI (Faktur Standar A4)</option>
-                        <option value="agro_buah">2. UD. AGRO BUAH (Invoice Satuan & Ket)</option>
-                        <option value="pangan_berkah">3. UD PANGAN BERKAH (Green Header Invoice)</option>
-                        <option value="sega">4. FAKTUR PEMBAYARAN (UD Sega)</option>
-                        <option value="ika_sayur">5. UD. IKA SAYUR (Kuantitas & Warna Hijau)</option>
-                        <option value="sahabat_army">6. UD. SAHABAT ARMY (Nota Pembayaran)</option>
-                        <option value="sumber_urip">7. UD SUMBER URIP (Blue Theme Nota)</option>
-                        <option value="sapakira">8. UD. SAPAKIRA (Nota Pembayaran BSI)</option>
-                        <option value="amira_firdaus">9. UD AMIRA FIRDAUS (Kwitansi Pembayaran)</option>
-                        <option value="pangan_makmur">10. UD PANGAN MAKMUR (Invoice Pembayaran)</option>
-                        <option value="tumbuh_maju">11. UD TUMBUH MAJU (Invoice Top Right Rekening)</option>
-                        <option value="murah_rezeki">12. MURAH REZEKI (Faktur Dapur MBG & Logistik)</option>
-                        <option value="maju_lestari">13. UD MAJU LESTARI (Pengadaan Sembako)</option>
-                        <option value="seri_rezeki">14. UD SERI REZEKI (Nota Belanja Dapur)</option>
-                        <option value="sari_buah">15. UD SARI BUAH (Nota Pengeluaran)</option>
-                        <option value="davin_pro">16. UD DAVIN PRO (Rangkap Dokumen)</option>
+                        <option value="berkah_std">1. UD BERKAH (Faktur Standar - Portrait)</option>
+                        <option value="agro_buah">2. UD. AGRO BUAH (Invoice - Portrait)</option>
+                        <option value="pangan_berkah">3. UD PANGAN BERKAH (Invoice - Landscape)</option>
+                        <option value="sega">4. FAKTUR PEMBAYARAN UD Sega (Landscape)</option>
+                        <option value="ika_sayur">5. UD. IKA SAYUR (Nota - Portrait)</option>
+                        <option value="sahabat_army">6. UD. SAHABAT ARMY (Nota - Landscape)</option>
+                        <option value="sumber_urip">7. UD SUMBER URIP (Nota - Portrait)</option>
+                        <option value="sapakira">8. UD. SAPAKIRA (Nota - Landscape)</option>
+                        <option value="amira_firdaus">9. UD AMIRA FIRDAUS (Kwitansi - Portrait)</option>
+                        <option value="pangan_makmur">10. UD PANGAN MAKMUR (Invoice - Landscape)</option>
+                        <option value="tumbuh_maju">11. UD TUMBUH MAJU (Invoice - Portrait)</option>
+                        <option value="berkah_mbg">12. UD BERKAH (Dapur MBG - Landscape)</option>
+                        <option value="mataram_logistik">13. UD MATARAM LOGISTIK (Portrait)</option>
+                        <option value="sayur_segar">14. UD SAYUR SEGAR (Portrait)</option>
+                        <option value="bop_instansi">15. FAKTUR BOP INSTANSI (Landscape)</option>
+                        <option value="grosir_toko">16. NOTA PENJUALAN GROSIR (Landscape)</option>
+                    </select>
+
+                    <select id="invoice-orientation-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-amber-400 border border-amber-500/50 px-2 py-1.5 rounded-lg font-bold focus:outline-none">
+                        <option value="auto">Auto Orientasi</option>
+                        <option value="portrait">Paksa Portrait</option>
+                        <option value="landscape">Paksa Landscape</option>
                     </select>
                 </div>
                 <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white p-1 self-end sm:self-auto"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -533,14 +559,14 @@
             
             <!-- CONTAINER AREA PREVIEW / PRINT -->
             <div class="p-3 md:p-4 bg-slate-800 overflow-y-auto flex-1 flex justify-center">
-                <div id="invoice-print-area" class="bg-white text-black p-4 md:p-8 rounded shadow-lg border w-full max-w-[210mm] text-slate-900 font-sans">
+                <div id="invoice-print-area" class="bg-white text-black p-4 md:p-8 rounded shadow-lg border w-full text-slate-900 font-sans print-portrait">
                     <!-- Dynamic HTML render invoice template here -->
                 </div>
             </div>
 
             <div class="p-3 bg-[#0F172A] flex gap-2 no-print">
                 <button onclick="window.print()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 py-2.5 rounded text-xs font-bold flex items-center justify-center gap-1.5 shadow active:scale-95">
-                    <i class="fa-solid fa-print"></i> Cetak Struk / Invoice (A4)
+                    <i class="fa-solid fa-print"></i> Cetak Struk / Invoice
                 </button>
                 <button onclick="closeInvoiceModal()" class="px-4 bg-[#334155] text-white py-2.5 rounded text-xs font-bold">Tutup</button>
             </div>
@@ -580,32 +606,42 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
 
-        function formatDateOnly(dateVal) {
-            if (!dateVal || dateVal === "undefined" || dateVal === "null") {
-                const d = new Date();
-                const day = String(d.getDate()).padStart(2, '0');
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const year = d.getFullYear();
-                return `${day}/${month}/${year}`;
-            }
+        // PARSER TANGGAL UNIVERSAL UNTUK REKAP OMSET AKURAT
+        function parseDateObject(dateVal) {
+            if (!dateVal || dateVal === "undefined" || dateVal === "null") return new Date();
+            if (dateVal instanceof Date) return dateVal;
+            
             const strVal = String(dateVal).trim();
-            const dObj = new Date(strVal);
-            if (!isNaN(dObj.getTime())) {
-                const day = String(dObj.getDate()).padStart(2, '0');
-                const month = String(dObj.getMonth() + 1).padStart(2, '0');
-                const year = dObj.getFullYear();
-                return `${day}/${month}/${year}`;
-            }
+            
+            // Format DD/MM/YYYY
             if (strVal.includes('/')) {
                 const parts = strVal.split(' ')[0].split('/');
                 if (parts.length === 3) {
-                    if (parts[0].length === 4) {
-                        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+                    if (parts[0].length === 4) { // YYYY/MM/DD
+                        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                     }
-                    return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])); // DD/MM/YYYY
                 }
             }
-            return strVal;
+            
+            // Format YYYY-MM-DD
+            if (strVal.includes('-')) {
+                const parts = strVal.split('T')[0].split('-');
+                if (parts.length === 3) {
+                    return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                }
+            }
+
+            const dObj = new Date(strVal);
+            return isNaN(dObj.getTime()) ? new Date() : dObj;
+        }
+
+        function formatDateOnly(dateVal) {
+            const d = parseDateObject(dateVal);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
         }
 
         function toggleMobileCart() {
@@ -893,7 +929,8 @@
                 customer: customer,
                 jenis: jenisFull,
                 items: checkoutItems,
-                total: totalHarga
+                total: totalHarga,
+                dateParam: new Date()
             };
 
             document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
@@ -915,13 +952,13 @@
         function closeSuccessModalAndPrint() {
             closeSuccessModal();
             if (lastTransactionData) {
-                showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total);
+                showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total, lastTransactionData.dateParam);
             }
         }
 
         function openLastReceipt() {
             if (!lastTransactionData) return alert('Belum ada transaksi terakhir untuk dicetak!');
-            showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total);
+            showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total, lastTransactionData.dateParam);
         }
 
         function renderRestockTable() {
@@ -1082,26 +1119,42 @@
             `).join('');
         }
 
+        // FUNGSI PERBAIKAN PERHITUNGAN REKAP OMSET HARIAN & BULANAN (100% AKURAT)
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
-            const todayFormatted = formatDateOnly(new Date());
+            
+            const now = new Date();
+            const curDay = now.getDate();
+            const curMonth = now.getMonth();
+            const curYear = now.getFullYear();
 
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
+                document.getElementById('mgt-rekap-harian').innerText = 'Rp 0';
+                document.getElementById('mgt-rekap-bulanan').innerText = 'Rp 0';
+                document.getElementById('mgt-rekap-total').innerText = 'Rp 0';
                 return;
             }
 
             tbody.innerHTML = dbData.transaksi.map(t => {
                 const subtotal = Number(t['Sub Total']) || 0;
-                const formattedDate = formatDateOnly(t['Tanggal']);
+                const dObj = parseDateObject(t['Tanggal']);
+                const formattedDate = formatDateOnly(dObj);
                 const isManual = t['IsManual'] || false;
                 const strataStr = t['Jenis Penjualan'] && t['Jenis Penjualan'].includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
 
-                if (formattedDate === todayFormatted) omsetHarian += subtotal;
-                if (formattedDate.endsWith(todayFormatted.slice(3))) omsetBulanan += subtotal;
+                // Cek Harian: Tanggal, Bulan, dan Tahun sama
+                if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                    omsetHarian += subtotal;
+                }
+
+                // Cek Bulanan: Bulan dan Tahun sama
+                if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                    omsetBulanan += subtotal;
+                }
 
                 return `
                     <tr class="hover:bg-[#0F172A]">
@@ -1148,7 +1201,7 @@
             showInvoice(first['Order ID'], first['Customer'], first['Jenis Penjualan'], items, total, formatDateOnly(first['Tanggal']));
         }
 
-        // FUNGSI MULTI-INVOICE RENDERER ENGINE (16 FORMAT DIFFERENT LAYOUTS)
+        // MULTI-INVOICE RENDERER ENGINE (BERVARIASI PORTRAIT & LANDSCAPE, LENGKAP NOMOR INVOICE)
         function showInvoice(orderId, customer, jenis, items, total, dateParam) {
             currentActiveInvoiceData = { orderId, customer, jenis, items, total, dateParam };
             const selectedTemplate = document.getElementById('invoice-template-selector').value;
@@ -1168,13 +1221,25 @@
             const { orderId, customer, jenis, items, total, dateParam } = currentActiveInvoiceData;
             const formattedDate = formatDateOnly(dateParam);
             const printArea = document.getElementById('invoice-print-area');
+            const modeOverride = document.getElementById('invoice-orientation-selector').value;
 
-            // Helper format rupiah
+            // Map Orientasi Default per Template
+            const defaultLandscapeTemplates = ['pangan_berkah', 'sega', 'sahabat_army', 'sapakira', 'pangan_makmur', 'berkah_mbg', 'bop_instansi', 'grosir_toko'];
+            let isLandscape = defaultLandscapeTemplates.includes(templateKey);
+
+            if (modeOverride === 'portrait') isLandscape = false;
+            if (modeOverride === 'landscape') isLandscape = true;
+
+            if (isLandscape) {
+                printArea.className = "bg-white text-black p-4 md:p-8 rounded shadow-lg border text-slate-900 font-sans print-landscape";
+            } else {
+                printArea.className = "bg-white text-black p-4 md:p-8 rounded shadow-lg border text-slate-900 font-sans print-portrait";
+            }
+
             const fmt = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
-
             let html = '';
 
-            // FORMAT 1: UD BERKAH (STANDAR FAKTUR)
+            // FORMAT 1: UD BERKAH (PORTRAIT)
             if (templateKey === 'berkah_std') {
                 html = `
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
@@ -1185,7 +1250,7 @@
                         </div>
                         <div class="text-right">
                             <h2 class="font-extrabold text-base md:text-xl text-slate-800 uppercase">FAKTUR / NOTA</h2>
-                            <p class="text-[11px] text-slate-600 font-mono">No: <b>${orderId}</b></p>
+                            <p class="text-[11px] text-slate-600 font-mono">No. Invoice: <b>${orderId}</b></p>
                             <p class="text-[11px] text-slate-600">Tgl: <b>${formattedDate}</b></p>
                         </div>
                     </div>
@@ -1227,10 +1292,10 @@
                     </div>
                 `;
             }
-            // FORMAT 2: UD. AGRO BUAH
+            // FORMAT 2: UD. AGRO BUAH (PORTRAIT - LENGKAP NO INVOICE)
             else if (templateKey === 'agro_buah') {
                 html = `
-                    <div style="font-family: monospace, Arial; font-size: 11px; color: #000;">
+                    <div style="font-family: Arial, sans-serif; font-size: 11px; color: #000;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
                             <h2 style="font-size: 18px; font-weight: bold; margin:0;">UD . AGRO BUAH</h2>
                             <p style="margin:2px 0;">Jl. Jendral Sudirman gang Dwi Anjani, Rembiga, Mataram</p>
@@ -1238,7 +1303,7 @@
                         </div>
                         <table style="width: 100%; margin-bottom: 8px; font-size: 11px;">
                             <tr>
-                                <td>Tanggal : <b>${formattedDate}</b></td>
+                                <td>Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b>${orderId}</b></td>
                                 <td style="text-align: center; font-weight: bold; font-size: 14px;">INVOICE</td>
                                 <td style="text-align: right;">Kepada Yth.<br><b>${customer}</b><br>Jl. Gora 2 Lingsar, Lombok Barat</td>
                             </tr>
@@ -1286,22 +1351,22 @@
                     </div>
                 `;
             }
-            // FORMAT 3: UD PANGAN BERKAH
+            // FORMAT 3: UD PANGAN BERKAH (LANDSCAPE)
             else if (templateKey === 'pangan_berkah') {
                 html = `
                     <div style="font-family: sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>Pelanggan:<br><b style="font-size: 13px;">${customer}</b><br>Jl. Gora 2, Lingsar, Kec. Lingsar, Lobar</td>
-                                <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Hp : 0896-6868-5576</td>
+                                <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b>${orderId}</b><br>No. Hp : 0896-6868-5576</td>
                             </tr>
                         </table>
-                        <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 8px 0; background: #e2e8f0; padding: 4px;">
-                            Invoice # ${orderId}
+                        <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 8px 0; background: #86efac; padding: 6px; color: #064e3b;">
+                            INVOICE PEMBAYARAN NO # ${orderId}
                         </div>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="4">
-                            <tr style="background: #86efac; text-align: center; font-weight: bold;">
-                                <th>NAMA BARANG</th><th style="width: 70px;">JUMLAH</th><th style="width: 100px;">HARGA SATUAN</th><th style="width: 100px;">SUBTOTAL</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="5">
+                            <tr style="background: #22c55e; color: white; text-align: center; font-weight: bold;">
+                                <th>NAMA BARANG</th><th style="width: 80px;">JUMLAH</th><th style="width: 120px;">HARGA SATUAN</th><th style="width: 140px;">SUBTOTAL</th>
                             </tr>
                             ${items.map(i => `
                                 <tr>
@@ -1315,15 +1380,15 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 55%; vertical-align: top;">
-                                    <div style="border: 1px solid #000; padding: 4px; font-weight: bold;">
+                                    <div style="border: 1px solid #000; padding: 6px; font-weight: bold; background: #f0fdf4;">
                                         UD PANGAN BERKAH : JL. TGH. FAISAL, TURIDE, KEC. SANDUBAYA - MATARAM
                                     </div>
                                     <div style="margin-top: 15px; text-align: center;">Penjual,<br><br><br>........................................</div>
                                 </td>
                                 <td style="width: 45%; vertical-align: top; text-align: right;">
                                     <p style="margin:2px 0;">Subtotal: ${fmt(total)}</p>
-                                    <p style="margin:2px 0; font-weight: bold; font-size: 13px;">Total: ${fmt(total)}</p>
-                                    <div style="border: 1px solid #000; padding: 4px; text-align: left; margin-top: 8px;">
+                                    <p style="margin:2px 0; font-weight: bold; font-size: 14px; color: #15803d;">Total: ${fmt(total)}</p>
+                                    <div style="border: 1px solid #000; padding: 6px; text-align: left; margin-top: 8px; background: #f0fdf4;">
                                         BANK SYARIAH INDONESIA<br>No. Rekening: 7358085665<br>An. UD PANGAN BERKAH
                                     </div>
                                 </td>
@@ -1332,20 +1397,20 @@
                     </div>
                 `;
             }
-            // FORMAT 4: FAKTUR PEMBAYARAN (UD SEGA)
+            // FORMAT 4: FAKTUR PEMBAYARAN (UD SEGA - LANDSCAPE)
             else if (templateKey === 'sega') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <h2 style="font-weight: bold; font-size: 15px; margin: 0 0 4px 0;">FAKTUR PEMBAYARAN</h2>
+                        <h2 style="font-weight: bold; font-size: 16px; margin: 0 0 6px 0; color: #1e293b;">FAKTUR PEMBAYARAN NO. ${orderId}</h2>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td>Kepada :<br><b>${customer}</b><br>di tempat<br><br>Telpon : +62 877-7742-8813<br>Alamat : Jl. Amir Hamzah Kr. Sukun Baru, Mataram</td>
-                                <td style="text-align: right; vertical-align: top;">No. Faktur : <b>${orderId}</b><br><br>Tanggal : <b>${formattedDate}</b></td>
+                                <td>Kepada :<br><b style="font-size: 13px;">${customer}</b><br>di tempat<br>Telpon : +62 877-7742-8813<br>Alamat : Jl. Amir Hamzah Kr. Sukun Baru, Mataram</td>
+                                <td style="text-align: right; vertical-align: top;">No. Faktur : <b style="font-size: 13px;">${orderId}</b><br><br>Tanggal : <b>${formattedDate}</b></td>
                             </tr>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="3">
-                            <tr style="text-align: center; font-weight: bold;">
-                                <th style="width: 30px;">No</th><th>Deskripsi Item</th><th style="width: 70px;">Banyaknya</th><th style="width: 90px;">Harga</th><th style="width: 100px;">Total</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="5">
+                            <tr style="text-align: center; font-weight: bold; background: #f1f5f9;">
+                                <th style="width: 40px;">No</th><th>Deskripsi Item</th><th style="width: 80px;">Banyaknya</th><th style="width: 110px;">Harga</th><th style="width: 130px;">Total</th>
                             </tr>
                             ${items.map((i, index) => `
                                 <tr>
@@ -1362,7 +1427,7 @@
                                 <td style="width: 50%; text-align: center; vertical-align: top;">Penjual,<br><br><br><b>( .................................... )</b></td>
                                 <td style="width: 50%; text-align: right;">
                                     Subtotal : ${fmt(total)}<br>
-                                    <b>Total : ${fmt(total)}</b><br><br>
+                                    <b style="font-size: 13px;">Total : ${fmt(total)}</b><br><br>
                                     Pembayaran : Bank BSI<br>
                                     Rekening : 7371525194<br>
                                     A.n UD Sega
@@ -1370,25 +1435,25 @@
                             </tr>
                         </table>
                         <div style="border-top: 1px dashed #000; margin-top: 10px; padding-top: 4px;">
-                            <b>Terimakasi!</b><br>Tlp. : 0859-5600-7754<br>Lokasi : Jl. Torangga 2 Seganteng Subagan Mataram
+                            <b>Terimakasi!</b> | Tlp: 0859-5600-7754 | Lokasi: Jl. Torangga 2 Seganteng Subagan Mataram
                         </div>
                     </div>
                 `;
             }
-            // FORMAT 5: UD. IKA SAYUR
+            // FORMAT 5: UD. IKA SAYUR (PORTRAIT - LENGKAP NO INVOICE)
             else if (templateKey === 'ika_sayur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td><h2 style="font-weight: bold; font-size: 16px; margin: 0; color: #15803d;">UD. IKA SAYUR</h2>Jl. Imam Bonjol Tohpati Karang Mas - Mas Kr. Taliwang Mataram<br>Telp. 081933022503</td>
+                                <td><h2 style="font-weight: bold; font-size: 17px; margin: 0; color: #15803d;">UD. IKA SAYUR</h2>Jl. Imam Bonjol Tohpati Karang Mas - Mas Kr. Taliwang Mataram<br>Telp. 081933022503</td>
                             </tr>
                         </table>
-                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 4px 0; margin-bottom: 6px;">Nota Pembayaran</div>
+                        <div style="border-top: 2px solid #15803d; border-bottom: 2px solid #15803d; padding: 4px 0; margin-bottom: 6px; font-weight: bold;">Nota Pembayaran # ${orderId}</div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>Tagihan Kepada :<br><b>${customer}</b><br>Jl. Tanjung Sari Cakra Selatan - Mataram</td>
-                                <td style="text-align: right;">Invoice: <b>${orderId}</b><br>Tanggal: <b>${formattedDate}</b></td>
+                                <td style="text-align: right;">Invoice No: <b>${orderId}</b><br>Tanggal: <b>${formattedDate}</b></td>
                             </tr>
                         </table>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="4">
@@ -1407,35 +1472,35 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td>Rek: Bank Syariah Indonesia<br><b>A.N UD IKA SAYUR 7371525976</b></td>
-                                <td style="text-align: right;">Subtotal: ${fmt(total)}<br><b style="font-size: 13px;">Total: ${fmt(total)}</b></td>
+                                <td style="text-align: right;">Subtotal: ${fmt(total)}<br><b style="font-size: 13px; color: #15803d;">Total: ${fmt(total)}</b></td>
                             </tr>
                         </table>
-                        <div style="margin-top: 15px; display: flex; justify-content: space-between; items-center;">
-                            <i style="font-size: 14px; font-weight: bold;">Terimakasi!</i>
+                        <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                            <i style="font-size: 14px; font-weight: bold; color: #15803d;">Terimakasi!</i>
                             <div>Dengan Hormat,<br><br><br>( .................................... )</div>
                         </div>
                     </div>
                 `;
             }
-            // FORMAT 6: UD. SAHABAT ARMY
+            // FORMAT 6: UD. SAHABAT ARMY (LANDSCAPE - LENGKAP NO NOTA)
             else if (templateKey === 'sahabat_army') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td><h2 style="font-weight: bold; font-size: 14px; margin: 0;">UD. SAHABAT ARMY</h2>Jl. Blue Safir No. 1 Selagalas, Kec. Sandubaya, Kota Mataram</td>
-                                <td style="text-align: right;"><h3 style="font-weight: bold; margin: 0;">NOTA PEMBAYARAN</h3>REKENING : BSI 7358086246 a.n UD Sahabat Army<br>HP : +6277-7943-8841</td>
+                                <td><h2 style="font-weight: bold; font-size: 16px; margin: 0;">UD. SAHABAT ARMY</h2>Jl. Blue Safir No. 1 Selagalas, Kec. Sandubaya, Kota Mataram</td>
+                                <td style="text-align: right;"><h3 style="font-weight: bold; margin: 0; color: #1e3a8a;">NOTA PEMBAYARAN</h3>REKENING : BSI 7358086246 a.n UD Sahabat Army<br>HP : +6277-7943-8841</td>
                             </tr>
                         </table>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td>Tanggal : <b>${formattedDate}</b><br>No. Nota : <b>${orderId}</b></td>
+                                <td>Tanggal : <b>${formattedDate}</b><br>No. Nota : <b style="font-size: 12px; color: #1e3a8a;">${orderId}</b></td>
                                 <td style="text-align: right;">Kepada Yth: <b>${customer}</b></td>
                             </tr>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="3">
-                            <tr style="background: #e2e8f0; text-align: center; font-weight: bold;">
-                                <th style="width: 30px;">No.</th><th>Nama Produk</th><th style="width: 50px;">QTY</th><th style="width: 80px;">Harga</th><th style="width: 90px;">Jumlah</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="4">
+                            <tr style="background: #cbd5e1; text-align: center; font-weight: bold;">
+                                <th style="width: 40px;">No.</th><th>Nama Produk</th><th style="width: 70px;">QTY</th><th style="width: 100px;">Harga</th><th style="width: 120px;">Jumlah</th>
                             </tr>
                             ${items.map((i, idx) => `
                                 <tr>
@@ -1446,25 +1511,25 @@
                                     <td style="text-align: right;">${fmt(i.qty * i.harga)}</td>
                                 </tr>
                             `).join('')}
-                            <tr style="font-weight: bold;">
+                            <tr style="font-weight: bold; background: #94a3b8; color: white;">
                                 <td colspan="4" style="text-align: right;">TOTAL</td>
                                 <td style="text-align: right;">${fmt(total)}</td>
                             </tr>
                         </table>
-                        <p style="margin: 2px 0;">Keterangan : Barang yang sudah dibayar tidak bisa dikembalikan</p>
+                        <p style="margin: 4px 0; font-style: italic;">Keterangan : Barang yang sudah dibayar tidak bisa dikembalikan</p>
                         <div style="text-align: center; margin-top: 15px;">Hormat Kami,<br><br><br>........................................</div>
                     </div>
                 `;
             }
-            // FORMAT 7: UD SUMBER URIP
+            // FORMAT 7: UD SUMBER URIP (PORTRAIT - LENGKAP NO NOTA)
             else if (templateKey === 'sumber_urip') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 4px;">NOTA PEMBAYARAN</div>
+                        <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 4px;">NOTA PEMBAYARAN NO: ${orderId}</div>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
                                 <td>Jl. Tenggiri, Kel. Pagutan Mataram<br>Hp. 087721254251</td>
-                                <td style="text-align: right; font-weight: bold; font-size: 13px; color: #1e3a8a;">UD SUMBER URIP</td>
+                                <td style="text-align: right; font-weight: bold; font-size: 14px; color: #1e3a8a;">UD SUMBER URIP</td>
                             </tr>
                         </table>
                         <table style="width: 100%; margin-bottom: 6px;">
@@ -1503,25 +1568,25 @@
                     </div>
                 `;
             }
-            // FORMAT 8: UD. SAPAKIRA
+            // FORMAT 8: UD. SAPAKIRA (LANDSCAPE - LENGKAP NO NOTA)
             else if (templateKey === 'sapakira') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td><h2 style="font-weight: bold; font-size: 14px; margin: 0; color: #1d4ed8;">UD. SAPAKIRA</h2>JL. SENOPATI 3, ABIAN TUBUH BARU, SANDUBAYA</td>
+                                <td><h2 style="font-weight: bold; font-size: 16px; margin: 0; color: #1d4ed8;">UD. SAPAKIRA</h2>JL. SENOPATI 3, ABIAN TUBUH BARU, SANDUBAYA</td>
                                 <td style="text-align: right;"><h3 style="font-weight: bold; margin: 0;">NOTA PEMBAYARAN</h3>REKENING : BSI 7358085991 a.n UD Sapakira<br>No Telp. : 087820124266</td>
                             </tr>
                         </table>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td>Tanggal : <b>${formattedDate}</b><br>No. Nota : <b>${orderId}</b></td>
+                                <td>Tanggal : <b>${formattedDate}</b><br>No. Nota : <b style="font-size: 12px; color: #1d4ed8;">${orderId}</b></td>
                                 <td style="text-align: right;">Kepada Yth: <b>${customer}</b></td>
                             </tr>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="3">
-                            <tr style="text-align: center; font-weight: bold; background: #f1f5f9;">
-                                <th style="width: 30px;">No.</th><th>Nama Produk</th><th style="width: 50px;">QTY</th><th style="width: 80px;">Harga</th><th style="width: 90px;">Jumlah</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="4">
+                            <tr style="text-align: center; font-weight: bold; background: #e2e8f0;">
+                                <th style="width: 40px;">No.</th><th>Nama Produk</th><th style="width: 70px;">QTY</th><th style="width: 100px;">Harga</th><th style="width: 120px;">Jumlah</th>
                             </tr>
                             ${items.map((i, idx) => `
                                 <tr>
@@ -1532,21 +1597,21 @@
                                     <td style="text-align: right;">${fmt(i.qty * i.harga)}</td>
                                 </tr>
                             `).join('')}
-                            <tr style="font-weight: bold;">
+                            <tr style="font-weight: bold; background: #94a3b8; color: white;">
                                 <td colspan="4" style="text-align: right;">TOTAL</td>
                                 <td style="text-align: right;">${fmt(total)}</td>
                             </tr>
                         </table>
-                        <p style="margin: 2px 0;">Keterangan : Barang yang sudah dibayar tidak bisa dikembalikan</p>
+                        <p style="margin: 4px 0;">Keterangan : Barang yang sudah dibayar tidak bisa dikembalikan</p>
                         <div style="text-align: center; margin-top: 15px;">Hormat Kami,<br><br><br>........................................</div>
                     </div>
                 `;
             }
-            // FORMAT 9: UD AMIRA FIRDAUS (KWITANSI)
+            // FORMAT 9: UD AMIRA FIRDAUS (PORTRAIT - LENGKAP NO PEMBAYARAN)
             else if (templateKey === 'amira_firdaus') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <h2 style="font-weight: bold; font-size: 15px; margin: 0 0 4px 0;">KWITANSI PEMBAYARAN</h2>
+                        <h2 style="font-weight: bold; font-size: 16px; margin: 0 0 4px 0; color: #0f172a;">KWITANSI PEMBAYARAN</h2>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
                                 <td>JL. HALMAHERA RAYA NO. 66 REMBIGE, MATARAM<br>Telp. 089671388543<br><br>Kepada Yth. <b>${customer}</b></td>
@@ -1579,20 +1644,20 @@
                     </div>
                 `;
             }
-            // FORMAT 10: UD PANGAN MAKMUR
+            // FORMAT 10: UD PANGAN MAKMUR (LANDSCAPE - LENGKAP NO INVOICE)
             else if (templateKey === 'pangan_makmur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <div style="text-align: center; font-weight: bold; font-size: 15px; border-bottom: 2px solid #000; padding-bottom: 2px; margin-bottom: 6px;">INVOICE PEMBAYARAN</div>
+                        <div style="text-align: center; font-weight: bold; font-size: 16px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 6px;">INVOICE PEMBAYARAN NO. ${orderId}</div>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td><b style="font-size: 13px;">UD PANGAN MAKMUR</b><br>JL. LALU MESIR, KEL. TURIDE, KEC. SANDUBAYA - MATARAM</td>
-                                <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>Tuan/Toko: <b>${customer}</b><br>Telp. 082339488796</td>
+                                <td><b style="font-size: 14px;">UD PANGAN MAKMUR</b><br>JL. LALU MESIR, KEL. TURIDE, KEC. SANDUBAYA - MATARAM</td>
+                                <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b>${orderId}</b><br>Tuan/Toko: <b>${customer}</b><br>Telp. 082339488796</td>
                             </tr>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="4">
-                            <tr style="background: #64748b; color: white; text-align: center; font-weight: bold;">
-                                <th>Nama Barang</th><th style="width: 60px;">Jumlah</th><th style="width: 80px;">Harga</th><th style="width: 90px;">Total</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="5">
+                            <tr style="background: #475569; color: white; text-align: center; font-weight: bold;">
+                                <th>Nama Barang</th><th style="width: 80px;">Jumlah</th><th style="width: 110px;">Harga</th><th style="width: 130px;">Total</th>
                             </tr>
                             ${items.map(i => `
                                 <tr>
@@ -1616,7 +1681,7 @@
                     </div>
                 `;
             }
-            // FORMAT 11: UD TUMBUH MAJU
+            // FORMAT 11: UD TUMBUH MAJU (PORTRAIT - LENGKAP NO INVOICE)
             else if (templateKey === 'tumbuh_maju') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1624,7 +1689,7 @@
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
                                 <td><b style="font-size: 13px;">UD TUMBUH MAJU</b><br>PERUM. GRAHA PERMATA KOTA BLOK EH-05, SELAGALAS<br>Hp. 0878 5979 1078</td>
-                                <td style="text-align: right; vertical-align: top;">Rekening: BSI 7343769867 a.n UD TUMBUH MAJU<br><br>Tanggal : <b>${formattedDate}</b><br>Tuan/Toko: <b>${customer}</b></td>
+                                <td style="text-align: right; vertical-align: top;">Rekening: BSI 7343769867 a.n UD TUMBUH MAJU<br>No. Invoice: <b>${orderId}</b><br>Tanggal : <b>${formattedDate}</b><br>Tuan/Toko: <b>${customer}</b></td>
                             </tr>
                         </table>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="4">
@@ -1653,24 +1718,24 @@
                     </div>
                 `;
             }
-            // FORMAT 12: UD BERKAH (MBG LOGISTIK)
+            // FORMAT 12: UD BERKAH MBG (LANDSCAPE - LENGKAP NO FAKTUR)
             else if (templateKey === 'berkah_mbg') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 8px; text-align: center;">
-                            <h2 style="font-size: 18px; font-weight: bold; margin: 0; color: #0284c7;">UD BERKAH - LOGISTIK MBG</h2>
-                            <p style="margin: 2px 0;">Dapur Penyedia Makan Bergizi Gratis & Distribusi Pangan</p>
-                            <p style="margin: 2px 0;">Mataram - NTB | Hotline: 0877-6179-6588</p>
+                            <h2 style="font-size: 20px; font-weight: bold; margin: 0; color: #0284c7;">UD BERKAH - LOGISTIK MBG</h2>
+                            <p style="margin: 2px 0;">Dapur Penyedia Makan Bergizi Gratis & Distribusi Pangan Mataram</p>
+                            <p style="margin: 2px 0;">Hotline Logistik: 0877-6179-6588</p>
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td>No Faktur : <b>${orderId}</b><br>Tanggal : <b>${formattedDate}</b></td>
+                                <td>No Faktur Logistik: <b style="font-size: 13px; color: #0284c7;">${orderId}</b><br>Tanggal Pengadaan: <b>${formattedDate}</b></td>
                                 <td style="text-align: right;">Penerima / Dapur MBG :<br><b style="font-size: 13px;">${customer}</b></td>
                             </tr>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="4">
-                            <tr style="background: #e0f2fe; text-align: center; font-weight: bold;">
-                                <th style="width: 30px;">No</th><th>Item Pengadaan</th><th style="width: 60px;">Satuan</th><th style="width: 50px;">Vol</th><th style="width: 80px;">Harga Satuan</th><th style="width: 90px;">Subtotal</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="5">
+                            <tr style="background: #bae6fd; text-align: center; font-weight: bold;">
+                                <th style="width: 40px;">No</th><th>Item Pengadaan</th><th style="width: 70px;">Satuan</th><th style="width: 60px;">Vol</th><th style="width: 110px;">Harga Satuan</th><th style="width: 130px;">Subtotal</th>
                             </tr>
                             ${items.map((i, idx) => `
                                 <tr>
@@ -1682,19 +1747,19 @@
                                     <td style="text-align: right;">${fmt(i.qty * i.harga)}</td>
                                 </tr>
                             `).join('')}
-                            <tr style="font-weight: bold; background: #bae6fd;">
+                            <tr style="font-weight: bold; background: #0284c7; color: white;">
                                 <td colspan="5" style="text-align: right;">TOTAL ALOKASI ANGGARAN:</td>
                                 <td style="text-align: right;">${fmt(total)}</td>
                             </tr>
                         </table>
-                        <div style="display: flex; justify-content: space-between; margin-top: 15px; text-align: center;">
+                        <div style="display: flex; justify-content: space-between; margin-top: 20px; text-align: center;">
                             <div>Petugas Logistik,<br><br><br><b>( .................... )</b></div>
                             <div>Penerima Dapur MBG,<br><br><br><b>( ${customer} )</b></div>
                         </div>
                     </div>
                 `;
             }
-            // FORMAT 13: MATARAM LOGISTIK
+            // FORMAT 13: MATARAM LOGISTIK (PORTRAIT)
             else if (templateKey === 'mataram_logistik') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1702,7 +1767,7 @@
                         <p style="text-align: center; margin: 2px 0; border-bottom: 1px solid #000; padding-bottom: 4px;">Penyedia Bahan Pokok & Sembako Murah Lombok</p>
                         <table style="width: 100%; margin: 8px 0;">
                             <tr>
-                                <td>Tanggal: <b>${formattedDate}</b><br>ID Order: <b>${orderId}</b></td>
+                                <td>Tanggal: <b>${formattedDate}</b><br>ID Order/Nota: <b>${orderId}</b></td>
                                 <td style="text-align: right;">Pelanggan:<br><b>${customer}</b></td>
                             </tr>
                         </table>
@@ -1730,7 +1795,7 @@
                     </div>
                 `;
             }
-            // FORMAT 14: SAYUR SEGAR
+            // FORMAT 14: SAYUR SEGAR (PORTRAIT)
             else if (templateKey === 'sayur_segar') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1739,7 +1804,7 @@
                         <hr style="margin: 6px 0;">
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td>Nota #: <b>${orderId}</b><br>Tgl: <b>${formattedDate}</b></td>
+                                <td>Nota No: <b>${orderId}</b><br>Tgl: <b>${formattedDate}</b></td>
                                 <td style="text-align: right;">Kepada: <b>${customer}</b></td>
                             </tr>
                         </table>
@@ -1761,23 +1826,23 @@
                     </div>
                 `;
             }
-            // FORMAT 15: FAKTUR BOP INSTANSI
+            // FORMAT 15: FAKTUR BOP INSTANSI (LANDSCAPE)
             else if (templateKey === 'bop_instansi') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
-                            <h2 style="font-size: 16px; font-weight: bold; margin: 0;">FAKTUR PENGELUARAN BOP / INSTANSI</h2>
+                            <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FAKTUR PENGELUARAN BOP / INSTANSI NO. ${orderId}</h2>
                             <p style="margin: 2px 0;">UD BERKAH - MATARAM</p>
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>Nomor Dokumen: <b>${orderId}</b><br>Tanggal: <b>${formattedDate}</b></td>
-                                <td style="text-align: right;">Instansi / Pemesan:<br><b style="font-size: 12px;">${customer}</b></td>
+                                <td style="text-align: right;">Instansi / Pemesan:<br><b style="font-size: 13px;">${customer}</b></td>
                             </tr>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="4">
-                            <tr style="background: #f1f5f9; text-align: center; font-weight: bold;">
-                                <th>No</th><th>Rincian Barang</th><th>Qty</th><th>Harga Satuan</th><th>Jumlah Total</th>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 8px;" border="1" cellpadding="5">
+                            <tr style="background: #e2e8f0; text-align: center; font-weight: bold;">
+                                <th style="width: 40px;">No</th><th>Rincian Barang</th><th style="width: 80px;">Qty</th><th style="width: 110px;">Harga Satuan</th><th style="width: 130px;">Jumlah Total</th>
                             </tr>
                             ${items.map((i, idx) => `
                                 <tr>
@@ -1788,32 +1853,32 @@
                                     <td style="text-align: right;">${fmt(i.qty * i.harga)}</td>
                                 </tr>
                             `).join('')}
-                            <tr style="font-weight: bold; background: #e2e8f0;">
+                            <tr style="font-weight: bold; background: #cbd5e1;">
                                 <td colspan="4" style="text-align: right;">TOTAL PENGELUARAN:</td>
                                 <td style="text-align: right;">${fmt(total)}</td>
                             </tr>
                         </table>
-                        <div style="display: flex; justify-content: space-between; margin-top: 15px; text-align: center;">
+                        <div style="display: flex; justify-content: space-between; margin-top: 20px; text-align: center;">
                             <div>Bendahara Instansi,<br><br><br>( .................... )</div>
                             <div>Penyedia Barang,<br><br><br>( .................... )</div>
                         </div>
                     </div>
                 `;
             }
-            // FORMAT 16: GROSIR TOKO RANGKAP
+            // FORMAT 16: GROSIR TOKO RANGKAP (LANDSCAPE)
             else if (templateKey === 'grosir_toko') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
-                                <td><h2 style="font-size: 16px; font-weight: bold; margin: 0;">NOTA GROSIR UD BERKAH</h2>Pembelian Partai Besar & Eceran Toko</td>
-                                <td style="text-align: right; font-weight: bold;">RANGKAP DOKUMEN<br>No: ${orderId}</td>
+                                <td><h2 style="font-size: 18px; font-weight: bold; margin: 0;">NOTA GROSIR UD BERKAH</h2>Pembelian Partai Besar & Eceran Toko</td>
+                                <td style="text-align: right; font-weight: bold;">RANGKAP DOKUMEN<br>No. Nota: ${orderId}</td>
                             </tr>
                         </table>
-                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 0; margin-bottom: 6px;">Tanggal: <b>${formattedDate}</b> | Customer: <b>${customer}</b></div>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="3">
+                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 4px 0; margin-bottom: 6px;">Tanggal: <b>${formattedDate}</b> | Customer: <b>${customer}</b></div>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 6px;" border="1" cellpadding="5">
                             <tr style="background: #cbd5e1; text-align: center; font-weight: bold;">
-                                <th>Nama Barang Grosir</th><th style="width: 50px;">Qty</th><th style="width: 80px;">Harga Grosir</th><th style="width: 90px;">Subtotal</th>
+                                <th>Nama Barang Grosir</th><th style="width: 80px;">Qty</th><th style="width: 110px;">Harga Grosir</th><th style="width: 130px;">Subtotal</th>
                             </tr>
                             ${items.map(i => `
                                 <tr>
@@ -1824,9 +1889,9 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="display: flex; justify-content: space-between; items-center;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                             <div>Pembayaran: Cash / Transfer BSI</div>
-                            <div style="font-weight: bold; font-size: 13px;">TOTAL GROSIR: ${fmt(total)}</div>
+                            <div style="font-weight: bold; font-size: 14px;">TOTAL GROSIR: ${fmt(total)}</div>
                         </div>
                     </div>
                 `;
