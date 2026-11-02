@@ -378,7 +378,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: LAPORAN TRANSAKSI (REVISI PENANDA HARGA MANUAL & TANGGAL DD/MM/YYYY) -->
+                <!-- TAB 4: LAPORAN TRANSAKSI -->
                 <div id="mgt-tab-laporan" class="mgt-content hidden space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div class="pos-card p-3 rounded-lg border-l-4 border-[#06B6D4]">
@@ -540,9 +540,9 @@
         let selectedCategory = 'All';
         let lastTransactionData = null;
 
-        // HELPER FORMAT TANGGAL KE DD/MM/YYYY
+        // HELPER PERBAIKAN FORMAT TANGGAL DD/MM/YYYY (MENCEGAH NAMA HARI FRI, MON, DLL)
         function formatDateOnly(dateVal) {
-            if (!dateVal) {
+            if (!dateVal || dateVal === "undefined" || dateVal === "null") {
                 const d = new Date();
                 const day = String(d.getDate()).padStart(2, '0');
                 const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -550,7 +550,18 @@
                 return `${day}/${month}/${year}`;
             }
 
-            const strVal = String(dateVal);
+            const strVal = String(dateVal).trim();
+
+            // Jika string mengandung nama hari (Fri, Mon, dsb), ubah via JavaScript Date Object
+            const parsedDate = new Date(strVal);
+            if (!isNaN(parsedDate.getTime()) && (strVal.includes('GMT') || strVal.includes('00:00') || strVal.length > 15)) {
+                const day = String(parsedDate.getDate()).padStart(2, '0');
+                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                const year = parsedDate.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            // Jika format sudah DD/MM/YYYY
             if (strVal.includes('/')) {
                 const parts = strVal.split(' ')[0].split('/');
                 if (parts.length === 3) {
@@ -561,6 +572,7 @@
                 }
             }
 
+            // Jika format YYYY-MM-DD
             if (strVal.includes('-')) {
                 const parts = strVal.split('T')[0].split(' ')[0].split('-');
                 if (parts.length === 3) {
@@ -569,14 +581,6 @@
                     }
                     return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
                 }
-            }
-
-            const d = new Date(dateVal);
-            if (!isNaN(d.getTime())) {
-                const day = String(d.getDate()).padStart(2, '0');
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const year = d.getFullYear();
-                return `${day}/${month}/${year}`;
             }
 
             return strVal;
@@ -1090,9 +1094,14 @@
 
         function closeInvoiceModal() { document.getElementById('invoice-modal').classList.add('hidden'); }
 
-        // EXPORT TO EXCEL DENGAN FORMAT STRING RP (Contoh: Rp 50.000)
+        // REVISI EXPORT TO EXCEL: TABEL RAPI + BARIS TOTAL DI BAWAH + LEBAR KOLOM AUTOMATIS
         function exportToExcel() {
-            if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data transaksi.');
+            if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data transaksi untuk di-export.');
+
+            let totalQtyAll = 0;
+            let totalModalAll = 0;
+            let totalOmsetAll = 0;
+            let totalProfitAll = 0;
 
             const reportRows = dbData.transaksi.map(t => {
                 const qty = Number(t['Qty']) || 1;
@@ -1104,26 +1113,63 @@
                 const profit = subtotalOmset - subtotalModal;
                 const isManual = t['IsManual'] || false;
 
+                totalQtyAll += qty;
+                totalModalAll += subtotalModal;
+                totalOmsetAll += subtotalOmset;
+                totalProfitAll += profit;
+
                 return {
                     'Tanggal': formatDateOnly(t['Tanggal']),
                     'Order ID': t['Order ID'],
                     'Customer': (t['Customer'] || 'Umum') + (isManual ? ' [Harga Manual]' : ''),
-                    'Jenis Penjualan': t['Jenis Penjualan'],
+                    'Jenis Penjualan': t['Jenis Penjualan'] || 'Eceran',
                     'Nama Barang': t['Nama Barang'] || '-',
                     'Qty': qty,
                     'Harga Modal': 'Rp ' + hargaModal.toLocaleString('id-ID'),
                     'Harga Jual': 'Rp ' + hargaJual.toLocaleString('id-ID'),
-                    'Sub Total': 'Rp ' + subtotalOmset.toLocaleString('id-ID'),
-                    'Profit': 'Rp ' + profit.toLocaleString('id-ID')
+                    'Sub Total Modal': 'Rp ' + subtotalModal.toLocaleString('id-ID'),
+                    'Sub Total Omset': 'Rp ' + subtotalOmset.toLocaleString('id-ID'),
+                    'Profit / Laba': 'Rp ' + profit.toLocaleString('id-ID')
                 };
             });
 
+            // BARIS TOTAL KESELURUHAN DI BAWAH TABEL
+            reportRows.push({
+                'Tanggal': 'TOTAL KESELURUHAN',
+                'Order ID': '',
+                'Customer': '',
+                'Jenis Penjualan': '',
+                'Nama Barang': '',
+                'Qty': totalQtyAll,
+                'Harga Modal': '',
+                'Harga Jual': '',
+                'Sub Total Modal': 'Rp ' + totalModalAll.toLocaleString('id-ID'),
+                'Sub Total Omset': 'Rp ' + totalOmsetAll.toLocaleString('id-ID'),
+                'Profit / Laba': 'Rp ' + totalProfitAll.toLocaleString('id-ID')
+            });
+
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
+
+            // SETTING LEBAR KOLOM AUTOMATIS AGAR EXCEL RAPI
+            worksheet['!cols'] = [
+                { wch: 14 }, // Tanggal
+                { wch: 16 }, // Order ID
+                { wch: 22 }, // Customer
+                { wch: 18 }, // Jenis Penjualan
+                { wch: 28 }, // Nama Barang
+                { wch: 10 }, // Qty
+                { wch: 16 }, // Harga Modal
+                { wch: 16 }, // Harga Jual
+                { wch: 18 }, // Sub Total Modal
+                { wch: 18 }, // Sub Total Omset
+                { wch: 18 }  // Profit / Laba
+            ];
+
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Transaksi Master");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Laba Rugi POS");
             
             const todayStr = formatDateOnly(new Date()).replace(/\//g, '-');
-            XLSX.writeFile(workbook, `Laporan_POS_UD_BERKAH_${todayStr}.xlsx`);
+            XLSX.writeFile(workbook, `Laporan_Laba_Rugi_UD_BERKAH_${todayStr}.xlsx`);
         }
 
         window.addEventListener('keydown', (e) => {
