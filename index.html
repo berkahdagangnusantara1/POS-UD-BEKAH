@@ -43,64 +43,22 @@
             input, select, textarea { font-size: 16px !important; }
         }
 
-        /* PERBAIKAN CETAK UNTUK PRINTER THERMAL (BLUEPRINT) DAN ISOLASI MEDIA PRINT */
+        /* VARIASI DIMENSI CETAK (FULL A4, SETENGAH KERTAS, STRUK KECIL KASIR) */
         @media print {
-            body * { visibility: hidden !important; }
-            
-            body.print-invoice-mode #invoice-modal,
-            body.print-invoice-mode #invoice-modal *,
-            body.print-invoice-mode #invoice-print-area,
-            body.print-invoice-mode #invoice-print-area * {
+            body * { visibility: hidden; }
+            #invoice-print-area, #invoice-print-area *, #stock-opname-print-area, #stock-opname-print-area * {
                 visibility: visible !important;
             }
-            
-            body.print-invoice-mode #invoice-modal {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                height: auto !important;
-                background: white !important;
-                overflow: visible !important;
+            #invoice-print-area {
+                position: absolute; left: 0; top: 0;
+                color: #000; background: #fff;
+            }
+            #stock-opname-print-area {
                 display: block !important;
+                position: absolute; left: 0; top: 0;
+                width: 100%; padding: 20px;
+                font-family: sans-serif; font-size: 12px; color: #000; background: #fff;
             }
-
-            body.print-invoice-mode #invoice-print-area {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                border: none !important;
-            }
-
-            /* Penanganan khusus Struk Thermal Kasir (Blueprint / POS 58mm & 80mm) */
-            body.print-invoice-mode #invoice-print-area.print-receipt-small {
-                width: 100% !important;
-                max-width: 80mm !important;
-                padding: 2mm !important;
-                font-size: 9pt !important;
-                color: #000 !important;
-                background: #fff !important;
-            }
-
-            body.print-so-mode #stock-opname-print-area,
-            body.print-so-mode #stock-opname-print-area * {
-                visibility: visible !important;
-            }
-            body.print-so-mode #stock-opname-print-area {
-                display: block !important;
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                padding: 20px !important;
-                font-family: sans-serif !important;
-                font-size: 12px !important;
-                color: #000 !important;
-                background: #fff !important;
-            }
-
             .no-print { display: none !important; }
         }
 
@@ -130,7 +88,7 @@
             border: 1px solid #cbd5e1;
         }
 
-        @page { margin: 3mm; }
+        @page { margin: 5mm; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden select-none bg-[#0F172A] text-[#F8FAFC]">
@@ -579,17 +537,17 @@
                         <option value="berkah_std">1. UD BERKAH (Full A4 Portrait)</option>
                         <option value="agro_buah">2. UD. AGRO BUAH (Full A4 Portrait)</option>
                         <option value="pangan_berkah">3. UD PANGAN BERKAH (Full A4 Landscape)</option>
-                        <option value="sega">4. FAKTUR UD SEGA (Setengah KERTAS - 1/2 A4)</option>
+                        <option value="sega">4. FAKTUR UD SEGA (Setengah Kertas - 1/2 A4)</option>
                         <option value="ika_sayur">5. UD. IKA SAYUR (Setengah Kertas - 1/2 A4)</option>
                         <option value="sahabat_army">6. UD. SAHABAT ARMY (Full A4 Landscape)</option>
-                        <option value="sumber_urip">7. UD SUMBER URIP (Struk Kecil Thermal Blueprint 80mm)</option>
+                        <option value="sumber_urip">7. UD SUMBER URIP (Struk Kecil Kasir 80mm)</option>
                         <option value="sapakira">8. UD. SAPAKIRA (Setengah Kertas - 1/2 A4)</option>
                         <option value="amira_firdaus">9. UD AMIRA FIRDAUS (Full A4 Portrait)</option>
                         <option value="pangan_makmur">10. UD PANGAN MAKMUR (Full A4 Landscape)</option>
                         <option value="tumbuh_maju">11. UD TUMBUH MAJU (Setengah Kertas - 1/2 A4)</option>
                         <option value="berkah_mbg">12. UD BERKAH MBG (Full A4 Landscape)</option>
-                        <option value="mataram_logistik">13. UD MATARAM LOGISTIK (Struk Kecil Thermal Blueprint 80mm)</option>
-                        <option value="sayur_segar">14. UD SAYUR SEGAR (Struk Kecil Thermal Blueprint 58mm)</option>
+                        <option value="mataram_logistik">13. UD MATARAM LOGISTIK (Struk Kecil Kasir 80mm)</option>
+                        <option value="sayur_segar">14. UD SAYUR SEGAR (Struk Kecil Kasir 58mm)</option>
                         <option value="bop_instansi">15. FAKTUR BOP INSTANSI (Full A4 Landscape)</option>
                         <option value="grosir_toko">16. NOTA PENJUALAN GROSIR (Setengah Kertas - 1/2 A4)</option>
                     </select>
@@ -599,7 +557,7 @@
                         <option value="full_portrait">Paksa Full A4 Portrait</option>
                         <option value="full_landscape">Paksa Full A4 Landscape</option>
                         <option value="half_paper">Paksa Setengah Kertas (1/2 A4)</option>
-                        <option value="receipt_small">Paksa Struk Kecil Kasir (Thermal Blueprint)</option>
+                        <option value="receipt_small">Paksa Struk Kecil Kasir (Thermal)</option>
                     </select>
                 </div>
                 <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white p-1 self-end sm:self-auto"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -613,7 +571,7 @@
             </div>
 
             <div class="p-3 bg-[#0F172A] flex gap-2 no-print">
-                <button onclick="printInvoiceAction()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 py-2.5 rounded text-xs font-bold flex items-center justify-center gap-1.5 shadow active:scale-95">
+                <button onclick="window.print()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 py-2.5 rounded text-xs font-bold flex items-center justify-center gap-1.5 shadow active:scale-95">
                     <i class="fa-solid fa-print"></i> Cetak Struk / Invoice
                 </button>
                 <button onclick="closeInvoiceModal()" class="px-4 bg-[#334155] text-white py-2.5 rounded text-xs font-bold">Tutup</button>
@@ -654,23 +612,24 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
 
-        // PERBAIKAN 1: PARSER TANGGAL HANDAL & UNIVERSAL (TRANSAKSI LAMA TIDAK BERUBAH)
+        // PARSER TANGGAL HANDAL & UNIVERSAL UNTUK REKAP OMSET 100% AKURAT
         function parseDateObject(dateVal) {
-            if (!dateVal || dateVal === "undefined" || dateVal === "null" || dateVal === "") {
-                return null; // Return null jika memang kosong agar tidak menimpa tanggal histori
-            }
+            if (!dateVal || dateVal === "undefined" || dateVal === "null") return new Date();
             if (dateVal instanceof Date) return dateVal;
             
             let strVal = String(dateVal).trim();
 
+            // Tangani stempel ISO atau format waktu Google Apps Script
             if (strVal.includes('T')) {
                 strVal = strVal.split('T')[0];
             }
 
+            // Jika ada jam (pisahkan tanggalnya saja)
             if (strVal.includes(' ')) {
                 strVal = strVal.split(' ')[0];
             }
             
+            // Format DD/MM/YYYY atau YYYY/MM/DD
             if (strVal.includes('/')) {
                 const parts = strVal.split('/');
                 if (parts.length === 3) {
@@ -681,6 +640,7 @@
                 }
             }
             
+            // Format YYYY-MM-DD atau DD-MM-YYYY
             if (strVal.includes('-')) {
                 const parts = strVal.split('-');
                 if (parts.length === 3) {
@@ -692,12 +652,11 @@
             }
 
             const dObj = new Date(strVal);
-            return isNaN(dObj.getTime()) ? null : dObj;
+            return isNaN(dObj.getTime()) ? new Date() : dObj;
         }
 
         function formatDateOnly(dateVal) {
             const d = parseDateObject(dateVal);
-            if (!d) return '-';
             const day = String(d.getDate()).padStart(2, '0');
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
@@ -961,9 +920,6 @@
             const orderId = 'UB-' + Date.now().toString().slice(-6);
             const totalHarga = cart.reduce((a, b) => a + (b.harga * b.qty), 0);
             const isManualPriceUsed = cart.some(i => Number(i.harga) !== Number(i.hargaNormal));
-            
-            // Simpan tanggal saat ini secara presisi sebagai WAKTU SEKARANG
-            const nowCheckoutDate = new Date();
 
             const checkoutItems = cart.map(i => ({
                 ...i,
@@ -973,7 +929,6 @@
             const payload = {
                 action: 'checkout',
                 orderId: orderId,
-                tanggal: formatDateOnly(nowCheckoutDate),
                 namaCustomer: customer,
                 catatan: catatan,
                 jenisPenjualan: jenisFull,
@@ -994,7 +949,7 @@
                 jenis: jenisFull,
                 items: checkoutItems,
                 total: totalHarga,
-                dateParam: nowCheckoutDate
+                dateParam: new Date()
             };
 
             document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
@@ -1081,10 +1036,8 @@
             const area = document.getElementById('stock-opname-print-area');
             area.classList.remove('hidden');
             
-            document.body.classList.add('print-so-mode');
             setTimeout(() => {
                 window.print();
-                document.body.classList.remove('print-so-mode');
                 area.classList.add('hidden');
             }, 300);
         }
@@ -1185,7 +1138,7 @@
             `).join('');
         }
 
-        // PERBAIKAN 1: LAPORAN OMSET DENGAN PARSER TANGGAL PERSISTEN & AKURAT
+        // FUNGSI UTAMA LAPORAN OMSET HARIAN DAN BULANAN (PERBAIKAN DENGAN FALLBACK NAMA FIELD ALIAS)
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1204,6 +1157,7 @@
             }
 
             tbody.innerHTML = dbData.transaksi.map(t => {
+                // Multi-key fallback untuk kompatibilitas data Sheets
                 const rawDate = t['Tanggal'] || t['tanggal'] || t['Date'] || t['TGL'] || t['tgl'];
                 const subtotal = Number(t['Sub Total'] || t['SubTotal'] || t['subtotal'] || t['Total']) || 0;
                 const orderId = t['Order ID'] || t['OrderID'] || t['orderId'] || '-';
@@ -1214,19 +1168,20 @@
                 const jenisPenjualan = t['Jenis Penjualan'] || t['jenisPenjualan'] || 'Eceran';
 
                 const dObj = parseDateObject(rawDate);
-                const formattedDate = dObj ? formatDateOnly(dObj) : (rawDate || '-');
+                const formattedDate = formatDateOnly(dObj);
                 const isManual = t['IsManual'] || false;
                 const strataStr = String(jenisPenjualan).includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
 
-                if (dObj) {
-                    if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                        omsetHarian += subtotal;
-                    }
-                    if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                        omsetBulanan += subtotal;
-                    }
+                // Cek Harian: Tanggal, Bulan, dan Tahun sama persis
+                if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                    omsetHarian += subtotal;
+                }
+
+                // Cek Bulanan: Bulan dan Tahun sama
+                if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                    omsetBulanan += subtotal;
                 }
 
                 return `
@@ -1275,9 +1230,10 @@
             }));
 
             const total = matches.reduce((acc, curr) => acc + (Number(curr['Sub Total'] || curr['subtotal']) || 0), 0);
-            showInvoice(orderId, customer, jenis, items, total, rawDate);
+            showInvoice(orderId, customer, jenis, items, total, formatDateOnly(rawDate));
         }
 
+        // RENDERER MULTI-INVOICE ENGINE DENGAN 3 TIPE DIMENSI UTAMA (FULL A4, 1/2 A4, STRUK KECIL 80mm/58mm)
         function showInvoice(orderId, customer, jenis, items, total, dateParam) {
             currentActiveInvoiceData = { orderId, customer, jenis, items, total, dateParam };
             const selectedTemplate = document.getElementById('invoice-template-selector').value;
@@ -1292,15 +1248,6 @@
             }
         }
 
-        // PERBAIKAN 2: FUNGSI CETAK INVOICE DENGAN PRINTER THERMAL BLUEPRINT SUPAYA TIDAK BLANK
-        function printInvoiceAction() {
-            document.body.classList.add('print-invoice-mode');
-            window.print();
-            setTimeout(() => {
-                document.body.classList.remove('print-invoice-mode');
-            }, 500);
-        }
-
         function renderDynamicInvoiceTemplate(templateKey) {
             if (!currentActiveInvoiceData) return;
             const { orderId, customer, jenis, items, total, dateParam } = currentActiveInvoiceData;
@@ -1308,6 +1255,7 @@
             const printArea = document.getElementById('invoice-print-area');
             const modeOverride = document.getElementById('invoice-orientation-selector').value;
 
+            // Pemetaan Kategori Dimensi Default per Template (Sangat Bervariasi)
             let currentCategory = 'full_portrait';
 
             if (['pangan_berkah', 'sahabat_army', 'pangan_makmur', 'berkah_mbg', 'bop_instansi'].includes(templateKey)) {
@@ -1318,10 +1266,12 @@
                 currentCategory = 'receipt_small';
             }
 
+            // Override jika user memilih paksaan dari Sakelar
             if (modeOverride !== 'auto') {
                 currentCategory = modeOverride;
             }
 
+            // Terapkan Class Dimensi Kertas yang Sesuai
             if (currentCategory === 'full_portrait') {
                 printArea.className = "bg-white text-black rounded shadow-2xl border text-slate-900 font-sans print-full-portrait";
             } else if (currentCategory === 'full_landscape') {
@@ -1438,12 +1388,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table style="width: 100%; margin-top: 25px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Penjual,<br><br><br><br><b>( .................................... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: right; margin-top: 25px;">Hormat Penjual,<br><br><br><b>( .................................... )</b></div>
                     </div>
                 `;
             }
@@ -1479,6 +1424,7 @@
                                     <div style="border: 1px solid #000; padding: 8px; font-weight: bold; background: #f0fdf4;">
                                         UD PANGAN BERKAH : JL. TGH. FAISAL, TURIDE, KEC. SANDUBAYA - MATARAM
                                     </div>
+                                    <div style="margin-top: 20px; text-align: center;">Kasir / Penjual,<br><br><br>........................................</div>
                                 </td>
                                 <td style="width: 40%; vertical-align: top; text-align: right;">
                                     <p style="margin:2px 0; font-weight: bold; font-size: 16px; color: #15803d;">Total Tagihan: ${fmt(total)}</p>
@@ -1486,12 +1432,6 @@
                                         BANK SYARIAH INDONESIA (BSI)<br>No. Rekening: 7358085665<br>An. UD PANGAN BERKAH
                                     </div>
                                 </td>
-                            </tr>
-                        </table>
-                        <table style="width: 100%; margin-top: 20px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><br><b>( .................................... )</b></td>
                             </tr>
                         </table>
                     </div>
@@ -1528,16 +1468,11 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>Rek: BSI 7371525194<br>a.n UD Sega</div>
                             <div style="text-align: right;"><b style="font-size: 12px;">TOTAL: ${fmt(total)}</b></div>
                         </div>
-                        <table style="width: 100%; font-size: 10px; margin-top: 10px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Penjual,<br><br><br><b>( ............... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: center; margin-top: 15px;">Penjual,<br><br><b>( .................... )</b></div>
                     </div>
                 `;
             }
@@ -1567,16 +1502,10 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 9px;">BSI: 7371525976 A.N UD IKA SAYUR</span>
                             <b style="font-size: 12px; color: #15803d;">TOTAL: ${fmt(total)}</b>
                         </div>
-                        <table style="width: 100%; font-size: 10px; margin-top: 10px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
-                            </tr>
-                        </table>
                     </div>
                 `;
             }
@@ -1614,19 +1543,14 @@
                                 <td style="text-align: right;">${fmt(total)}</td>
                             </tr>
                         </table>
-                        <table style="width: 100%; margin-top: 20px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><br><b>( .................................... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: center; margin-top: 20px;">Hormat Kami,<br><br><br>........................................</div>
                     </div>
                 `;
             }
-            // 7. UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL BLUEPRINT)
+            // 7. UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL)
             else if (templateKey === 'sumber_urip') {
                 html = `
-                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace; color: #000;">
+                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD SUMBER URIP</h4>
                         <p style="margin: 2px 0;">Jl. Tenggiri Pagutan Mataram</p>
                         <p style="margin: 2px 0;">Telp: 087721254251</p>
@@ -1639,7 +1563,9 @@
                         <div style="border-bottom: 1px dashed #000; margin: 4px 0;"></div>
                         <table style="width: 100%; font-size: 9pt; text-align: left;">
                             ${items.map(i => `
-                                <tr><td colspan="2"><b>${i.nama}</b></td></tr>
+                                <tr>
+                                    <td colspan="3"><b>${i.nama}</b></td>
+                                </tr>
                                 <tr>
                                     <td>${i.qty} x ${i.harga.toLocaleString('id-ID')}</td>
                                     <td style="text-align: right;">${(i.qty * i.harga).toLocaleString('id-ID')}</td>
@@ -1652,10 +1578,7 @@
                             <span>${fmt(total)}</span>
                         </div>
                         <div style="border-bottom: 1px dashed #000; margin: 4px 0;"></div>
-                        <p style="margin-top: 6px; margin-bottom: 8px;">* Terima Kasih *</p>
-                        <div style="margin-top: 10px; font-size: 8pt; text-align: center;">
-                            Kasir / Penjual,<br><br><br><b>( ........... )</b>
-                        </div>
+                        <p style="margin-top: 6px;">* Terima Kasih *</p>
                     </div>
                 `;
             }
@@ -1685,13 +1608,7 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="text-align: right; font-weight: bold; font-size: 11px; margin-bottom: 10px;">TOTAL NOTA: ${fmt(total)}</div>
-                        <table style="width: 100%; font-size: 10px; margin-top: 10px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: right; font-weight: bold; font-size: 11px;">TOTAL NOTA: ${fmt(total)}</div>
                     </div>
                 `;
             }
@@ -1719,18 +1636,12 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <table style="width: 100%; margin-bottom: 20px;">
+                        <table style="width: 100%;">
                             <tr>
                                 <td>BSI: 7358086106 a.n UD Amira Firdaus</td>
                                 <td style="text-align: right;">
                                     <div style="border: 2px solid #000; font-weight: bold; padding: 6px; display: inline-block; background: #cbd5e1; font-size: 13px;">Total Lunas: ${fmt(total)}</div>
                                 </td>
-                            </tr>
-                        </table>
-                        <table style="width: 100%; margin-top: 15px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><br><b>( .................................... )</b></td>
                             </tr>
                         </table>
                     </div>
@@ -1760,13 +1671,7 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="text-align: right; font-weight: bold; font-size: 16px; margin-bottom: 20px;">TOTAL KESELURUHAN: ${fmt(total)}</div>
-                        <table style="width: 100%; margin-top: 15px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><br><b>( .................................... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: right; font-weight: bold; font-size: 16px;">TOTAL KESELURUHAN: ${fmt(total)}</div>
                     </div>
                 `;
             }
@@ -1794,13 +1699,7 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="text-align: right; font-weight: bold; margin-bottom: 10px;">TOTAL: ${fmt(total)}</div>
-                        <table style="width: 100%; font-size: 10px; margin-top: 10px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: right; font-weight: bold;">TOTAL: ${fmt(total)}</div>
                     </div>
                 `;
             }
@@ -1837,19 +1736,13 @@
                                 <td style="text-align: right;">${fmt(total)}</td>
                             </tr>
                         </table>
-                        <table style="width: 100%; margin-top: 20px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima / Dapur MBG,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Penjual,<br><br><br><br><b>( .................................... )</b></td>
-                            </tr>
-                        </table>
                     </div>
                 `;
             }
-            // 13. MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL BLUEPRINT)
+            // 13. MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL)
             else if (templateKey === 'mataram_logistik') {
                 html = `
-                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace; color: #000;">
+                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD MATARAM LOGISTIK</h4>
                         <p style="margin: 2px 0;">Sembako Murah Lombok</p>
                         <div style="border-bottom: 1px dashed #000; margin: 4px 0;"></div>
@@ -1872,16 +1765,13 @@
                         <div style="display: flex; justify-content: space-between; font-weight: bold;">
                             <span>TOTAL:</span><span>${fmt(total)}</span>
                         </div>
-                        <div style="margin-top: 15px; font-size: 8pt; text-align: center;">
-                            Tanda Tangan,<br><br><br><b>( .......... )</b>
-                        </div>
                     </div>
                 `;
             }
-            // 14. SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL BLUEPRINT)
+            // 14. SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL)
             else if (templateKey === 'sayur_segar') {
                 html = `
-                    <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace; color: #000;">
+                    <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace;">
                         <b style="font-size: 10pt;">SAYUR SEGAR</b><br>
                         <span>Pasar Mandalika</span><br>
                         --------------------------------
@@ -1901,9 +1791,6 @@
                         </table>
                         --------------------------------
                         <div style="font-weight: bold; text-align: right;">TOT: ${fmt(total)}</div>
-                        <div style="margin-top: 10px; font-size: 7pt; text-align: center;">
-                            TTD<br><br><b>( .... )</b>
-                        </div>
                     </div>
                 `;
             }
@@ -1935,13 +1822,7 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="text-align: right; font-weight: bold; font-size: 14px; margin-bottom: 20px;">TOTAL PENGELUARAN BOP: ${fmt(total)}</div>
-                        <table style="width: 100%; margin-top: 15px; font-size: 11px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Pejabat Pelaksana / Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami (UD BERKAH),<br><br><br><br><b>( .................................... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: right; font-weight: bold; font-size: 14px;">TOTAL PENGELUARAN BOP: ${fmt(total)}</div>
                     </div>
                 `;
             }
@@ -1967,13 +1848,7 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="text-align: right; font-weight: bold; font-size: 12px; margin-bottom: 10px;">TOTAL GROSIR: ${fmt(total)}</div>
-                        <table style="width: 100%; font-size: 10px; margin-top: 10px;">
-                            <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
-                            </tr>
-                        </table>
+                        <div style="text-align: right; font-weight: bold; font-size: 12px;">TOTAL GROSIR: ${fmt(total)}</div>
                     </div>
                 `;
             }
