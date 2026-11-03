@@ -769,7 +769,7 @@
             renderCart();
         }
 
-function renderCart() {
+        function renderCart() {
             const container = document.getElementById('cart-list');
             if (cart.length === 0) {
                 container.innerHTML = `
@@ -820,6 +820,18 @@ function renderCart() {
             document.getElementById('cart-item-count').innerText = `${itemCount} Items`;
             document.getElementById('mobile-cart-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
             document.getElementById('mobile-cart-badge').innerText = itemCount;
+        }
+
+        function updateCartQty(id, delta) {
+            const item = cart.find(x => String(x.id) === String(id));
+            if (!item) return;
+            const p = dbData.produk.find(x => String(x.id) === String(id));
+            
+            if (delta > 0 && item.qty + 1 > p.stok) return alert('Jumlah melebihi stok tersedia!');
+            
+            item.qty += delta;
+            if (item.qty <= 0) cart = cart.filter(x => String(x.id) !== String(id));
+            renderCart();
         }
 
         function updateCartQtyManual(id, newQtyVal) {
