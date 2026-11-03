@@ -769,7 +769,7 @@
             renderCart();
         }
 
-        function renderCart() {
+function renderCart() {
             const container = document.getElementById('cart-list');
             if (cart.length === 0) {
                 container.innerHTML = `
@@ -791,14 +791,26 @@
                 const subtotal = i.harga * i.qty;
                 total += subtotal;
                 itemCount += i.qty;
+                
+                // Ambil stok produk asli untuk batasan maksimal input
+                const p = dbData.produk.find(x => String(x.id) === String(i.id));
+                const maxStok = p ? p.stok : 9999;
+
                 return `
                     <div class="p-2 text-xs grid grid-cols-12 items-center hover:bg-[#0F172A] rounded transition">
                         <div class="col-span-5 font-bold text-white line-clamp-2 pr-1">${i.nama}</div>
+                        
+                        <!-- BAGIAN KOLOM QTY YANG DIUBAH MENJADI INPUT TEKS MANUAL -->
                         <div class="col-span-3 flex items-center justify-center gap-1 font-mono">
                             <button onclick="updateCartQty('${i.id}', -1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-minus text-[9px]"></i></button>
-                            <span class="w-5 text-center font-bold text-xs">${i.qty}</span>
+                            
+                            <input type="number" min="1" max="${maxStok}" value="${i.qty}" 
+                                   onchange="updateCartQtyManual('${i.id}', this.value)" 
+                                   class="w-10 text-center bg-[#0F172A] border border-[#334155] rounded text-xs py-0.5 text-white font-bold focus:outline-none focus:border-[#06B6D4]">
+                            
                             <button onclick="updateCartQty('${i.id}', 1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-plus text-[9px]"></i></button>
                         </div>
+                        
                         <div class="col-span-4 text-right font-mono font-bold text-[#06B6D4]">Rp ${subtotal.toLocaleString('id-ID')}</div>
                     </div>
                 `;
@@ -810,15 +822,31 @@
             document.getElementById('mobile-cart-badge').innerText = itemCount;
         }
 
-        function updateCartQty(id, delta) {
+        function updateCartQtyManual(id, newQtyVal) {
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
             const p = dbData.produk.find(x => String(x.id) === String(id));
             
-            if (delta > 0 && item.qty + 1 > p.stok) return alert('Jumlah melebihi stok tersedia!');
+            let qty = parseInt(newQtyVal);
             
-            item.qty += delta;
-            if (item.qty <= 0) cart = cart.filter(x => String(x.id) !== String(id));
+            // Jika dikosongkan atau bernilai 0/negatif
+            if (isNaN(qty) || qty <= 0) {
+                if (confirm('Hapus barang ini dari keranjang?')) {
+                    cart = cart.filter(x => String(x.id) !== String(id));
+                } else {
+                    item.qty = 1;
+                }
+                renderCart();
+                return;
+            }
+
+            // Validasi agar tidak melebihi stok gudang
+            if (p && qty > p.stok) {
+                alert(`Jumlah melebihi stok tersedia! Stok maksimum: ${p.stok}`);
+                qty = p.stok;
+            }
+
+            item.qty = qty;
             renderCart();
         }
 
