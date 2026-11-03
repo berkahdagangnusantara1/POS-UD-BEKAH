@@ -43,15 +43,17 @@
             input, select, textarea { font-size: 16px !important; }
         }
 
-        /* PERBAIKAN 2: ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME SUPAYA TIDAK BENTROK */
+        /* PERBAIKAN CETAK UNTUK PRINTER THERMAL (BLUEPRINT) DAN ISOLASI MEDIA PRINT */
         @media print {
             body * { visibility: hidden !important; }
             
-            /* Jika modal invoice aktif, hanya cetak invoice */
             body.print-invoice-mode #invoice-modal,
-            body.print-invoice-mode #invoice-modal * {
+            body.print-invoice-mode #invoice-modal *,
+            body.print-invoice-mode #invoice-print-area,
+            body.print-invoice-mode #invoice-print-area * {
                 visibility: visible !important;
             }
+            
             body.print-invoice-mode #invoice-modal {
                 position: absolute !important;
                 left: 0 !important;
@@ -60,9 +62,28 @@
                 height: auto !important;
                 background: white !important;
                 overflow: visible !important;
+                display: block !important;
             }
 
-            /* Jika stock opname aktif, hanya cetak stock opname */
+            body.print-invoice-mode #invoice-print-area {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            /* Penanganan khusus Struk Thermal Kasir (Blueprint / POS 58mm & 80mm) */
+            body.print-invoice-mode #invoice-print-area.print-receipt-small {
+                width: 100% !important;
+                max-width: 80mm !important;
+                padding: 2mm !important;
+                font-size: 9pt !important;
+                color: #000 !important;
+                background: #fff !important;
+            }
+
             body.print-so-mode #stock-opname-print-area,
             body.print-so-mode #stock-opname-print-area * {
                 visibility: visible !important;
@@ -109,7 +130,7 @@
             border: 1px solid #cbd5e1;
         }
 
-        @page { margin: 5mm; }
+        @page { margin: 3mm; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden select-none bg-[#0F172A] text-[#F8FAFC]">
@@ -555,22 +576,22 @@
                     <i class="fa-solid fa-file-invoice text-[#06B6D4] text-base"></i>
                     <span class="text-xs font-bold text-white uppercase tracking-wider">FORMAT & DIMENSI:</span>
                     <select id="invoice-template-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-[#06B6D4] border border-[#06B6D4] px-2.5 py-1.5 rounded-lg font-bold focus:outline-none">
-                        <option value="berkah_std">1. UD BERKAH MANDIRI (Full A4 Portrait)</option>
+                        <option value="berkah_std">1. UD BERKAH (Full A4 Portrait)</option>
                         <option value="agro_buah">2. UD. AGRO BUAH (Full A4 Portrait)</option>
                         <option value="pangan_berkah">3. UD PANGAN BERKAH (Full A4 Landscape)</option>
-                        <option value="sega">4. FAKTUR UD SEGA (Setengah Kertas - 1/2 A4)</option>
+                        <option value="sega">4. FAKTUR UD SEGA (Setengah KERTAS - 1/2 A4)</option>
                         <option value="ika_sayur">5. UD. IKA SAYUR (Setengah Kertas - 1/2 A4)</option>
                         <option value="sahabat_army">6. UD. SAHABAT ARMY (Full A4 Landscape)</option>
-                        <option value="sumber_urip">7. UD SUMBER URIP (Struk Kecil Kasir 80mm)</option>
+                        <option value="sumber_urip">7. UD SUMBER URIP (Struk Kecil Thermal Blueprint 80mm)</option>
                         <option value="sapakira">8. UD. SAPAKIRA (Setengah Kertas - 1/2 A4)</option>
                         <option value="amira_firdaus">9. UD AMIRA FIRDAUS (Full A4 Portrait)</option>
                         <option value="pangan_makmur">10. UD PANGAN MAKMUR (Full A4 Landscape)</option>
                         <option value="tumbuh_maju">11. UD TUMBUH MAJU (Setengah Kertas - 1/2 A4)</option>
-                        <option value="berkah_mbg">12. UD MURAH REZEKI (Full A4 Landscape)</option>
-                        <option value="mataram_logistik">13. UD MAJU LESTARI (Struk Kecil Kasir 80mm)</option>
-                        <option value="sayur_segar">14. UD SERI REZEKI (Struk Kecil Kasir 58mm)</option>
-                        <option value="bop_instansi">15. UD SARI BUAH (Full A4 Landscape)</option>
-                        <option value="grosir_toko">16. UD DAVIN PRO (Setengah Kertas - 1/2 A4)</option>
+                        <option value="berkah_mbg">12. UD BERKAH MBG (Full A4 Landscape)</option>
+                        <option value="mataram_logistik">13. UD MATARAM LOGISTIK (Struk Kecil Thermal Blueprint 80mm)</option>
+                        <option value="sayur_segar">14. UD SAYUR SEGAR (Struk Kecil Thermal Blueprint 58mm)</option>
+                        <option value="bop_instansi">15. FAKTUR BOP INSTANSI (Full A4 Landscape)</option>
+                        <option value="grosir_toko">16. NOTA PENJUALAN GROSIR (Setengah Kertas - 1/2 A4)</option>
                     </select>
 
                     <select id="invoice-orientation-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-amber-400 border border-amber-500/50 px-2 py-1.5 rounded-lg font-bold focus:outline-none">
@@ -578,7 +599,7 @@
                         <option value="full_portrait">Paksa Full A4 Portrait</option>
                         <option value="full_landscape">Paksa Full A4 Landscape</option>
                         <option value="half_paper">Paksa Setengah Kertas (1/2 A4)</option>
-                        <option value="receipt_small">Paksa Struk Kecil Kasir (Thermal)</option>
+                        <option value="receipt_small">Paksa Struk Kecil Kasir (Thermal Blueprint)</option>
                     </select>
                 </div>
                 <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white p-1 self-end sm:self-auto"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -633,9 +654,11 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
 
-        // PARSER TANGGAL HANDAL & UNIVERSAL UNTUK REKAP OMSET 100% AKURAT
+        // PERBAIKAN 1: PARSER TANGGAL HANDAL & UNIVERSAL (TRANSAKSI LAMA TIDAK BERUBAH)
         function parseDateObject(dateVal) {
-            if (!dateVal || dateVal === "undefined" || dateVal === "null") return new Date();
+            if (!dateVal || dateVal === "undefined" || dateVal === "null" || dateVal === "") {
+                return null; // Return null jika memang kosong agar tidak menimpa tanggal histori
+            }
             if (dateVal instanceof Date) return dateVal;
             
             let strVal = String(dateVal).trim();
@@ -651,29 +674,30 @@
             if (strVal.includes('/')) {
                 const parts = strVal.split('/');
                 if (parts.length === 3) {
-                    if (parts[0].length === 4) {
+                    if (parts[0].length === 4) { // YYYY/MM/DD
                         return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                     }
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])); // DD/MM/YYYY
                 }
             }
             
             if (strVal.includes('-')) {
                 const parts = strVal.split('-');
                 if (parts.length === 3) {
-                    if (parts[0].length === 4) {
+                    if (parts[0].length === 4) { // YYYY-MM-DD
                         return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                     }
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])); // DD-MM-YYYY
                 }
             }
 
             const dObj = new Date(strVal);
-            return isNaN(dObj.getTime()) ? new Date() : dObj;
+            return isNaN(dObj.getTime()) ? null : dObj;
         }
 
         function formatDateOnly(dateVal) {
             const d = parseDateObject(dateVal);
+            if (!d) return '-';
             const day = String(d.getDate()).padStart(2, '0');
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
@@ -937,6 +961,9 @@
             const orderId = 'UB-' + Date.now().toString().slice(-6);
             const totalHarga = cart.reduce((a, b) => a + (b.harga * b.qty), 0);
             const isManualPriceUsed = cart.some(i => Number(i.harga) !== Number(i.hargaNormal));
+            
+            // Simpan tanggal saat ini secara presisi sebagai WAKTU SEKARANG
+            const nowCheckoutDate = new Date();
 
             const checkoutItems = cart.map(i => ({
                 ...i,
@@ -946,6 +973,7 @@
             const payload = {
                 action: 'checkout',
                 orderId: orderId,
+                tanggal: formatDateOnly(nowCheckoutDate),
                 namaCustomer: customer,
                 catatan: catatan,
                 jenisPenjualan: jenisFull,
@@ -966,7 +994,7 @@
                 jenis: jenisFull,
                 items: checkoutItems,
                 total: totalHarga,
-                dateParam: new Date()
+                dateParam: nowCheckoutDate
             };
 
             document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
@@ -1053,7 +1081,6 @@
             const area = document.getElementById('stock-opname-print-area');
             area.classList.remove('hidden');
             
-            // PERBAIKAN 2: Gunakan class mode khusus stock opname saat mencetak
             document.body.classList.add('print-so-mode');
             setTimeout(() => {
                 window.print();
@@ -1158,6 +1185,7 @@
             `).join('');
         }
 
+        // PERBAIKAN 1: LAPORAN OMSET DENGAN PARSER TANGGAL PERSISTEN & AKURAT
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1186,18 +1214,19 @@
                 const jenisPenjualan = t['Jenis Penjualan'] || t['jenisPenjualan'] || 'Eceran';
 
                 const dObj = parseDateObject(rawDate);
-                const formattedDate = formatDateOnly(dObj);
+                const formattedDate = dObj ? formatDateOnly(dObj) : (rawDate || '-');
                 const isManual = t['IsManual'] || false;
                 const strataStr = String(jenisPenjualan).includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
 
-                if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                    omsetHarian += subtotal;
-                }
-
-                if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                    omsetBulanan += subtotal;
+                if (dObj) {
+                    if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                        omsetHarian += subtotal;
+                    }
+                    if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                        omsetBulanan += subtotal;
+                    }
                 }
 
                 return `
@@ -1246,7 +1275,7 @@
             }));
 
             const total = matches.reduce((acc, curr) => acc + (Number(curr['Sub Total'] || curr['subtotal']) || 0), 0);
-            showInvoice(orderId, customer, jenis, items, total, formatDateOnly(rawDate));
+            showInvoice(orderId, customer, jenis, items, total, rawDate);
         }
 
         function showInvoice(orderId, customer, jenis, items, total, dateParam) {
@@ -1263,14 +1292,15 @@
             }
         }
 
-        // Fungsionalitas Cetak Invoice dengan Class Isolation
+        // PERBAIKAN 2: FUNGSI CETAK INVOICE DENGAN PRINTER THERMAL BLUEPRINT SUPAYA TIDAK BLANK
         function printInvoiceAction() {
             document.body.classList.add('print-invoice-mode');
             window.print();
-            document.body.classList.remove('print-invoice-mode');
+            setTimeout(() => {
+                document.body.classList.remove('print-invoice-mode');
+            }, 500);
         }
 
-        // RENDERER MULTI-INVOICE ENGINE DENGAN PENAMBAHAN TEMPAT TANDA TANGAN PADA SEMUA TEMPLATE
         function renderDynamicInvoiceTemplate(templateKey) {
             if (!currentActiveInvoiceData) return;
             const { orderId, customer, jenis, items, total, dateParam } = currentActiveInvoiceData;
@@ -1310,9 +1340,9 @@
                 html = `
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
                         <div>
-                            <h1 class="font-black text-2xl tracking-wide text-slate-900">UD BERKAH MANDIRI</h1>
-                            <p class="text-xs text-slate-700">Logistik Pangan Utama</p>
-                            <p class="text-[11px] text-slate-600">JL. TGH Izzudin Bokhari Mandalika, Mataram</p>
+                            <h1 class="font-black text-2xl tracking-wide text-slate-900">UD BERKAH</h1>
+                            <p class="text-xs text-slate-700">Dapur MBG & Logistik Pangan Utama</p>
+                            <p class="text-[11px] text-slate-600">Jl. Raya Mataram - Lombok, NTB</p>
                         </div>
                         <div class="text-right">
                             <h2 class="font-extrabold text-xl text-slate-800 uppercase">FAKTUR UTAMA</h2>
@@ -1593,10 +1623,10 @@
                     </div>
                 `;
             }
-            // 7. UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL)
+            // 7. UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL BLUEPRINT)
             else if (templateKey === 'sumber_urip') {
                 html = `
-                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
+                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace; color: #000;">
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD SUMBER URIP</h4>
                         <p style="margin: 2px 0;">Jl. Tenggiri Pagutan Mataram</p>
                         <p style="margin: 2px 0;">Telp: 087721254251</p>
@@ -1622,9 +1652,9 @@
                             <span>${fmt(total)}</span>
                         </div>
                         <div style="border-bottom: 1px dashed #000; margin: 4px 0;"></div>
-                        <p style="margin-top: 6px;">* Terima Kasih *</p>
-                        <div style="margin-top: 15px; font-size: 8pt; text-align: center;">
-                            Kasir,<br><br><br>
+                        <p style="margin-top: 6px; margin-bottom: 8px;">* Terima Kasih *</p>
+                        <div style="margin-top: 10px; font-size: 8pt; text-align: center;">
+                            Kasir / Penjual,<br><br><br><b>( ........... )</b>
                         </div>
                     </div>
                 `;
@@ -1779,8 +1809,8 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 8px; text-align: center;">
-                            <h2 style="font-size: 22px; font-weight: bold; margin: 0; color: #0284c7;">UD MURAH REZEKI</h2>
-                            <p style="margin: 2px 0;">JL. Peternakan 1, Selagalas, Kec. Sandubaya - Mataram</p>
+                            <h2 style="font-size: 22px; font-weight: bold; margin: 0; color: #0284c7;">UD BERKAH - LOGISTIK MBG</h2>
+                            <p style="margin: 2px 0;">Dapur Penyedia Makan Bergizi Gratis & Distribusi Pangan Mataram</p>
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
@@ -1816,11 +1846,11 @@
                     </div>
                 `;
             }
-            // 13. MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL)
+            // 13. MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL BLUEPRINT)
             else if (templateKey === 'mataram_logistik') {
                 html = `
-                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
-                        <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD MAJU LESTARI</h4>
+                    <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace; color: #000;">
+                        <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD MATARAM LOGISTIK</h4>
                         <p style="margin: 2px 0;">Sembako Murah Lombok</p>
                         <div style="border-bottom: 1px dashed #000; margin: 4px 0;"></div>
                         <div style="text-align: left;">
@@ -1848,12 +1878,12 @@
                     </div>
                 `;
             }
-            // 14. SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL)
+            // 14. SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL BLUEPRINT)
             else if (templateKey === 'sayur_segar') {
                 html = `
-                    <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace;">
-                        <b style="font-size: 10pt;">UD SERI REZEKI</b><br>
-                        <span>Jl. Peternakan gg. SD Selagalas - Mataram</span><br>
+                    <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace; color: #000;">
+                        <b style="font-size: 10pt;">SAYUR SEGAR</b><br>
+                        <span>Pasar Mandalika</span><br>
                         --------------------------------
                         <div style="text-align: left;">
                             <span>No: ${orderId}</span><br>
@@ -1920,7 +1950,7 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 4px;">
-                            <b>UD DAVIN PRO</b>
+                            <b>NOTA GROSIR UD BERKAH</b>
                             <span>No: <b>${orderId}</b></span>
                         </div>
                         <div style="margin-bottom: 4px;">Customer: <b>${customer}</b> | Tgl: ${formattedDate}</div>
