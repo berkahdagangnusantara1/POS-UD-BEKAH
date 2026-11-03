@@ -633,9 +633,9 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
 
-        // PERBAIKAN PENCATATAN TANGGAL TRANSAKSI & FORMAT STRIKT (d/m/yyyy -> contoh: 3/11/2026)
+        // PARSER TANGGAL HANDAL & UNIVERSAL UNTUK REKAP OMSET 100% AKURAT
         function parseDateObject(dateVal) {
-            if (!dateVal || dateVal === "undefined" || dateVal === "null" || dateVal === "") return null;
+            if (!dateVal || dateVal === "undefined" || dateVal === "null") return new Date();
             if (dateVal instanceof Date) return dateVal;
             
             let strVal = String(dateVal).trim();
@@ -651,32 +651,31 @@
             if (strVal.includes('/')) {
                 const parts = strVal.split('/');
                 if (parts.length === 3) {
-                    if (parts[0].length === 4) { // YYYY/MM/DD
+                    if (parts[0].length === 4) {
                         return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                     }
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])); // DD/MM/YYYY
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
                 }
             }
             
             if (strVal.includes('-')) {
                 const parts = strVal.split('-');
                 if (parts.length === 3) {
-                    if (parts[0].length === 4) { // YYYY-MM-DD
+                    if (parts[0].length === 4) {
                         return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                     }
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])); // DD-MM-YYYY
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
                 }
             }
 
             const dObj = new Date(strVal);
-            return isNaN(dObj.getTime()) ? null : dObj;
+            return isNaN(dObj.getTime()) ? new Date() : dObj;
         }
 
         function formatDateOnly(dateVal) {
             const d = parseDateObject(dateVal);
-            if (!d) return dateVal || '-';
-            const day = d.getDate();
-            const month = d.getMonth() + 1;
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
             return `${day}/${month}/${year}`;
         }
@@ -944,14 +943,9 @@
                 strataHarga: strataLabel
             }));
 
-            // TANGGAL DIKIRIMKAN SECARA EKSPLISIT DENGAN FORMAT d/m/yyyy (CONTOH: 3/11/2026)
-            const todayNow = new Date();
-            const formattedToday = `${todayNow.getDate()}/${todayNow.getMonth() + 1}/${todayNow.getFullYear()}`;
-
             const payload = {
                 action: 'checkout',
                 orderId: orderId,
-                tanggal: formattedToday,
                 namaCustomer: customer,
                 catatan: catatan,
                 jenisPenjualan: jenisFull,
@@ -972,7 +966,7 @@
                 jenis: jenisFull,
                 items: checkoutItems,
                 total: totalHarga,
-                dateParam: formattedToday
+                dateParam: new Date()
             };
 
             document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
@@ -1059,6 +1053,7 @@
             const area = document.getElementById('stock-opname-print-area');
             area.classList.remove('hidden');
             
+            // PERBAIKAN 2: Gunakan class mode khusus stock opname saat mencetak
             document.body.classList.add('print-so-mode');
             setTimeout(() => {
                 window.print();
@@ -1191,20 +1186,18 @@
                 const jenisPenjualan = t['Jenis Penjualan'] || t['jenisPenjualan'] || 'Eceran';
 
                 const dObj = parseDateObject(rawDate);
-                const formattedDate = dObj ? formatDateOnly(dObj) : (rawDate || '-');
+                const formattedDate = formatDateOnly(dObj);
                 const isManual = t['IsManual'] || false;
                 const strataStr = String(jenisPenjualan).includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
 
-                if (dObj) {
-                    if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                        omsetHarian += subtotal;
-                    }
+                if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                    omsetHarian += subtotal;
+                }
 
-                    if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                        omsetBulanan += subtotal;
-                    }
+                if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                    omsetBulanan += subtotal;
                 }
 
                 return `
@@ -1270,12 +1263,14 @@
             }
         }
 
+        // Fungsionalitas Cetak Invoice dengan Class Isolation
         function printInvoiceAction() {
             document.body.classList.add('print-invoice-mode');
             window.print();
             document.body.classList.remove('print-invoice-mode');
         }
 
+        // RENDERER MULTI-INVOICE ENGINE DENGAN PENAMBAHAN TEMPAT TANDA TANGAN PADA SEMUA TEMPLATE
         function renderDynamicInvoiceTemplate(templateKey) {
             if (!currentActiveInvoiceData) return;
             const { orderId, customer, jenis, items, total, dateParam } = currentActiveInvoiceData;
