@@ -43,11 +43,10 @@
             input, select, textarea { font-size: 16px !important; }
         }
 
-        /* PERBAIKAN 2: ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME SUPAYA TIDAK BENTROK */
+        /* ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME */
         @media print {
             body * { visibility: hidden !important; }
             
-            /* Jika modal invoice aktif, hanya cetak invoice */
             body.print-invoice-mode #invoice-modal,
             body.print-invoice-mode #invoice-modal * {
                 visibility: visible !important;
@@ -62,7 +61,6 @@
                 overflow: visible !important;
             }
 
-            /* Jika stock opname aktif, hanya cetak stock opname */
             body.print-so-mode #stock-opname-print-area,
             body.print-so-mode #stock-opname-print-area * {
                 visibility: visible !important;
@@ -83,7 +81,6 @@
             .no-print { display: none !important; }
         }
 
-        /* CLASS DIMENSI PRATINJAU & CETAK */
         .print-full-portrait {
             width: 210mm !important;
             min-height: 297mm !important;
@@ -140,7 +137,6 @@
         
         <!-- SISI KIRI: KATALOG & FILTER -->
         <div class="flex-1 flex flex-col space-y-2 md:space-y-3 overflow-hidden">
-            
             <div class="relative z-30">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -155,11 +151,10 @@
                 <button onclick="filterCategory('All')" class="category-btn bg-[#06B6D4] text-slate-950 font-bold px-3 py-1.5 rounded-full text-xs shrink-0">Semua</button>
             </div>
 
-            <!-- GRID PRODUK KATALOG MOBILE OPTIMIZED -->
+            <!-- GRID PRODUK KATALOG -->
             <div class="flex-1 bg-[#1E293B] border border-[#334155] rounded-lg p-2 md:p-3 overflow-y-auto pb-20 lg:pb-3">
                 <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-2.5"></div>
             </div>
-
         </div>
 
         <!-- FLOATING BAR KERANJANG DI MOBILE -->
@@ -181,7 +176,6 @@
 
         <!-- SISI KANAN: KERANJANG BELANJA -->
         <div id="cart-container" class="fixed inset-0 z-50 lg:z-auto lg:static lg:w-[380px] xl:w-[420px] flex flex-col bg-[#1E293B] border-t lg:border border-[#334155] lg:rounded-lg overflow-hidden shrink-0 hidden lg:flex transition-all duration-300">
-            
             <div class="bg-[#0F172A] px-3 py-2.5 border-b border-[#334155] flex justify-between items-center lg:hidden">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-200">
                     <i class="fa-solid fa-cart-shopping text-[#06B6D4]"></i> KERANJANG BELANJA
@@ -238,9 +232,7 @@
                     <i class="fa-solid fa-money-bill-wave"></i> BAYAR (F10)
                 </button>
             </div>
-
         </div>
-
     </main>
 
     <!-- MODAL PILIHAN STRATA HARGA -->
@@ -253,7 +245,6 @@
                 <h3 class="text-base md:text-lg font-black text-white">Pilih Strata Harga Penjualan</h3>
                 <p class="text-xs text-slate-300 mt-1">Pilih skema harga jual & modal untuk transaksi ini:</p>
             </div>
-
             <div class="grid grid-cols-1 gap-3 pt-2">
                 <button onclick="selectPriceTier('ecer')" class="w-full bg-[#334155] hover:bg-[#06B6D4] hover:text-slate-950 border border-[#06B6D4] text-white p-3.5 rounded-lg text-left transition flex items-center justify-between group active:scale-95">
                     <div>
@@ -262,7 +253,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right text-sm"></i>
                 </button>
-
                 <button onclick="selectPriceTier('grosir')" class="w-full bg-[#334155] hover:bg-[#10B981] hover:text-slate-950 border border-[#10B981] text-white p-3.5 rounded-lg text-left transition flex items-center justify-between group active:scale-95">
                     <div>
                         <div class="font-bold text-sm group-hover:text-slate-950">(2) Jual Harga Grosir</div>
@@ -271,7 +261,6 @@
                     <i class="fa-solid fa-chevron-right text-sm"></i>
                 </button>
             </div>
-
             <div class="pt-2">
                 <button onclick="closePriceChoiceModal()" class="w-full bg-[#0F172A] border border-[#334155] text-slate-400 hover:text-white py-2 rounded text-xs">Batal</button>
             </div>
@@ -288,7 +277,6 @@
                 </div>
                 <button onclick="closePaymentReviewModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-
             <div class="p-3 md:p-4 space-y-3 overflow-y-auto max-h-[60vh]">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs min-w-[400px]">
@@ -304,13 +292,11 @@
                         <tbody id="payment-review-table-body" class="divide-y divide-[#334155]"></tbody>
                     </table>
                 </div>
-
                 <div class="p-3 bg-[#0F172A] rounded border border-[#334155] flex justify-between items-center">
                     <span class="text-xs text-slate-400 font-bold uppercase">TOTAL BAYAR AKHIR:</span>
                     <span id="review-total-harga" class="text-lg md:text-xl font-black text-[#06B6D4] font-mono">Rp 0</span>
                 </div>
             </div>
-
             <div class="p-3 bg-[#0F172A] border-t border-[#334155] flex justify-end gap-2">
                 <button onclick="closePaymentReviewModal()" class="px-4 py-2.5 bg-[#334155] text-white rounded text-xs font-bold">Batal</button>
                 <button onclick="triggerVerification2Step()" class="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold rounded text-xs flex items-center gap-1.5 active:scale-95">
@@ -365,7 +351,6 @@
     <!-- MANAGEMENT MODAL -->
     <div id="management-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-3 no-print">
         <div class="bg-[#1E293B] border border-[#334155] rounded-xl w-full max-w-5xl h-[92vh] md:h-[88vh] flex flex-col overflow-hidden shadow-2xl">
-            
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-sliders text-[#06B6D4] text-base md:text-lg"></i>
@@ -390,7 +375,6 @@
             </nav>
 
             <div class="flex-1 overflow-y-auto p-3 md:p-4 bg-[#0F172A]">
-                
                 <!-- TAB 1: PRODUK -->
                 <div id="mgt-tab-produk" class="mgt-content space-y-4">
                     <div class="pos-card p-3 md:p-4 rounded-lg">
@@ -540,7 +524,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -548,8 +531,6 @@
     <!-- AREA STRUK / MULTI-INVOICE MODAL -->
     <div id="invoice-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 md:p-4">
         <div class="bg-[#1E293B] border border-[#334155] rounded-lg w-full max-w-5xl max-h-[95vh] flex flex-col overflow-hidden shadow-2xl">
-            
-            <!-- HEADER MODAL & DYNAMIC TEMPLATE SELECTOR -->
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 no-print">
                 <div class="flex items-center gap-2 flex-wrap">
                     <i class="fa-solid fa-file-invoice text-[#06B6D4] text-base"></i>
@@ -584,11 +565,8 @@
                 <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white p-1 self-end sm:self-auto"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
-            <!-- CONTAINER AREA PREVIEW / PRINT -->
             <div class="p-3 md:p-6 bg-slate-900 overflow-y-auto flex-1 flex justify-center items-start">
-                <div id="invoice-print-area" class="bg-white text-black p-4 md:p-8 rounded shadow-2xl border text-slate-900 font-sans print-full-portrait">
-                    <!-- Dynamic HTML render invoice template here -->
-                </div>
+                <div id="invoice-print-area" class="bg-white text-black p-4 md:p-8 rounded shadow-2xl border text-slate-900 font-sans print-full-portrait"></div>
             </div>
 
             <div class="p-3 bg-[#0F172A] flex gap-2 no-print">
@@ -622,7 +600,7 @@
         </table>
     </div>
 
-    <!-- SCRIPT POS FRONTEND SANGAT PRESISI -->
+    <!-- SCRIPT FRONTEND DENGAN FORMALISASI TANGGAL TERTUTUP (STRIKT D/M/YYYY) -->
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDVQanMPLVJHHoKZoc_QlBZxyId96JRyvTMzcN1EzRzu7O-356A2oIJ8mA-eMk8nlS/exec';
 
@@ -633,49 +611,66 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
 
-        // PARSER TANGGAL HANDAL & UNIVERSAL UNTUK REKAP OMSET 100% AKURAT
+        // FUNGSI UTAMA PEMBERSATU & FORMALISASI TANGGAL LOKAL (d/m/yyyy TANPA JAM / ZONA WAKTU)
+        function cleanDateString(dateVal) {
+            if (!dateVal || dateVal === "undefined" || dateVal === "null") return "";
+            
+            let str = String(dateVal).trim();
+            
+            // Hapus keterangan jam, zona waktu, offset GMT, atau teks ISO/Tiongkok jika ada
+            if (str.includes('T')) str = str.split('T')[0];
+            if (str.includes(' ')) str = str.split(' ')[0];
+            
+            // Format separator seragam jika terdapat strip atau slash
+            if (str.includes('/')) {
+                const parts = str.split('/');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) { // YYYY/MM/DD
+                        return `${parseInt(parts[2])}/${parseInt(parts[1])}/${parts[0]}`;
+                    }
+                    return `${parseInt(parts[0])}/${parseInt(parts[1])}/${parts[2]}`; // DD/MM/YYYY
+                }
+            }
+            if (str.includes('-')) {
+                const parts = str.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) { // YYYY-MM-DD
+                        return `${parseInt(parts[2])}/${parseInt(parts[1])}/${parts[0]}`;
+                    }
+                    return `${parseInt(parts[0])}/${parseInt(parts[1])}/${parts[2]}`; // DD-MM-YYYY
+                }
+            }
+            return str;
+        }
+
         function parseDateObject(dateVal) {
-            if (!dateVal || dateVal === "undefined" || dateVal === "null") return new Date();
-            if (dateVal instanceof Date) return dateVal;
-            
-            let strVal = String(dateVal).trim();
+            const cleaned = cleanDateString(dateVal);
+            if (!cleaned) return null;
 
-            if (strVal.includes('T')) {
-                strVal = strVal.split('T')[0];
-            }
-
-            if (strVal.includes(' ')) {
-                strVal = strVal.split(' ')[0];
-            }
-            
-            if (strVal.includes('/')) {
-                const parts = strVal.split('/');
+            if (cleaned.includes('/')) {
+                const parts = cleaned.split('/');
                 if (parts.length === 3) {
-                    if (parts[0].length === 4) {
-                        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    const day = parseInt(parts[0]);
+                    const month = parseInt(parts[1]) - 1;
+                    const year = parseInt(parts[2]);
+                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        return new Date(year, month, day);
                     }
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
                 }
             }
             
-            if (strVal.includes('-')) {
-                const parts = strVal.split('-');
-                if (parts.length === 3) {
-                    if (parts[0].length === 4) {
-                        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-                    }
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-                }
-            }
-
-            const dObj = new Date(strVal);
-            return isNaN(dObj.getTime()) ? new Date() : dObj;
+            const dObj = new Date(dateVal);
+            return isNaN(dObj.getTime()) ? null : dObj;
         }
 
         function formatDateOnly(dateVal) {
-            const d = parseDateObject(dateVal);
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
+            if (!dateVal) return "-";
+            const cleaned = cleanDateString(dateVal);
+            const d = parseDateObject(cleaned);
+            if (!d) return cleaned || "-";
+            
+            const day = d.getDate();
+            const month = d.getMonth() + 1;
             const year = d.getFullYear();
             return `${day}/${month}/${year}`;
         }
@@ -898,7 +893,7 @@
 
         function calculateReviewTotal() {
             const total = cart.reduce((a, b) => a + (b.qty * b.harga), 0);
-            document.getElementById('review-total-harga').innerText = 'Rp ' + total.toLocaleString('id-ID');
+            document.getElementById('review-total-[#06B6D4]').innerText = 'Rp ' + total.toLocaleString('id-ID');
         }
 
         function closePaymentReviewModal() {
@@ -943,9 +938,14 @@
                 strataHarga: strataLabel
             }));
 
+            // FORMAT KUNCI HARIAN LOKAL: d/m/yyyy (TANPA JAM / TIONGKOK / GMT)
+            const now = new Date();
+            const formattedToday = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+
             const payload = {
                 action: 'checkout',
                 orderId: orderId,
+                tanggal: formattedToday,
                 namaCustomer: customer,
                 catatan: catatan,
                 jenisPenjualan: jenisFull,
@@ -966,7 +966,7 @@
                 jenis: jenisFull,
                 items: checkoutItems,
                 total: totalHarga,
-                dateParam: new Date()
+                dateParam: formattedToday
             };
 
             document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
@@ -1035,7 +1035,9 @@
         }
 
         function printStockOpname() {
-            document.getElementById('so-print-date').innerText = formatDateOnly(new Date());
+            const todayNow = new Date();
+            const formattedToday = `${todayNow.getDate()}/${todayNow.getMonth() + 1}/${todayNow.getFullYear()}`;
+            document.getElementById('so-print-date').innerText = formattedToday;
             const tbody = document.getElementById('so-print-table-body');
 
             tbody.innerHTML = dbData.produk.map((p, i) => `
@@ -1053,7 +1055,6 @@
             const area = document.getElementById('stock-opname-print-area');
             area.classList.remove('hidden');
             
-            // PERBAIKAN 2: Gunakan class mode khusus stock opname saat mencetak
             document.body.classList.add('print-so-mode');
             setTimeout(() => {
                 window.print();
@@ -1185,19 +1186,20 @@
                 const hargaJual = Number(t['Harga Jual'] || t['hargaJual'] || t['Harga']) || 0;
                 const jenisPenjualan = t['Jenis Penjualan'] || t['jenisPenjualan'] || 'Eceran';
 
+                const formattedDate = formatDateOnly(rawDate);
                 const dObj = parseDateObject(rawDate);
-                const formattedDate = formatDateOnly(dObj);
                 const isManual = t['IsManual'] || false;
                 const strataStr = String(jenisPenjualan).includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
 
-                if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                    omsetHarian += subtotal;
-                }
-
-                if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
-                    omsetBulanan += subtotal;
+                if (dObj) {
+                    if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                        omsetHarian += subtotal;
+                    }
+                    if (dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
+                        omsetBulanan += subtotal;
+                    }
                 }
 
                 return `
@@ -1230,6 +1232,7 @@
             document.getElementById('mgt-rekap-total').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
         }
 
+        // FUNGSI UTAMA UNTUK MENCETAK ULANG STRUK DARINYA DENGAN TANGGAL TERTUKAR / TERKUNCI PERMANEN
         function reprintInvoiceFromReport(orderId) {
             const matches = dbData.transaksi.filter(t => String(t['Order ID'] || t['OrderID'] || t['orderId']) === String(orderId));
             if (!matches || matches.length === 0) return alert('Data transaksi tidak ditemukan!');
@@ -1246,7 +1249,10 @@
             }));
 
             const total = matches.reduce((acc, curr) => acc + (Number(curr['Sub Total'] || curr['subtotal']) || 0), 0);
-            showInvoice(orderId, customer, jenis, items, total, formatDateOnly(rawDate));
+            
+            // GUNAKAN TANGGAL ASLI TRANSAKSI TERKUNCI (TANPA DIREGENERASI KE HARI INI)
+            const lockedDateStr = formatDateOnly(rawDate);
+            showInvoice(orderId, customer, jenis, items, total, lockedDateStr);
         }
 
         function showInvoice(orderId, customer, jenis, items, total, dateParam) {
@@ -1263,17 +1269,17 @@
             }
         }
 
-        // Fungsionalitas Cetak Invoice dengan Class Isolation
         function printInvoiceAction() {
             document.body.classList.add('print-invoice-mode');
             window.print();
             document.body.classList.remove('print-invoice-mode');
         }
 
-        // RENDERER MULTI-INVOICE ENGINE DENGAN PENAMBAHAN TEMPAT TANDA TANGAN PADA SEMUA TEMPLATE
         function renderDynamicInvoiceTemplate(templateKey) {
             if (!currentActiveInvoiceData) return;
             const { orderId, customer, jenis, items, total, dateParam } = currentActiveInvoiceData;
+            
+            // PASTIKAN TANGGAL STRUK ADALAH FORMAT TERKUNCI d/m/yyyy
             const formattedDate = formatDateOnly(dateParam);
             const printArea = document.getElementById('invoice-print-area');
             const modeOverride = document.getElementById('invoice-orientation-selector').value;
@@ -2028,7 +2034,8 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Laba Rugi POS");
             
-            const todayStr = formatDateOnly(new Date()).replace(/\//g, '-');
+            const todayNow = new Date();
+            const todayStr = `${todayNow.getDate()}-${todayNow.getMonth() + 1}-${todayNow.getFullYear()}`;
             XLSX.writeFile(workbook, `Laporan_Laba_Rugi_UD_BERKAH_${todayStr}.xlsx`);
         }
 
