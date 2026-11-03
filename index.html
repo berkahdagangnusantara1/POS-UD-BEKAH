@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Sistem Kasir POS - UD BERKAH Mobile Multi-Invoice Multi-Size</title>
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -109,6 +110,7 @@
         @page { margin: 5mm; }
     </style>
 </head>
+
 <body class="h-screen flex flex-col overflow-hidden select-none bg-[#0F172A] text-[#F8FAFC]">
 
     <!-- HEADER TOP BAR -->
@@ -121,7 +123,6 @@
                 <i class="fa-solid fa-circle text-[7px]"></i> Online
             </span>
         </div>
-
         <div class="flex items-center space-x-1.5 md:space-x-2">
             <button onclick="fetchAllData()" title="Sinkronkan Data" class="pos-btn px-2.5 py-1.5 rounded text-xs font-semibold flex items-center gap-1">
                 <i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Refresh</span>
@@ -146,7 +147,7 @@
                     </button>
                 </div>
             </div>
-
+            
             <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 shrink-0 scrollbar-none" id="category-bar">
                 <button onclick="filterCategory('All')" class="category-btn bg-[#06B6D4] text-slate-950 font-bold px-3 py-1.5 rounded-full text-xs shrink-0">Semua</button>
             </div>
@@ -184,7 +185,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
+            
             <div class="bg-[#0F172A] px-3 py-2 text-xs font-bold text-slate-300 border-b border-[#334155] grid grid-cols-12 hidden lg:grid">
                 <span class="col-span-5">Produk</span>
                 <span class="col-span-3 text-center">Qty</span>
@@ -277,6 +278,7 @@
                 </div>
                 <button onclick="closePaymentReviewModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
+            
             <div class="p-3 md:p-4 space-y-3 overflow-y-auto max-h-[60vh]">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs min-w-[400px]">
@@ -297,6 +299,7 @@
                     <span id="review-total-harga" class="text-lg md:text-xl font-black text-[#06B6D4] font-mono">Rp 0</span>
                 </div>
             </div>
+
             <div class="p-3 bg-[#0F172A] border-t border-[#334155] flex justify-end gap-2">
                 <button onclick="closePaymentReviewModal()" class="px-4 py-2.5 bg-[#334155] text-white rounded text-xs font-bold">Batal</button>
                 <button onclick="triggerVerification2Step()" class="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold rounded text-xs flex items-center gap-1.5 active:scale-95">
@@ -358,7 +361,7 @@
                 </div>
                 <button onclick="closeManagementModal()" class="text-slate-400 hover:text-white text-base md:text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
+            
             <nav class="bg-[#0F172A] border-b border-[#334155] flex overflow-x-auto text-xs font-semibold text-slate-400 px-2 scrollbar-none shrink-0">
                 <button onclick="switchMgtTab('produk')" id="mgt-btn-produk" class="px-3 py-3 mgt-tab-active flex items-center gap-1.5 shrink-0">
                     <i class="fa-solid fa-box-open"></i> Produk Masuk
@@ -553,7 +556,6 @@
                         <option value="bop_instansi">15. UD SARI BUAH (Full A4 Landscape)</option>
                         <option value="grosir_toko">16. UD DAVIN PRO (Setengah Kertas - 1/2 A4)</option>
                     </select>
-
                     <select id="invoice-orientation-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-amber-400 border border-amber-500/50 px-2 py-1.5 rounded-lg font-bold focus:outline-none">
                         <option value="auto">Auto Dimensi</option>
                         <option value="full_portrait">Paksa Full A4 Portrait</option>
@@ -600,10 +602,9 @@
         </table>
     </div>
 
-    <!-- SCRIPT FRONTEND DENGAN FORMALISASI TANGGAL TERTUTUP (STRIKT D/M/YYYY) -->
+    <!-- SCRIPT FRONTEND SISTEM KASIR -->
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDVQanMPLVJHHoKZoc_QlBZxyId96JRyvTMzcN1EzRzu7O-356A2oIJ8mA-eMk8nlS/exec';
-
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
         let selectedCategory = 'All';
@@ -611,17 +612,14 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
 
-        // FUNGSI UTAMA PEMBERSATU & FORMALISASI TANGGAL LOKAL (d/m/yyyy TANPA JAM / ZONA WAKTU)
+        // FUNGSI UTAMA FORMATTER TANGGAL LOKAL (d/m/yyyy TANPA JAM / ZONA WAKTU)
         function cleanDateString(dateVal) {
             if (!dateVal || dateVal === "undefined" || dateVal === "null") return "";
             
             let str = String(dateVal).trim();
-            
-            // Hapus keterangan jam, zona waktu, offset GMT, atau teks ISO/Tiongkok jika ada
             if (str.includes('T')) str = str.split('T')[0];
             if (str.includes(' ')) str = str.split(' ')[0];
             
-            // Format separator seragam jika terdapat strip atau slash
             if (str.includes('/')) {
                 const parts = str.split('/');
                 if (parts.length === 3) {
@@ -644,31 +642,38 @@
         }
 
         function parseDateObject(dateVal) {
-            const cleaned = cleanDateString(dateVal);
-            if (!cleaned) return null;
-
-            if (cleaned.includes('/')) {
-                const parts = cleaned.split('/');
-                if (parts.length === 3) {
-                    const day = parseInt(parts[0]);
-                    const month = parseInt(parts[1]) - 1;
-                    const year = parseInt(parts[2]);
-                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                        return new Date(year, month, day);
-                    }
+            if (!dateVal || dateVal === "undefined" || dateVal === "null") return null;
+            let str = String(dateVal).trim();
+            if (str.includes('T')) str = str.split('T')[0];
+            if (str.includes(' ')) str = str.split(' ')[0];
+            
+            let parts = [];
+            if (str.includes('/')) parts = str.split('/');
+            else if (str.includes('-')) parts = str.split('-');
+            
+            if (parts.length === 3) {
+                let d, m, y;
+                if (parts[0].length === 4) {
+                    y = parseInt(parts[0]);
+                    m = parseInt(parts[1]) - 1;
+                    d = parseInt(parts[2]);
+                } else {
+                    d = parseInt(parts[0]);
+                    m = parseInt(parts[1]) - 1;
+                    y = parseInt(parts[2]);
+                }
+                if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+                    return new Date(y, m, d);
                 }
             }
-            
             const dObj = new Date(dateVal);
             return isNaN(dObj.getTime()) ? null : dObj;
         }
 
         function formatDateOnly(dateVal) {
             if (!dateVal) return "-";
-            const cleaned = cleanDateString(dateVal);
-            const d = parseDateObject(cleaned);
-            if (!d) return cleaned || "-";
-            
+            const d = parseDateObject(dateVal);
+            if (!d) return String(dateVal) || "-";
             const day = d.getDate();
             const month = d.getMonth() + 1;
             const year = d.getFullYear();
@@ -677,11 +682,7 @@
 
         function toggleMobileCart() {
             const cartContainer = document.getElementById('cart-container');
-            if (cartContainer.classList.contains('hidden')) {
-                cartContainer.classList.remove('hidden');
-            } else {
-                cartContainer.classList.add('hidden');
-            }
+            cartContainer.classList.toggle('hidden');
         }
 
         async function fetchAllData() {
@@ -740,6 +741,7 @@
                     String(p.id).toLowerCase().includes(searchQuery)
                 );
             }
+
             const grid = document.getElementById('pos-grid');
             if (filtered.length === 0) {
                 grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-8 text-xs"><i class="fa-solid fa-box-open text-2xl mb-1 block"></i>Barang tidak ditemukan</div>`;
@@ -772,7 +774,6 @@
             } else {
                 const hargaModalAsli = Number(p.hargaModal) || 0;
                 const hargaJualStandar = Number(p.harga) || 0;
-
                 cart.push({
                     ...p,
                     hargaModal: hargaModalAsli,
@@ -802,12 +803,10 @@
 
             let total = 0;
             let itemCount = 0;
-
             container.innerHTML = cart.map(i => {
                 const subtotal = i.harga * i.qty;
                 total += subtotal;
                 itemCount += i.qty;
-
                 return `
                     <div class="p-2 text-xs grid grid-cols-12 items-center hover:bg-[#0F172A] rounded transition">
                         <div class="col-span-5 font-bold text-white line-clamp-2 pr-1">${i.nama}</div>
@@ -853,12 +852,10 @@
         function selectPriceTier(tier) {
             selectedPriceTierMode = tier;
             closePriceChoiceModal();
-
             cart.forEach(item => {
                 item.harga = item.hargaNormal;
                 item.hargaStrataName = tier === 'ecer' ? 'Jual Ecer' : 'Jual Grosir';
             });
-
             renderCart();
             openPaymentReviewModal();
         }
@@ -878,7 +875,6 @@
                     </td>
                 </tr>
             `).join('');
-
             calculateReviewTotal();
             document.getElementById('payment-review-modal').classList.remove('hidden');
         }
@@ -893,7 +889,8 @@
 
         function calculateReviewTotal() {
             const total = cart.reduce((a, b) => a + (b.qty * b.harga), 0);
-            document.getElementById('review-total-[#06B6D4]').innerText = 'Rp ' + total.toLocaleString('id-ID');
+            const el = document.getElementById('review-total-harga');
+            if (el) el.innerText = 'Rp ' + total.toLocaleString('id-ID');
         }
 
         function closePaymentReviewModal() {
@@ -904,7 +901,7 @@
             closePaymentReviewModal();
             const total = cart.reduce((a, b) => a + (b.qty * b.harga), 0);
             const strataText = selectedPriceTierMode === 'ecer' ? 'Jual Harga Ecer (Modal Asli + 3%)' : 'Jual Harga Grosir (Modal Asli)';
-
+            
             document.getElementById('verification-summary-text').innerHTML = `
                 <div>• Customer: <b>${document.getElementById('customer-name').value || 'Umum'}</b></div>
                 <div>• Skema: <b class="text-amber-400">${strataText}</b></div>
@@ -912,7 +909,6 @@
                 <div>• Total Item: <b>${cart.reduce((a,b)=>a+b.qty,0)} Barang</b></div>
                 <div>• Total Bayar: <b class="text-[#10B981]">Rp ${total.toLocaleString('id-ID')}</b></div>
             `;
-
             document.getElementById('confirm-verification-modal').classList.remove('hidden');
         }
 
@@ -928,20 +924,18 @@
             const jenisFull = `${jenisBase} (${strataLabel})`;
             const customer = document.getElementById('customer-name').value.trim() || 'Umum';
             const catatan = document.getElementById('customer-note').value.trim();
-
             const orderId = 'UB-' + Date.now().toString().slice(-6);
             const totalHarga = cart.reduce((a, b) => a + (b.harga * b.qty), 0);
             const isManualPriceUsed = cart.some(i => Number(i.harga) !== Number(i.hargaNormal));
-
+            
             const checkoutItems = cart.map(i => ({
                 ...i,
                 strataHarga: strataLabel
             }));
 
-            // FORMAT KUNCI HARIAN LOKAL: d/m/yyyy (TANPA JAM / TIONGKOK / GMT)
             const now = new Date();
             const formattedToday = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
-
+            
             const payload = {
                 action: 'checkout',
                 orderId: orderId,
@@ -971,11 +965,10 @@
 
             document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
             document.getElementById('success-modal').classList.remove('hidden');
-
+            
             clearCart();
             renderPOSGrid();
             renderStockTable();
-            
             document.getElementById('cart-container').classList.add('hidden');
 
             try {
@@ -985,6 +978,7 @@
         }
 
         function closeSuccessModal() { document.getElementById('success-modal').classList.add('hidden'); }
+
         function closeSuccessModalAndPrint() {
             closeSuccessModal();
             if (lastTransactionData) {
@@ -1001,7 +995,7 @@
             const keyword = (document.getElementById('restock-search')?.value || '').toLowerCase();
             const tbody = document.getElementById('restock-table-body');
             const filtered = dbData.produk.filter(p => p.nama.toLowerCase().includes(keyword));
-
+            
             tbody.innerHTML = filtered.map(p => `
                 <tr class="hover:bg-[#0F172A]">
                     <td class="p-2 font-mono text-slate-400">${p.id}</td>
@@ -1023,9 +1017,8 @@
             const input = document.getElementById(`restock-qty-${id}`);
             const jumlah = Number(input.value);
             if (!jumlah || jumlah <= 0) return alert('Masukkan jumlah restock yang valid!');
-
+            
             const payload = { action: 'restock_barang', idProduk: id, jumlahTambah: jumlah };
-
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 alert('Restock barang berhasil disimpan!');
@@ -1038,8 +1031,8 @@
             const todayNow = new Date();
             const formattedToday = `${todayNow.getDate()}/${todayNow.getMonth() + 1}/${todayNow.getFullYear()}`;
             document.getElementById('so-print-date').innerText = formattedToday;
+            
             const tbody = document.getElementById('so-print-table-body');
-
             tbody.innerHTML = dbData.produk.map((p, i) => `
                 <tr style="border-bottom: 1px solid #cbd5e1;">
                     <td style="text-align: center; padding: 6px;">${i + 1}</td>
@@ -1054,8 +1047,8 @@
 
             const area = document.getElementById('stock-opname-print-area');
             area.classList.remove('hidden');
-            
             document.body.classList.add('print-so-mode');
+            
             setTimeout(() => {
                 window.print();
                 document.body.classList.remove('print-so-mode');
@@ -1069,7 +1062,6 @@
         function switchMgtTab(tab) {
             document.querySelectorAll('.mgt-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('nav button').forEach(el => el.classList.remove('mgt-tab-active'));
-
             document.getElementById(`mgt-tab-${tab}`).classList.remove('hidden');
             document.getElementById(`mgt-btn-${tab}`).classList.add('mgt-tab-active');
         }
@@ -1078,7 +1070,7 @@
             const nama = document.getElementById('mgt-nama-produk').value.trim();
             const qty = document.getElementById('mgt-qty-produk').value;
             if (!nama || !qty) return alert('Nama Produk dan Jumlah wajib diisi!');
-
+            
             const payload = {
                 action: 'barang_masuk',
                 namaProduk: nama,
@@ -1102,13 +1094,12 @@
             const keyword = (document.getElementById('mgt-price-search')?.value || '').toLowerCase();
             const tbody = document.getElementById('mgt-price-table-body');
             const filtered = dbData.produk.filter(p => p.nama.toLowerCase().includes(keyword));
-
+            
             tbody.innerHTML = filtered.map(p => {
                 const modal = Number(p.hargaModal) || 0;
                 const jual = Number(p.harga) || 0;
                 const modalEcer = modal + (modal * 0.03);
                 const profitGrosir = jual - modal;
-
                 return `
                     <tr class="hover:bg-[#0F172A]">
                         <td class="p-2.5 font-bold text-white">${p.nama}</td>
@@ -1133,7 +1124,6 @@
             if (newJual === null) return;
 
             const payload = { action: 'update_harga', idProduk: id, hargaModal: newModal, hargaJual: newJual };
-
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 alert('Harga berhasil diupdate!');
@@ -1192,7 +1182,6 @@
                 const strataStr = String(jenisPenjualan).includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
                 
                 totalOmset += subtotal;
-
                 if (dObj) {
                     if (dObj.getDate() === curDay && dObj.getMonth() === curMonth && dObj.getFullYear() === curYear) {
                         omsetHarian += subtotal;
@@ -1232,25 +1221,21 @@
             document.getElementById('mgt-rekap-total').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
         }
 
-        // FUNGSI UTAMA UNTUK MENCETAK ULANG STRUK DARINYA DENGAN TANGGAL TERTUKAR / TERKUNCI PERMANEN
         function reprintInvoiceFromReport(orderId) {
             const matches = dbData.transaksi.filter(t => String(t['Order ID'] || t['OrderID'] || t['orderId']) === String(orderId));
             if (!matches || matches.length === 0) return alert('Data transaksi tidak ditemukan!');
-
+            
             const first = matches[0];
             const rawDate = first['Tanggal'] || first['tanggal'] || first['Date'];
             const customer = first['Customer'] || first['customer'] || 'Umum';
             const jenis = first['Jenis Penjualan'] || first['jenisPenjualan'] || 'Eceran';
-
             const items = matches.map(m => ({
                 nama: m['Nama Barang'] || m['namaBarang'],
                 qty: m['Qty'] || m['qty'],
                 harga: m['Harga Jual'] || m['hargaJual']
             }));
-
             const total = matches.reduce((acc, curr) => acc + (Number(curr['Sub Total'] || curr['subtotal']) || 0), 0);
             
-            // GUNAKAN TANGGAL ASLI TRANSAKSI TERKUNCI (TANPA DIREGENERASI KE HARI INI)
             const lockedDateStr = formatDateOnly(rawDate);
             showInvoice(orderId, customer, jenis, items, total, lockedDateStr);
         }
@@ -1279,13 +1264,11 @@
             if (!currentActiveInvoiceData) return;
             const { orderId, customer, jenis, items, total, dateParam } = currentActiveInvoiceData;
             
-            // PASTIKAN TANGGAL STRUK ADALAH FORMAT TERKUNCI d/m/yyyy
             const formattedDate = formatDateOnly(dateParam);
             const printArea = document.getElementById('invoice-print-area');
             const modeOverride = document.getElementById('invoice-orientation-selector').value;
-
+            
             let currentCategory = 'full_portrait';
-
             if (['pangan_berkah', 'sahabat_army', 'pangan_makmur', 'berkah_mbg', 'bop_instansi'].includes(templateKey)) {
                 currentCategory = 'full_landscape';
             } else if (['sega', 'ika_sayur', 'sapakira', 'tumbuh_maju', 'grosir_toko'].includes(templateKey)) {
@@ -1311,7 +1294,7 @@
             const fmt = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
             let html = '';
 
-            // 1. UD BERKAH (FULL A4 PORTRAIT)
+            // TEMPLATE 1: UD BERKAH (FULL A4 PORTRAIT)
             if (templateKey === 'berkah_std') {
                 html = `
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
@@ -1364,7 +1347,7 @@
                     </div>
                 `;
             }
-            // 2. UD. AGRO BUAH (FULL A4 PORTRAIT)
+            // TEMPLATE 2: UD. AGRO BUAH (FULL A4 PORTRAIT)
             else if (templateKey === 'agro_buah') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px; color: #000;">
@@ -1423,7 +1406,7 @@
                     </div>
                 `;
             }
-            // 3. UD PANGAN BERKAH (FULL A4 LANDSCAPE)
+            // TEMPLATE 3: UD PANGAN BERKAH (FULL A4 LANDSCAPE)
             else if (templateKey === 'pangan_berkah') {
                 html = `
                     <div style="font-family: sans-serif; font-size: 11px;">
@@ -1473,7 +1456,7 @@
                     </div>
                 `;
             }
-            // 4. FAKTUR UD SEGA (SETENGAH KERTAS - 1/2 A4 / A5)
+            // TEMPLATE 4: FAKTUR UD SEGA (SETENGAH KERTAS - 1/2 A4 / A5)
             else if (templateKey === 'sega') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
@@ -1517,7 +1500,7 @@
                     </div>
                 `;
             }
-            // 5. UD. IKA SAYUR (SETENGAH KERTAS - 1/2 A4 / A5)
+            // TEMPLATE 5: UD. IKA SAYUR (SETENGAH KERTAS - 1/2 A4 / A5)
             else if (templateKey === 'ika_sayur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
@@ -1556,7 +1539,7 @@
                     </div>
                 `;
             }
-            // 6. UD. SAHABAT ARMY (FULL A4 LANDSCAPE)
+            // TEMPLATE 6: UD. SAHABAT ARMY (FULL A4 LANDSCAPE)
             else if (templateKey === 'sahabat_army') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1599,7 +1582,7 @@
                     </div>
                 `;
             }
-            // 7. UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL)
+            // TEMPLATE 7: UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL)
             else if (templateKey === 'sumber_urip') {
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
@@ -1635,7 +1618,7 @@
                     </div>
                 `;
             }
-            // 8. UD. SAPAKIRA (SETENGAH KERTAS - 1/2 A4 / A5)
+            // TEMPLATE 8: UD. SAPAKIRA (SETENGAH KERTAS - 1/2 A4 / A5)
             else if (templateKey === 'sapakira') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
@@ -1671,7 +1654,7 @@
                     </div>
                 `;
             }
-            // 9. UD AMIRA FIRDAUS (FULL A4 PORTRAIT)
+            // TEMPLATE 9: UD AMIRA FIRDAUS (FULL A4 PORTRAIT)
             else if (templateKey === 'amira_firdaus') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1712,7 +1695,7 @@
                     </div>
                 `;
             }
-            // 10. UD PANGAN MAKMUR (FULL A4 LANDSCAPE)
+            // TEMPLATE 10: UD PANGAN MAKMUR (FULL A4 LANDSCAPE)
             else if (templateKey === 'pangan_makmur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1746,7 +1729,7 @@
                     </div>
                 `;
             }
-            // 11. UD TUMBUH MAJU (SETENGAH KERTAS - 1/2 A4 / A5)
+            // TEMPLATE 11: UD TUMBUH MAJU (SETENGAH KERTAS - 1/2 A4 / A5)
             else if (templateKey === 'tumbuh_maju') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
@@ -1780,7 +1763,7 @@
                     </div>
                 `;
             }
-            // 12. UD BERKAH MBG (FULL A4 LANDSCAPE)
+            // TEMPLATE 12: UD BERKAH MBG (FULL A4 LANDSCAPE)
             else if (templateKey === 'berkah_mbg') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1822,7 +1805,7 @@
                     </div>
                 `;
             }
-            // 13. MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL)
+            // TEMPLATE 13: MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL)
             else if (templateKey === 'mataram_logistik') {
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
@@ -1854,7 +1837,7 @@
                     </div>
                 `;
             }
-            // 14. SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL)
+            // TEMPLATE 14: SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL)
             else if (templateKey === 'sayur_segar') {
                 html = `
                     <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace;">
@@ -1883,7 +1866,7 @@
                     </div>
                 `;
             }
-            // 15. FAKTUR BOP INSTANSI (FULL A4 LANDSCAPE)
+            // TEMPLATE 15: FAKTUR BOP INSTANSI (FULL A4 LANDSCAPE)
             else if (templateKey === 'bop_instansi') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
@@ -1921,7 +1904,7 @@
                     </div>
                 `;
             }
-            // 16. NOTA PENJUALAN GROSIR (SETENGAH KERTAS - 1/2 A4 / A5)
+            // TEMPLATE 16: NOTA PENJUALAN GROSIR (SETENGAH KERTAS - 1/2 A4 / A5)
             else if (templateKey === 'grosir_toko') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
@@ -1971,7 +1954,6 @@
                 const qty = Number(t['Qty'] || t['qty']) || 1;
                 const hargaJual = Number(t['Harga Jual'] || t['hargaJual']) || 0;
                 const hargaModal = Number(t['HargaModal'] || t['hargaModal']) || 0;
-
                 const subtotalOmset = Number(t['Sub Total'] || t['subtotal']) || (qty * hargaJual);
                 const subtotalModal = qty * hargaModal;
                 const profit = subtotalOmset - subtotalModal;
@@ -2017,18 +1999,9 @@
 
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
             worksheet['!cols'] = [
-                { wch: 14 },
-                { wch: 16 },
-                { wch: 22 },
-                { wch: 15 },
-                { wch: 18 },
-                { wch: 28 },
-                { wch: 10 },
-                { wch: 20 },
-                { wch: 16 },
-                { wch: 18 },
-                { wch: 18 },
-                { wch: 18 }
+                { wch: 14 }, { wch: 16 }, { wch: 22 }, { wch: 15 },
+                { wch: 18 }, { wch: 28 }, { wch: 10 }, { wch: 20 },
+                { wch: 16 }, { wch: 18 }, { wch: 18 }, { wch: 18 }
             ];
 
             const workbook = XLSX.utils.book_new();
@@ -2039,11 +2012,13 @@
             XLSX.writeFile(workbook, `Laporan_Laba_Rugi_UD_BERKAH_${todayStr}.xlsx`);
         }
 
+        // KEYBOARD SHORTCUTS
         window.addEventListener('keydown', (e) => {
             if (e.key === 'F3') { e.preventDefault(); document.getElementById('pos-search').focus(); }
             if (e.key === 'F10') { e.preventDefault(); openPriceChoiceModal(); }
         });
 
+        // LOAD FIRST INITIAL DATA
         fetchAllData();
     </script>
 </body>
