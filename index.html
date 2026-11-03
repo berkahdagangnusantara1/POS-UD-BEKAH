@@ -313,7 +313,7 @@
         </div>
     </div>
 
-    <!-- KONFIRMASI VERIFIKASI MODAL -->
+    <!-- KONFIRMASI VERIFIKASI MODAL (TERMASUK PEMILIHAN TEMPLATE NOTA PERMANEN) -->
     <div id="confirm-verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-4 no-print">
         <div class="bg-[#1E293B] border border-[#F59E0B] rounded-xl p-4 md:p-5 w-full max-w-md text-center shadow-2xl space-y-4">
             <div class="w-12 h-12 md:w-14 md:h-14 bg-[#F59E0B]/20 text-[#F59E0B] border-2 border-[#F59E0B] rounded-full flex items-center justify-center mx-auto text-xl md:text-2xl">
@@ -321,9 +321,33 @@
             </div>
             <div>
                 <h3 class="text-sm md:text-base font-bold text-white">Konfirmasi Verifikasi 2 Langkah</h3>
-                <p class="text-xs text-slate-300 mt-1">Apakah data transaksi sudah benar dan siap diproses?</p>
+                <p class="text-xs text-slate-300 mt-1">Pilih format nota & periksa kembali data transaksi sebelum diproses:</p>
                 <div id="verification-summary-text" class="mt-3 p-2.5 bg-[#0F172A] rounded border border-[#334155] text-xs font-mono text-[#06B6D4] text-left space-y-1"></div>
             </div>
+
+            <!-- PILIHAN TEMPLATE NOTA 16 UD DI PANEL KONFIRMASI 2 LANGKAH -->
+            <div class="text-left space-y-1">
+                <label class="block text-xs font-bold text-amber-400">Pilih Format / Template Nota UD:</label>
+                <select id="checkout-invoice-template-selector" class="w-full bg-[#0F172A] text-xs text-[#06B6D4] border border-[#06B6D4] p-2 rounded-lg font-bold focus:outline-none">
+                    <option value="berkah_std">1. UD BERKAH MANDIRI (Full A4 Portrait)</option>
+                    <option value="agro_buah">2. UD. AGRO BUAH (Full A4 Portrait)</option>
+                    <option value="pangan_berkah">3. UD PANGAN BERKAH (Full A4 Landscape)</option>
+                    <option value="sega">4. FAKTUR UD SEGA (Setengah Kertas - 1/2 A4)</option>
+                    <option value="ika_sayur">5. UD. IKA SAYUR (Setengah Kertas - 1/2 A4)</option>
+                    <option value="sahabat_army">6. UD. SAHABAT ARMY (Full A4 Landscape)</option>
+                    <option value="sumber_urip">7. UD SUMBER URIP (Struk Kecil Kasir 80mm)</option>
+                    <option value="sapakira">8. UD. SAPAKIRA (Setengah Kertas - 1/2 A4)</option>
+                    <option value="amira_firdaus">9. UD AMIRA FIRDAUS (Full A4 Portrait)</option>
+                    <option value="pangan_makmur">10. UD PANGAN MAKMUR (Full A4 Landscape)</option>
+                    <option value="tumbuh_maju">11. UD TUMBUH MAJU (Setengah Kertas - 1/2 A4)</option>
+                    <option value="berkah_mbg">12. UD MURAH REZEKI (Full A4 Landscape)</option>
+                    <option value="mataram_logistik">13. UD MAJU LESTARI (Struk Kecil Kasir 80mm)</option>
+                    <option value="sayur_segar">14. UD SERI REZEKI (Struk Kecil Kasir 58mm)</option>
+                    <option value="bop_instansi">15. UD SARI BUAH (Full A4 Landscape)</option>
+                    <option value="grosir_toko">16. UD DAVIN PRO (Setengah Kertas - 1/2 A4)</option>
+                </select>
+            </div>
+
             <div class="flex gap-2">
                 <button onclick="closeVerificationModal()" class="flex-1 bg-[#334155] text-white py-2.5 rounded text-xs font-bold">Periksa Kembali</button>
                 <button onclick="executeFinalCheckout()" class="flex-1 bg-[#10B981] hover:bg-[#059669] text-slate-950 font-bold py-2.5 rounded text-xs flex items-center justify-center gap-1 active:scale-95">
@@ -444,7 +468,7 @@
                 <div id="mgt-tab-pricelist" class="mgt-content hidden space-y-3">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                         <h4 class="text-xs font-bold text-[#06B6D4] uppercase">PRICE LIST & DUAL STRATA MODAL</h4>
-                        <input type="text" id="mgt-price-search" oninput="renderPriceListTable()" placeholder="Cari barang..." class="w-full sm:w-auto bg-[#1E293B] text-xs text-white border border-[#334155] px-3 py-1.5 rounded">
+                        <input type="text" id="mgt-price-search" oninput="renderPriceListTable()" placeholder="Cari barang..." class="w-full sm:w-auto bg-[#1E293B] text-xs text-[#F8FAFC] border border-[#334155] px-3 py-1.5 rounded">
                     </div>
                     <div class="pos-card rounded-lg overflow-x-auto">
                         <table class="w-full text-left text-xs whitespace-nowrap min-w-[650px]">
@@ -513,17 +537,18 @@
                             </button>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
+                            <table class="w-full text-left text-xs whitespace-nowrap min-w-[800px]">
                                 <thead class="bg-[#0F172A] text-slate-400">
                                     <tr>
                                         <th class="p-2.5">Tanggal</th>
                                         <th class="p-2.5">Customer</th>
                                         <th class="p-2.5">Strata Harga</th>
+                                        <th class="p-2.5">Format Nota UD</th>
                                         <th class="p-2.5">Nama Barang</th>
                                         <th class="p-2.5">Qty</th>
                                         <th class="p-2.5">Harga Jual</th>
                                         <th class="p-2.5">Sub Total</th>
-                                        <th class="p-2.5 text-center">Struk</th>
+                                        <th class="p-2.5 text-center">Aksi Cetak</th>
                                     </tr>
                                 </thead>
                                 <tbody id="mgt-laporan-table-body" class="divide-y divide-[#334155]"></tbody>
@@ -541,25 +566,8 @@
             <div class="p-3 bg-[#0F172A] border-b border-[#334155] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 no-print">
                 <div class="flex items-center gap-2 flex-wrap">
                     <i class="fa-solid fa-file-invoice text-[#06B6D4] text-base"></i>
-                    <span class="text-xs font-bold text-white uppercase tracking-wider">FORMAT & DIMENSI:</span>
-                    <select id="invoice-template-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-[#06B6D4] border border-[#06B6D4] px-2.5 py-1.5 rounded-lg font-bold focus:outline-none">
-                        <option value="berkah_std">1. UD BERKAH MANDIRI (Full A4 Portrait)</option>
-                        <option value="agro_buah">2. UD. AGRO BUAH (Full A4 Portrait)</option>
-                        <option value="pangan_berkah">3. UD PANGAN BERKAH (Full A4 Landscape)</option>
-                        <option value="sega">4. FAKTUR UD SEGA (Setengah Kertas - 1/2 A4)</option>
-                        <option value="ika_sayur">5. UD. IKA SAYUR (Setengah Kertas - 1/2 A4)</option>
-                        <option value="sahabat_army">6. UD. SAHABAT ARMY (Full A4 Landscape)</option>
-                        <option value="sumber_urip">7. UD SUMBER URIP (Struk Kecil Kasir 80mm)</option>
-                        <option value="sapakira">8. UD. SAPAKIRA (Setengah Kertas - 1/2 A4)</option>
-                        <option value="amira_firdaus">9. UD AMIRA FIRDAUS (Full A4 Portrait)</option>
-                        <option value="pangan_makmur">10. UD PANGAN MAKMUR (Full A4 Landscape)</option>
-                        <option value="tumbuh_maju">11. UD TUMBUH MAJU (Setengah Kertas - 1/2 A4)</option>
-                        <option value="berkah_mbg">12. UD MURAH REZEKI (Full A4 Landscape)</option>
-                        <option value="mataram_logistik">13. UD MAJU LESTARI (Struk Kecil Kasir 80mm)</option>
-                        <option value="sayur_segar">14. UD SERI REZEKI (Struk Kecil Kasir 58mm)</option>
-                        <option value="bop_instansi">15. UD SARI BUAH (Full A4 Landscape)</option>
-                        <option value="grosir_toko">16. UD DAVIN PRO (Setengah Kertas - 1/2 A4)</option>
-                    </select>
+                    <span class="text-xs font-bold text-white uppercase tracking-wider">TAMPILAN NOTA TRANSAKSI</span>
+                    <span id="locked-invoice-info" class="text-xs font-bold font-mono text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-lg"></span>
                     <select id="invoice-orientation-selector" onchange="changeInvoiceTemplate()" class="bg-[#1E293B] text-xs text-amber-400 border border-amber-500/50 px-2 py-1.5 rounded-lg font-bold focus:outline-none">
                         <option value="auto">Auto Dimensi</option>
                         <option value="full_portrait">Paksa Full A4 Portrait</option>
@@ -615,6 +623,25 @@
         let lastTransactionData = null;
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
+
+        const INVOICE_NAME_MAP = {
+            'berkah_std': 'UD BERKAH MANDIRI',
+            'agro_buah': 'UD. AGRO BUAH',
+            'pangan_berkah': 'UD PANGAN BERKAH',
+            'sega': 'UD SEGA',
+            'ika_sayur': 'UD. IKA SAYUR',
+            'sahabat_army': 'UD. SAHABAT ARMY',
+            'sumber_urip': 'UD SUMBER URIP',
+            'sapakira': 'UD. SAPAKIRA',
+            'amira_firdaus': 'UD AMIRA FIRDAUS',
+            'pangan_makmur': 'UD PANGAN MAKMUR',
+            'tumbuh_maju': 'UD TUMBUH MAJU',
+            'berkah_mbg': 'UD MURAH REZEKI',
+            'mataram_logistik': 'UD MAJU LESTARI',
+            'sayur_segar': 'UD SERI REZEKI',
+            'bop_instansi': 'UD SARI BUAH',
+            'grosir_toko': 'UD DAVIN PRO'
+        };
 
         // FUNGSI UTAMA FORMATTER TANGGAL LOKAL (d/m/yyyy TANPA JAM / ZONA WAKTU)
         function parseDateObject(dateVal) {
@@ -746,14 +773,13 @@
             }).join('');
         }
 
+        // PENYESUAIAN (1): BARANG TETAP BISA DIJUAL MESKIPUN STOK KURANG DARI 0
         function addToCart(id) {
             const p = dbData.produk.find(x => String(x.id) === String(id));
             if (!p) return;
-            if (p.stok <= 0) return alert('Stok barang ini telah habis!');
 
             const exist = cart.find(x => String(x.id) === String(id));
             if (exist) {
-                if (exist.qty + 1 > p.stok) return alert('Jumlah melebihi stok yang tersedia!');
                 exist.qty += 1;
             } else {
                 const hargaModalAsli = Number(p.hargaModal) || 0;
@@ -791,20 +817,15 @@
                 const subtotal = i.harga * i.qty;
                 total += subtotal;
                 itemCount += i.qty;
-                
-                // Ambil stok produk asli untuk batasan maksimal input
-                const p = dbData.produk.find(x => String(x.id) === String(i.id));
-                const maxStok = p ? p.stok : 9999;
 
                 return `
                     <div class="p-2 text-xs grid grid-cols-12 items-center hover:bg-[#0F172A] rounded transition">
                         <div class="col-span-5 font-bold text-white line-clamp-2 pr-1">${i.nama}</div>
                         
-                        <!-- BAGIAN KOLOM QTY YANG DIUBAH MENJADI INPUT TEKS MANUAL -->
                         <div class="col-span-3 flex items-center justify-center gap-1 font-mono">
                             <button onclick="updateCartQty('${i.id}', -1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-minus text-[9px]"></i></button>
                             
-                            <input type="number" min="1" max="${maxStok}" value="${i.qty}" 
+                            <input type="number" min="1" value="${i.qty}" 
                                    onchange="updateCartQtyManual('${i.id}', this.value)" 
                                    class="w-10 text-center bg-[#0F172A] border border-[#334155] rounded text-xs py-0.5 text-white font-bold focus:outline-none focus:border-[#06B6D4]">
                             
@@ -822,26 +843,23 @@
             document.getElementById('mobile-cart-badge').innerText = itemCount;
         }
 
+        // PENYESUAIAN (1): DELTA DITAMBAH TANPA BATASAN STOK MAKSIMUM
         function updateCartQty(id, delta) {
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
-            const p = dbData.produk.find(x => String(x.id) === String(id));
-            
-            if (delta > 0 && item.qty + 1 > p.stok) return alert('Jumlah melebihi stok tersedia!');
             
             item.qty += delta;
             if (item.qty <= 0) cart = cart.filter(x => String(x.id) !== String(id));
             renderCart();
         }
 
+        // PENYESUAIAN (1): INPUT QTY MANUAL DAPAT DIKETIK JUMLAH BERAPAPUN (TETAP BISA DIJUAL)
         function updateCartQtyManual(id, newQtyVal) {
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
-            const p = dbData.produk.find(x => String(x.id) === String(id));
             
             let qty = parseInt(newQtyVal);
             
-            // Jika dikosongkan atau bernilai 0/negatif
             if (isNaN(qty) || qty <= 0) {
                 if (confirm('Hapus barang ini dari keranjang?')) {
                     cart = cart.filter(x => String(x.id) !== String(id));
@@ -850,12 +868,6 @@
                 }
                 renderCart();
                 return;
-            }
-
-            // Validasi agar tidak melebihi stok gudang
-            if (p && qty > p.stok) {
-                alert(`Jumlah melebihi stok tersedia! Stok maksimum: ${p.stok}`);
-                qty = p.stok;
             }
 
             item.qty = qty;
@@ -940,7 +952,11 @@
             document.getElementById('confirm-verification-modal').classList.add('hidden');
         }
 
+        // PENYESUAIAN (2): TEMPLATE NOTA DIPILIH SAAT KONFIRMASI 2 LANGKAH & TERSIMPAN PERMANEN
         async function executeFinalCheckout() {
+            const chosenTemplate = document.getElementById('checkout-invoice-template-selector').value;
+            const chosenTemplateName = INVOICE_NAME_MAP[chosenTemplate] || chosenTemplate;
+
             closeVerificationModal();
             
             const jenisBase = document.getElementById('jenis-penjualan').value;
@@ -971,14 +987,17 @@
                 catatan: catatan,
                 jenisPenjualan: jenisFull,
                 strataHarga: strataLabel,
+                templateNotaKey: chosenTemplate,
+                templateNotaNama: chosenTemplateName,
                 totalHarga: totalHarga,
                 isManualPriceUsed: isManualPriceUsed,
                 items: checkoutItems
             };
 
+            // PENYESUAIAN (1): STOK TETAP MENGURANGI MESKIPUN HASILNYA MENJADI MINUS (-)
             checkoutItems.forEach(ci => {
                 const prod = dbData.produk.find(p => String(p.id) === String(ci.id));
-                if (prod) prod.stok = Math.max(0, prod.stok - ci.qty);
+                if (prod) prod.stok = prod.stok - ci.qty;
             });
 
             lastTransactionData = {
@@ -987,10 +1006,12 @@
                 jenis: jenisFull,
                 items: checkoutItems,
                 total: totalHarga,
-                dateParam: formattedToday
+                dateParam: formattedToday,
+                templateNotaKey: chosenTemplate,
+                templateNotaNama: chosenTemplateName
             };
 
-            document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${strataLabel}]`;
+            document.getElementById('success-order-info').innerText = `${orderId} | Total: Rp ${totalHarga.toLocaleString('id-ID')} [${chosenTemplateName}]`;
             document.getElementById('success-modal').classList.remove('hidden');
             
             clearCart();
@@ -1009,13 +1030,31 @@
         function closeSuccessModalAndPrint() {
             closeSuccessModal();
             if (lastTransactionData) {
-                showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total, lastTransactionData.dateParam);
+                showInvoice(
+                    lastTransactionData.orderId, 
+                    lastTransactionData.customer, 
+                    lastTransactionData.jenis, 
+                    lastTransactionData.items, 
+                    lastTransactionData.total, 
+                    lastTransactionData.dateParam,
+                    lastTransactionData.templateNotaKey,
+                    lastTransactionData.templateNotaNama
+                );
             }
         }
 
         function openLastReceipt() {
             if (!lastTransactionData) return alert('Belum ada transaksi terakhir untuk dicetak!');
-            showInvoice(lastTransactionData.orderId, lastTransactionData.customer, lastTransactionData.jenis, lastTransactionData.items, lastTransactionData.total, lastTransactionData.dateParam);
+            showInvoice(
+                lastTransactionData.orderId, 
+                lastTransactionData.customer, 
+                lastTransactionData.jenis, 
+                lastTransactionData.items, 
+                lastTransactionData.total, 
+                lastTransactionData.dateParam,
+                lastTransactionData.templateNotaKey,
+                lastTransactionData.templateNotaNama
+            );
         }
 
         function renderRestockTable() {
@@ -1161,6 +1200,7 @@
             } catch (err) { alert('Gagal update harga.'); }
         }
 
+        // PENYESUAIAN (1): TAMPILKAN STATUS WARNA MERAH JIKA STOK MINUS (-) / MENIPIS
         function renderStockTable() {
             const tbody = document.getElementById('mgt-stock-table-body');
             tbody.innerHTML = dbData.produk.map(p => `
@@ -1168,17 +1208,18 @@
                     <td class="p-2.5 font-mono text-slate-400">${p.id}</td>
                     <td class="p-2.5 font-bold text-white">${p.nama}</td>
                     <td class="p-2.5 text-slate-400">${p.kategori || 'Umum'}</td>
-                    <td class="p-2.5 font-bold font-mono ${p.stok < 10 ? 'text-[#EF4444]' : 'text-white'}">${p.stok}</td>
+                    <td class="p-2.5 font-bold font-mono ${p.stok < 0 ? 'text-red-500 font-extrabold' : (p.stok < 10 ? 'text-[#EF4444]' : 'text-white')}">${p.stok}</td>
                     <td class="p-2.5 text-slate-400">${p.satuan}</td>
                     <td class="p-2.5">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.stok < 10 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">
-                            ${p.stok < 10 ? 'Stok Menipis' : 'Aman'}
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.stok < 0 ? 'bg-red-600/30 text-red-300 border border-red-500' : (p.stok < 10 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30')}">
+                            ${p.stok < 0 ? 'Stok Minus' : (p.stok < 10 ? 'Stok Menipis' : 'Aman')}
                         </span>
                     </td>
                 </tr>
             `).join('');
         }
 
+        // PENYESUAIAN (2): MUNCULKAN KETERANGAN NOTA UD DARI PILIHAN VERIFIKASI 2 LANGKAH
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1189,7 +1230,7 @@
             const curYear = now.getFullYear();
 
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
                 document.getElementById('mgt-rekap-harian').innerText = 'Rp 0';
                 document.getElementById('mgt-rekap-bulanan').innerText = 'Rp 0';
                 document.getElementById('mgt-rekap-total').innerText = 'Rp 0';
@@ -1205,6 +1246,9 @@
                 const qty = t['Qty'] || t['qty'] || 1;
                 const hargaJual = Number(t['Harga Jual'] || t['hargaJual'] || t['Harga']) || 0;
                 const jenisPenjualan = t['Jenis Penjualan'] || t['jenisPenjualan'] || 'Eceran';
+
+                const rawTemplateKey = t['TemplateNotaKey'] || t['templateNotaKey'] || t['TemplateNota'] || 'berkah_std';
+                const templateNama = t['TemplateNotaNama'] || t['templateNotaNama'] || INVOICE_NAME_MAP[rawTemplateKey] || 'UD BERKAH MANDIRI';
 
                 const formattedDate = formatDateOnly(rawDate);
                 const dObj = parseDateObject(rawDate);
@@ -1233,13 +1277,19 @@
                                 ${strataStr}
                             </span>
                         </td>
+                        <td class="p-2.5 font-bold text-amber-300">
+                            <span class="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-[10px]">
+                                <i class="fa-solid fa-file-invoice mr-1"></i>${templateNama}
+                            </span>
+                        </td>
                         <td class="p-2.5 text-slate-200">${namaBarang}</td>
                         <td class="p-2.5 font-mono">${qty}</td>
                         <td class="p-2.5 font-mono text-slate-300">Rp ${hargaJual.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 font-mono font-bold text-[#10B981]">Rp ${subtotal.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 text-center">
-                            <button onclick="reprintInvoiceFromReport('${orderId}')" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-2 py-1 rounded text-[10px] font-bold transition active:scale-95">
-                                <i class="fa-solid fa-print"></i> Struk
+                            <!-- PENYESUAIAN (3): ALIH FUNGSI TOMBOL STRUK UNTUK CETAK ULANG NOTA YANG SUDAH DIKUNCI -->
+                            <button onclick="reprintInvoiceFromReport('${orderId}')" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-2 py-1 rounded text-[10px] font-bold transition active:scale-95" title="Cetak Ulang Nota ${templateNama}">
+                                <i class="fa-solid fa-print"></i> Cetak Ulang
                             </button>
                         </td>
                     </tr>
@@ -1251,6 +1301,7 @@
             document.getElementById('mgt-rekap-total').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
         }
 
+        // PENYESUAIAN (3): MENGAMBIL TEMPLATE NOTA YANG SUDAH DIKUNCI PADA SAAT CHECKOUT UNTUK CETAK ULANG
         function reprintInvoiceFromReport(orderId) {
             const matches = dbData.transaksi.filter(t => String(t['Order ID'] || t['OrderID'] || t['orderId']) === String(orderId));
             if (!matches || matches.length === 0) return alert('Data transaksi tidak ditemukan!');
@@ -1259,6 +1310,9 @@
             const rawDate = first['Tanggal'] || first['tanggal'] || first['Date'];
             const customer = first['Customer'] || first['customer'] || 'Umum';
             const jenis = first['Jenis Penjualan'] || first['jenisPenjualan'] || 'Eceran';
+            const templateKey = first['TemplateNotaKey'] || first['templateNotaKey'] || first['TemplateNota'] || 'berkah_std';
+            const templateNama = first['TemplateNotaNama'] || first['templateNotaNama'] || INVOICE_NAME_MAP[templateKey] || 'UD BERKAH MANDIRI';
+
             const items = matches.map(m => ({
                 nama: m['Nama Barang'] || m['namaBarang'],
                 qty: m['Qty'] || m['qty'],
@@ -1267,20 +1321,24 @@
             const total = matches.reduce((acc, curr) => acc + (Number(curr['Sub Total'] || curr['subtotal']) || 0), 0);
             
             const lockedDateStr = formatDateOnly(rawDate);
-            showInvoice(orderId, customer, jenis, items, total, lockedDateStr);
+            showInvoice(orderId, customer, jenis, items, total, lockedDateStr, templateKey, templateNama);
         }
 
-        function showInvoice(orderId, customer, jenis, items, total, dateParam) {
-            currentActiveInvoiceData = { orderId, customer, jenis, items, total, dateParam };
-            const selectedTemplate = document.getElementById('invoice-template-selector').value;
-            renderDynamicInvoiceTemplate(selectedTemplate);
+        function showInvoice(orderId, customer, jenis, items, total, dateParam, templateKey = 'berkah_std', templateNama = 'UD BERKAH MANDIRI') {
+            currentActiveInvoiceData = { orderId, customer, jenis, items, total, dateParam, templateKey, templateNama };
+            
+            const infoEl = document.getElementById('locked-invoice-info');
+            if (infoEl) {
+                infoEl.innerHTML = `<i class="fa-solid fa-lock text-[10px] mr-1"></i>FORMAT NOTA TERKUNCI: ${templateNama}`;
+            }
+
+            renderDynamicInvoiceTemplate(templateKey);
             document.getElementById('invoice-modal').classList.remove('hidden');
         }
 
         function changeInvoiceTemplate() {
-            const selectedTemplate = document.getElementById('invoice-template-selector').value;
-            if (currentActiveInvoiceData) {
-                renderDynamicInvoiceTemplate(selectedTemplate);
+            if (currentActiveInvoiceData && currentActiveInvoiceData.templateKey) {
+                renderDynamicInvoiceTemplate(currentActiveInvoiceData.templateKey);
             }
         }
 
@@ -1990,6 +2048,9 @@
                 const isManual = t['IsManual'] || false;
                 const jenisPenjualan = t['Jenis Penjualan'] || t['jenisPenjualan'] || 'Eceran';
                 const strataStr = String(jenisPenjualan).includes('Ecer') ? 'Jual Ecer' : 'Jual Grosir';
+                
+                const rawTemplateKey = t['TemplateNotaKey'] || t['templateNotaKey'] || t['TemplateNota'] || 'berkah_std';
+                const templateNama = t['TemplateNotaNama'] || t['templateNotaNama'] || INVOICE_NAME_MAP[rawTemplateKey] || 'UD BERKAH MANDIRI';
 
                 totalQtyAll += qty;
                 totalModalAll += subtotalModal;
@@ -2001,6 +2062,7 @@
                     'Order ID': t['Order ID'] || t['orderId'],
                     'Customer': ((t['Customer'] || t['customer']) || 'Umum') + (isManual ? ' [Harga Manual]' : ''),
                     'Strata Harga': strataStr,
+                    'Format Nota UD': templateNama,
                     'Jenis Penjualan': jenisPenjualan,
                     'Nama Barang': t['Nama Barang'] || t['namaBarang'] || '-',
                     'Qty': qty,
@@ -2017,6 +2079,7 @@
                 'Order ID': '',
                 'Customer': '',
                 'Strata Harga': '',
+                'Format Nota UD': '',
                 'Jenis Penjualan': '',
                 'Nama Barang': '',
                 'Qty': totalQtyAll,
@@ -2030,8 +2093,8 @@
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
             worksheet['!cols'] = [
                 { wch: 14 }, { wch: 16 }, { wch: 22 }, { wch: 15 },
-                { wch: 18 }, { wch: 28 }, { wch: 10 }, { wch: 20 },
-                { wch: 16 }, { wch: 18 }, { wch: 18 }, { wch: 18 }
+                { wch: 25 }, { wch: 18 }, { wch: 28 }, { wch: 10 },
+                { wch: 20 }, { wch: 16 }, { wch: 18 }, { wch: 18 }, { wch: 18 }
             ];
 
             const workbook = XLSX.utils.book_new();
