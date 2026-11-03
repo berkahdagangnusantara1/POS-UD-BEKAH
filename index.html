@@ -44,21 +44,25 @@
             input, select, textarea { font-size: 16px !important; }
         }
 
-        /* ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME */
+        /* ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME (FIXED NESTED BORDER / KERTAS DALAM KERTAS) */
         @media print {
             body * { visibility: hidden !important; }
             
-            body.print-invoice-mode #invoice-modal,
-            body.print-invoice-mode #invoice-modal * {
+            body.print-invoice-mode #invoice-print-area,
+            body.print-invoice-mode #invoice-print-area * {
                 visibility: visible !important;
             }
-            body.print-invoice-mode #invoice-modal {
+            body.print-invoice-mode #invoice-print-area {
                 position: absolute !important;
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
                 height: auto !important;
                 background: white !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
                 overflow: visible !important;
             }
 
@@ -2012,4 +2016,3 @@
     </script>
 </body>
 </html>
-
