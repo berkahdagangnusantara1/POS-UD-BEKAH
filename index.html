@@ -1395,18 +1395,17 @@
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
                         <div>
                             <h1 class="font-black text-2xl tracking-wide text-slate-900">UD BERKAH MANDIRI</h1>
-                            <p class="text-xs text-slate-700">Logistik Pangan Utama</p>
+                            <p class="text-xs text-slate-700">No. Hp : 0878-8242-4575</p>
                             <p class="text-[11px] text-slate-600">JL. TGH Izzudin Bokhari Mandalika, Mataram</p>
                         </div>
                         <div class="text-right">
-                            <h2 class="font-extrabold text-xl text-slate-800 uppercase">FAKTUR UTAMA</h2>
+                            <h2 class="font-extrabold text-xl text-slate-800 uppercase">FAKTUR</h2>
                             <p class="text-xs text-slate-600 font-mono">No. Invoice: <b>${orderId}</b></p>
                             <p class="text-xs text-slate-600">Tanggal: <b>${formattedDate}</b></p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mb-4 text-xs bg-slate-50 p-3 rounded border border-slate-200">
                         <div><span class="text-slate-500 block">NAMA PELANGGAN:</span><span class="font-bold text-slate-900 text-sm">${customer}</span></div>
-                        <div class="text-right"><span class="text-slate-500 block">KATEGORI TRANSAKSI:</span><span class="font-bold text-slate-900 text-sm">${jenis}</span></div>
                     </div>
                     <table class="w-full border-collapse border border-slate-300 text-xs mb-6">
                         <thead>
@@ -1437,7 +1436,6 @@
                         </tfoot>
                     </table>
                     <div class="grid grid-cols-2 gap-4 text-xs pt-6 border-t border-dashed border-slate-300 text-center">
-                        <div><p class="mb-12 font-semibold">Tanda Tangan Penerima,</p><p class="font-bold border-t border-slate-400 pt-1 w-40 mx-auto">( .................... )</p></div>
                         <div><p class="mb-12 font-semibold">Hormat Kami (Kasir),</p><p class="font-bold border-t border-slate-400 pt-1 w-40 mx-auto">UD BERKAH</p></div>
                     </div>
                 `;
@@ -1508,7 +1506,7 @@
                             </tr>
                         </table>
                         <div style="text-align: center; font-weight: bold; font-size: 15px; margin: 8px 0; background: #86efac; padding: 8px; color: #064e3b; border-radius: 4px;">
-                            INVOICE PEMBAYARAN PANGAN NO # ${orderId}
+                            INVOICE PEMBAYARAN NO # ${orderId}
                         </div>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 10px;" border="1" cellpadding="6">
                             <tr style="background: #22c55e; color: white; text-align: center; font-weight: bold;">
@@ -1540,7 +1538,6 @@
                         </table>
                         <table style="width: 100%; margin-top: 20px; font-size: 11px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
                                 <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><br><b>( .................................... )</b></td>
                             </tr>
                         </table>
@@ -1582,7 +1579,6 @@
                         </div>
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
                                 <td style="width: 50%; text-align: center;">Penjual,<br><br><br><b>( ............... )</b></td>
                             </tr>
                         </table>
@@ -1592,7 +1588,7 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="background: #15803d; color: white; padding: 4px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
-                            UD. IKA SAYUR - NOTA SETENGAH KERTAS #${orderId}
+                            UD. IKA SAYUR - NO #${orderId}
                         </div>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
@@ -1619,9 +1615,7 @@
                         </div>
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
-                            </tr>
+                                <td style="width: 50%; text-align: center;">Terima Kasih Telah Berbelanja,<br><br><br></td>
                         </table>
                     </div>
                 `;
@@ -1706,7 +1700,7 @@
                         <table style="width: 100%; margin-bottom: 4px;">
                             <tr>
                                 <td><h3 style="font-weight: bold; margin: 0; color: #1d4ed8;">UD. SAPAKIRA</h3>Abian Tubuh Baru, Sandubaya</td>
-                                <td style="text-align: right;"><b>NOTA SETENGAH KERTAS</b><br>No: <b>${orderId}</b></td>
+                                <td style="text-align: right;"><br>No: <b>${orderId}</b></td>
                             </tr>
                         </table>
                         <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 0; margin-bottom: 4px;">
@@ -1728,8 +1722,8 @@
                         <div style="text-align: right; font-weight: bold; font-size: 11px; margin-bottom: 10px;">TOTAL NOTA: ${fmt(total)}</div>
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
+                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ..................... )</b></td>
+                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ..................... )</b></td>
                             </tr>
                         </table>
                     </div>
@@ -1831,8 +1825,8 @@
                         <div style="text-align: right; font-weight: bold; margin-bottom: 10px;">TOTAL: ${fmt(total)}</div>
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
+                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ...................... )</b></td>
+                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ....................... )</b></td>
                             </tr>
                         </table>
                     </div>
@@ -1846,8 +1840,8 @@
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td>No Faktur Logistik: <b style="font-size: 14px; color: #0284c7;">${orderId}</b><br>Tanggal Pengadaan: <b>${formattedDate}</b></td>
-                                <td style="text-align: right;">Penerima / Dapur MBG :<br><b style="font-size: 14px;">${customer}</b></td>
+                                <td>No Faktur: <b style="font-size: 14px; color: #0284c7;">${orderId}</b><br>Tanggal Pengadaan: <b>${formattedDate}</b></td>
+                                <td style="text-align: right;">Penerima:<br><b style="font-size: 14px;">${customer}</b></td>
                             </tr>
                         </table>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 10px;" border="1" cellpadding="6">
@@ -1871,8 +1865,8 @@
                         </table>
                         <table style="width: 100%; margin-top: 20px; font-size: 11px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima / Dapur MBG,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Penjual,<br><br><br><br><b>( .................................... )</b></td>
+                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( .................................... )</b></td>
+                                <td style="width: 50%; text-align: center;">Penjual,<br><br><br><br><b>( .................................... )</b></td>
                             </tr>
                         </table>
                     </div>
@@ -1903,7 +1897,7 @@
                             <span>TOTAL:</span><span>${fmt(total)}</span>
                         </div>
                         <div style="margin-top: 15px; font-size: 8pt; text-align: center;">
-                            Tanda Tangan,<br><br><br><b>( .......... )</b>
+                            Hormat Kami,<br><br><br><b>Kasir</b>
                         </div>
                     </div>
                 `;
@@ -1938,8 +1932,8 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
-                            <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FAKTUR PENGELUARAN BOP / INSTANSI NO. ${orderId}</h2>
-                            <p style="margin: 2px 0;">UD BERKAH - MATARAM</p>
+                            <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FAKTUR NO. ${orderId}</h2>
+                            <p style="margin: 2px 0;">UD SARI BUAH - MATARAM</p>
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
@@ -1964,8 +1958,7 @@
                         <div style="text-align: right; font-weight: bold; font-size: 14px; margin-bottom: 20px;">TOTAL PENGELUARAN BOP: ${fmt(total)}</div>
                         <table style="width: 100%; margin-top: 15px; font-size: 11px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Pejabat Pelaksana / Penerima,<br><br><br><br><b>( .................................... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami (UD BERKAH),<br><br><br><br><b>( .................................... )</b></td>
+                                <td style="width: 50%; text-align: center;">Terima Kasih Telah Berbrlanja.</td>
                             </tr>
                         </table>
                     </div>
@@ -1994,8 +1987,7 @@
                         <div style="text-align: right; font-weight: bold; font-size: 12px; margin-bottom: 10px;">TOTAL GROSIR: ${fmt(total)}</div>
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
-                                <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ............... )</b></td>
-                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>( ............... )</b></td>
+                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><b>Kasir</b></td>
                             </tr>
                         </table>
                     </div>
