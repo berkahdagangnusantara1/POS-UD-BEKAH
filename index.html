@@ -44,7 +44,7 @@
             input, select, textarea { font-size: 16px !important; }
         }
 
-        /* ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME (FIXED NESTED BORDER / KERTAS DALAM KERTAS) */
+        /* ISOLASI LAYOUT CETAK NOTA DAN STOCK OPNAME */
         @media print {
             body * { visibility: hidden !important; }
             
@@ -313,7 +313,7 @@
         </div>
     </div>
 
-    <!-- KONFIRMASI VERIFIKASI MODAL (TERMASUK PEMILIHAN TEMPLATE NOTA PERMANEN) -->
+    <!-- KONFIRMASI VERIFIKASI MODAL (PEMILIHAN TEMPLATE NOTA PERMANEN) -->
     <div id="confirm-verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-4 no-print">
         <div class="bg-[#1E293B] border border-[#F59E0B] rounded-xl p-4 md:p-5 w-full max-w-md text-center shadow-2xl space-y-4">
             <div class="w-12 h-12 md:w-14 md:h-14 bg-[#F59E0B]/20 text-[#F59E0B] border-2 border-[#F59E0B] rounded-full flex items-center justify-center mx-auto text-xl md:text-2xl">
@@ -617,7 +617,7 @@
 
     <!-- SCRIPT FRONTEND SISTEM KASIR -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAfQ6156TkE0q2MiZM3ZLmuh5sTtinz-PRUncIc0Q3nFWq8UatyHwbiZ41TQFI5Pwf/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxytc9dQ45QgkUoA4BTt9TIqo6mO7zkQa8S8CCH93NYRev_bwQufBOoFNlZGV9RTngt/exec';
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
         let selectedCategory = 'All';
@@ -644,7 +644,6 @@
             'grosir_toko': 'UD DAVIN PRO'
         };
 
-        // FUNGSI UTAMA FORMATTER TANGGAL LOKAL (d/m/yyyy TANPA JAM / ZONA WAKTU)
         function parseDateObject(dateVal) {
             if (!dateVal || dateVal === "undefined" || dateVal === "null") return null;
             let str = String(dateVal).trim();
@@ -742,7 +741,7 @@
             `).join('');
         }
 
-        // PERBAIKAN 1: MENAMPILKAN STOK APA ADANYA MESKIPUN MINUS (TETAP MENUNJUKKAN ANGKA MINUS, TIDAK BERUBAH JADI 0)
+        // PERBAIKAN 1: MENAMPILKAN STOK APA ADANYA MESKIPUN MINUS
         function renderPOSGrid(searchQuery = '') {
             let filtered = dbData.produk;
             if (selectedCategory !== 'All') {
@@ -775,7 +774,7 @@
             }).join('');
         }
 
-        // PERBAIKAN 1: BARANG TETAP BISA DITAMBAHKAN KE KERANJANG WALAUPUN STOK MENJADI MINUS (-)
+        // PERBAIKAN 1: BISA DITAMBAHKAN MESKIPUN STOK MINUS (-)
         function addToCart(id) {
             const p = dbData.produk.find(x => String(x.id) === String(id));
             if (!p) return;
@@ -859,7 +858,6 @@
             if (!item) return;
             
             let qty = parseInt(newQtyVal);
-            
             if (isNaN(qty) || qty <= 0) {
                 if (confirm('Hapus barang ini dari keranjang?')) {
                     cart = cart.filter(x => String(x.id) !== String(id));
@@ -952,11 +950,11 @@
             document.getElementById('confirm-verification-modal').classList.add('hidden');
         }
 
-        // PERBAIKAN 2 & 3: VALIDASI WAJIB PILIH NOTA UD SEBELUM PROSES & CATAT PERMANEN KE RIWAYAT TRANSAKSI
+        // PERBAIKAN 2 & 3: VALIDASI WAJIB PILIH NOTA UD SEBELUM PROSES & CATAT PERMANEN KE GOOGLE SHEET
         async function executeFinalCheckout() {
             const chosenTemplate = document.getElementById('checkout-invoice-template-selector').value;
             
-            // VALIDASI WAJIB PILIH NOTA
+            // VALIDASI WAJIB PILIH NOTA UD
             if (!chosenTemplate) {
                 alert('PERHATIAN: Anda WAJIB memilih salah satu Format / Template Nota UD terlebih dahulu sebelum menyelesaikan pembayaran!');
                 document.getElementById('checkout-invoice-template-selector').focus();
@@ -1002,7 +1000,7 @@
                 items: checkoutItems
             };
 
-            // PERBAIKAN 1: STOK TETAP MENGURANGI MESKIPUN HASILNYA MENJADI MINUS (-) TANPA RESET KE 0
+            // PERBAIKAN STOK MINUS: STOK MENJADI MINUS TANPA DIPAKSA RESET KE 0
             checkoutItems.forEach(ci => {
                 const prod = dbData.produk.find(p => String(p.id) === String(ci.id));
                 if (prod) prod.stok = prod.stok - ci.qty;
@@ -1027,7 +1025,7 @@
             renderStockTable();
             document.getElementById('cart-container').classList.add('hidden');
 
-            // Reset selector ke pilihan default
+            // Reset selector
             document.getElementById('checkout-invoice-template-selector').value = "";
 
             try {
@@ -1211,7 +1209,7 @@
             } catch (err) { alert('Gagal update harga.'); }
         }
 
-        // PERBAIKAN 1: TAMPILKAN NILAI STOK APA ADANYA DENGAN TANDA MERAH DAN LABEL "Stok Minus" JIKA < 0
+        // PERBAIKAN STOK MINUS: STOK MENAMPILKAN ANGKA MINUS PRESISI
         function renderStockTable() {
             const tbody = document.getElementById('mgt-stock-table-body');
             tbody.innerHTML = dbData.produk.map(p => `
@@ -1230,7 +1228,7 @@
             `).join('');
         }
 
-        // PERBAIKAN 3: MENAMPILKAN SECARA AKURAT TEMPLATE NOTA YANG DIPILIH SAAT VERIFIKASI 2 LANGKAH
+        // PERBAIKAN 2 & 3: MENAMPILKAN FORMAT NOTA UD SECARA OTOMATIS SESUAI YANG DIPILIH KETIKA VERIFIKASI 2 LANGKAH
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1311,7 +1309,7 @@
             document.getElementById('mgt-rekap-total').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
         }
 
-        // PERBAIKAN 3: MENGAMBIL TEMPLATE NOTA YANG SUDAH DIKUNCI PADA SAAT CHECKOUT UNTUK CETAK ULANG
+        // MENGAMBIL FORMAT NOTA UD SESUAI DATA TRANSAKSI
         function reprintInvoiceFromReport(orderId) {
             const matches = dbData.transaksi.filter(t => String(t['Order ID'] || t['OrderID'] || t['orderId']) === String(orderId));
             if (!matches || matches.length === 0) return alert('Data transaksi tidak ditemukan!');
@@ -1392,7 +1390,6 @@
             const fmt = (num) => 'Rp ' + Number(num).toLocaleString('id-ID');
             let html = '';
 
-            // TEMPLATE 1: UD BERKAH (FULL A4 PORTRAIT)
             if (templateKey === 'berkah_std') {
                 html = `
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex justify-between items-start">
@@ -1444,9 +1441,7 @@
                         <div><p class="mb-12 font-semibold">Hormat Kami (Kasir),</p><p class="font-bold border-t border-slate-400 pt-1 w-40 mx-auto">UD BERKAH</p></div>
                     </div>
                 `;
-            }
-            // TEMPLATE 2: UD. AGRO BUAH (FULL A4 PORTRAIT)
-            else if (templateKey === 'agro_buah') {
+            } else if (templateKey === 'agro_buah') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px; color: #000;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 10px;">
@@ -1503,9 +1498,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 3: UD PANGAN BERKAH (FULL A4 LANDSCAPE)
-            else if (templateKey === 'pangan_berkah') {
+            } else if (templateKey === 'pangan_berkah') {
                 html = `
                     <div style="font-family: sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 8px;">
@@ -1553,9 +1546,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 4: FAKTUR UD SEGA (SETENGAH KERTAS - 1/2 A4 / A5)
-            else if (templateKey === 'sega') {
+            } else if (templateKey === 'sega') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px;">
@@ -1597,9 +1588,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 5: UD. IKA SAYUR (SETENGAH KERTAS - 1/2 A4 / A5)
-            else if (templateKey === 'ika_sayur') {
+            } else if (templateKey === 'ika_sayur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="background: #15803d; color: white; padding: 4px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
@@ -1636,9 +1625,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 6: UD. SAHABAT ARMY (FULL A4 LANDSCAPE)
-            else if (templateKey === 'sahabat_army') {
+            } else if (templateKey === 'sahabat_army') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 8px;">
@@ -1679,9 +1666,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 7: UD SUMBER URIP (STRUK KECIL KASIR 80mm - STRIP THERMAL)
-            else if (templateKey === 'sumber_urip') {
+            } else if (templateKey === 'sumber_urip') {
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD SUMBER URIP</h4>
@@ -1715,9 +1700,7 @@
                         </div>
                     </div>
                 `;
-            }
-            // TEMPLATE 8: UD. SAPAKIRA (SETENGAH KERTAS - 1/2 A4 / A5)
-            else if (templateKey === 'sapakira') {
+            } else if (templateKey === 'sapakira') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <table style="width: 100%; margin-bottom: 4px;">
@@ -1751,9 +1734,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 9: UD AMIRA FIRDAUS (FULL A4 PORTRAIT)
-            else if (templateKey === 'amira_firdaus') {
+            } else if (templateKey === 'amira_firdaus') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <h2 style="font-weight: bold; font-size: 18px; margin: 0 0 6px 0; color: #0f172a; text-align: center;">KWITANSI PEMBAYARAN FAKTUR</h2>
@@ -1792,9 +1773,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 10: UD PANGAN MAKMUR (FULL A4 LANDSCAPE)
-            else if (templateKey === 'pangan_makmur') {
+            } else if (templateKey === 'pangan_makmur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN NO. ${orderId}</div>
@@ -1826,9 +1805,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 11: UD TUMBUH MAJU (SETENGAH KERTAS - 1/2 A4 / A5)
-            else if (templateKey === 'tumbuh_maju') {
+            } else if (templateKey === 'tumbuh_maju') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px;">INVOICE UD TUMBUH MAJU</div>
@@ -1860,9 +1837,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 12: UD BERKAH MBG (FULL A4 LANDSCAPE)
-            else if (templateKey === 'berkah_mbg') {
+            } else if (templateKey === 'berkah_mbg') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 8px; text-align: center;">
@@ -1902,9 +1877,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 13: MATARAM LOGISTIK (STRUK KECIL KASIR 80mm - STRIP THERMAL)
-            else if (templateKey === 'mataram_logistik') {
+            } else if (templateKey === 'mataram_logistik') {
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD MAJU LESTARI</h4>
@@ -1934,9 +1907,7 @@
                         </div>
                     </div>
                 `;
-            }
-            // TEMPLATE 14: SAYUR SEGAR (STRUK KECIL KASIR 58mm - SUPER MINI THERMAL)
-            else if (templateKey === 'sayur_segar') {
+            } else if (templateKey === 'sayur_segar') {
                 html = `
                     <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace;">
                         <b style="font-size: 10pt;">UD SERI REZEKI</b><br>
@@ -1963,9 +1934,7 @@
                         </div>
                     </div>
                 `;
-            }
-            // TEMPLATE 15: FAKTUR BOP INSTANSI (FULL A4 LANDSCAPE)
-            else if (templateKey === 'bop_instansi') {
+            } else if (templateKey === 'bop_instansi') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
@@ -2001,9 +1970,7 @@
                         </table>
                     </div>
                 `;
-            }
-            // TEMPLATE 16: NOTA PENJUALAN GROSIR (SETENGAH KERTAS - 1/2 A4 / A5)
-            else if (templateKey === 'grosir_toko') {
+            } else if (templateKey === 'grosir_toko') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 4px;">
@@ -2118,13 +2085,11 @@
             XLSX.writeFile(workbook, `Laporan_Laba_Rugi_UD_BERKAH_${todayStr}.xlsx`);
         }
 
-        // KEYBOARD SHORTCUTS
         window.addEventListener('keydown', (e) => {
             if (e.key === 'F3') { e.preventDefault(); document.getElementById('pos-search').focus(); }
             if (e.key === 'F10') { e.preventDefault(); openPriceChoiceModal(); }
         });
 
-        // LOAD FIRST INITIAL DATA
         fetchAllData();
     </script>
 </body>
