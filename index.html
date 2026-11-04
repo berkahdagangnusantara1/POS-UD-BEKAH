@@ -325,10 +325,11 @@
                 <div id="verification-summary-text" class="mt-3 p-2.5 bg-[#0F172A] rounded border border-[#334155] text-xs font-mono text-[#06B6D4] text-left space-y-1"></div>
             </div>
 
-            <!-- PILIHAN TEMPLATE NOTA 16 UD DI PANEL KONFIRMASI 2 LANGKAH -->
+            <!-- PILIHAN TEMPLATE NOTA 16 UD DI PANEL KONFIRMASI 2 LANGKAH (WAJIB PILIH) -->
             <div class="text-left space-y-1">
-                <label class="block text-xs font-bold text-amber-400">Pilih Format / Template Nota UD:</label>
+                <label class="block text-xs font-bold text-amber-400">Pilih Format / Template Nota UD (WAJIB):</label>
                 <select id="checkout-invoice-template-selector" class="w-full bg-[#0F172A] text-xs text-[#06B6D4] border border-[#06B6D4] p-2 rounded-lg font-bold focus:outline-none">
+                    <option value="" disabled selected>-- WAJIB PILIH FORMAT NOTA UD --</option>
                     <option value="berkah_std">1. UD BERKAH MANDIRI (Full A4 Portrait)</option>
                     <option value="agro_buah">2. UD. AGRO BUAH (Full A4 Portrait)</option>
                     <option value="pangan_berkah">3. UD PANGAN BERKAH (Full A4 Landscape)</option>
@@ -741,6 +742,7 @@
             `).join('');
         }
 
+        // PERBAIKAN 1: MENAMPILKAN STOK APA ADANYA MESKIPUN MINUS (TETAP MENUNJUKKAN ANGKA MINUS, TIDAK BERUBAH JADI 0)
         function renderPOSGrid(searchQuery = '') {
             let filtered = dbData.produk;
             if (selectedCategory !== 'All') {
@@ -773,7 +775,7 @@
             }).join('');
         }
 
-        // PENYESUAIAN (1): BARANG TETAP BISA DIJUAL MESKIPUN STOK KURANG DARI 0
+        // PERBAIKAN 1: BARANG TETAP BISA DITAMBAHKAN KE KERANJANG WALAUPUN STOK MENJADI MINUS (-)
         function addToCart(id) {
             const p = dbData.produk.find(x => String(x.id) === String(id));
             if (!p) return;
@@ -843,7 +845,6 @@
             document.getElementById('mobile-cart-badge').innerText = itemCount;
         }
 
-        // PENYESUAIAN (1): DELTA DITAMBAH TANPA BATASAN STOK MAKSIMUM
         function updateCartQty(id, delta) {
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
@@ -853,7 +854,6 @@
             renderCart();
         }
 
-        // PENYESUAIAN (1): INPUT QTY MANUAL DAPAT DIKETIK JUMLAH BERAPAPUN (TETAP BISA DIJUAL)
         function updateCartQtyManual(id, newQtyVal) {
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
@@ -952,9 +952,17 @@
             document.getElementById('confirm-verification-modal').classList.add('hidden');
         }
 
-        // PENYESUAIAN (2): TEMPLATE NOTA DIPILIH SAAT KONFIRMASI 2 LANGKAH & TERSIMPAN PERMANEN
+        // PERBAIKAN 2 & 3: VALIDASI WAJIB PILIH NOTA UD SEBELUM PROSES & CATAT PERMANEN KE RIWAYAT TRANSAKSI
         async function executeFinalCheckout() {
             const chosenTemplate = document.getElementById('checkout-invoice-template-selector').value;
+            
+            // VALIDASI WAJIB PILIH NOTA
+            if (!chosenTemplate) {
+                alert('PERHATIAN: Anda WAJIB memilih salah satu Format / Template Nota UD terlebih dahulu sebelum menyelesaikan pembayaran!');
+                document.getElementById('checkout-invoice-template-selector').focus();
+                return;
+            }
+
             const chosenTemplateName = INVOICE_NAME_MAP[chosenTemplate] || chosenTemplate;
 
             closeVerificationModal();
@@ -994,7 +1002,7 @@
                 items: checkoutItems
             };
 
-            // PENYESUAIAN (1): STOK TETAP MENGURANGI MESKIPUN HASILNYA MENJADI MINUS (-)
+            // PERBAIKAN 1: STOK TETAP MENGURANGI MESKIPUN HASILNYA MENJADI MINUS (-) TANPA RESET KE 0
             checkoutItems.forEach(ci => {
                 const prod = dbData.produk.find(p => String(p.id) === String(ci.id));
                 if (prod) prod.stok = prod.stok - ci.qty;
@@ -1018,6 +1026,9 @@
             renderPOSGrid();
             renderStockTable();
             document.getElementById('cart-container').classList.add('hidden');
+
+            // Reset selector ke pilihan default
+            document.getElementById('checkout-invoice-template-selector').value = "";
 
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
@@ -1200,7 +1211,7 @@
             } catch (err) { alert('Gagal update harga.'); }
         }
 
-        // PENYESUAIAN (1): TAMPILKAN STATUS WARNA MERAH JIKA STOK MINUS (-) / MENIPIS
+        // PERBAIKAN 1: TAMPILKAN NILAI STOK APA ADANYA DENGAN TANDA MERAH DAN LABEL "Stok Minus" JIKA < 0
         function renderStockTable() {
             const tbody = document.getElementById('mgt-stock-table-body');
             tbody.innerHTML = dbData.produk.map(p => `
@@ -1219,7 +1230,7 @@
             `).join('');
         }
 
-        // PENYESUAIAN (2): MUNCULKAN KETERANGAN NOTA UD DARI PILIHAN VERIFIKASI 2 LANGKAH
+        // PERBAIKAN 3: MENAMPILKAN SECARA AKURAT TEMPLATE NOTA YANG DIPILIH SAAT VERIFIKASI 2 LANGKAH
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1287,7 +1298,6 @@
                         <td class="p-2.5 font-mono text-slate-300">Rp ${hargaJual.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 font-mono font-bold text-[#10B981]">Rp ${subtotal.toLocaleString('id-ID')}</td>
                         <td class="p-2.5 text-center">
-                            <!-- PENYESUAIAN (3): ALIH FUNGSI TOMBOL STRUK UNTUK CETAK ULANG NOTA YANG SUDAH DIKUNCI -->
                             <button onclick="reprintInvoiceFromReport('${orderId}')" class="bg-[#06B6D4] hover:bg-[#0891B2] text-slate-950 px-2 py-1 rounded text-[10px] font-bold transition active:scale-95" title="Cetak Ulang Nota ${templateNama}">
                                 <i class="fa-solid fa-print"></i> Cetak Ulang
                             </button>
@@ -1301,7 +1311,7 @@
             document.getElementById('mgt-rekap-total').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
         }
 
-        // PENYESUAIAN (3): MENGAMBIL TEMPLATE NOTA YANG SUDAH DIKUNCI PADA SAAT CHECKOUT UNTUK CETAK ULANG
+        // PERBAIKAN 3: MENGAMBIL TEMPLATE NOTA YANG SUDAH DIKUNCI PADA SAAT CHECKOUT UNTUK CETAK ULANG
         function reprintInvoiceFromReport(orderId) {
             const matches = dbData.transaksi.filter(t => String(t['Order ID'] || t['OrderID'] || t['orderId']) === String(orderId));
             if (!matches || matches.length === 0) return alert('Data transaksi tidak ditemukan!');
@@ -2119,5 +2129,3 @@
     </script>
 </body>
 </html>
-
-
