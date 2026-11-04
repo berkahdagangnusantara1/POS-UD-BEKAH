@@ -461,7 +461,9 @@
                                         <th class="p-2">ID</th>
                                         <th class="p-2">Nama Barang</th>
                                         <th class="p-2">Stok Saat Ini</th>
+                                        <th class="p-2">Modal Rata-Rata Saat Ini</th>
                                         <th class="p-2">Tambah Stok</th>
+                                        <th class="p-2">Harga Modal Baru</th>
                                         <th class="p-2 text-center">Aksi Restock</th>
                                     </tr>
                                 </thead>
@@ -623,7 +625,7 @@
  
     <!-- SCRIPT FRONTEND SISTEM KASIR -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwR-rXnMo2kBLsN6KeyDWMXAoebmhLJiWz6MQrjS7uxpQMCMrYoyK38sZEW5Y2pMFhY/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWwPZywmV0OLoVEbBmrPiXece4aVgkapqhaexTb9bVbmCFp3dM3VE4kePyrBNLV8h4/exec';
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
         let selectedCategory = 'All';
@@ -1093,8 +1095,12 @@
                     <td class="p-2 font-mono text-slate-400">${p.id}</td>
                     <td class="p-2 font-bold text-white">${p.nama}</td>
                     <td class="p-2 font-mono text-[#06B6D4]">${p.stok} ${p.satuan}</td>
+                    <td class="p-2 font-mono text-slate-300">Rp ${(p.hargaModal || 0).toLocaleString('id-ID')}</td>
                     <td class="p-2">
-                        <input type="number" id="restock-qty-${p.id}" placeholder="Jumlah" class="w-20 bg-[#0F172A] border border-[#334155] p-1 text-white rounded">
+                        <input type="number" id="restock-qty-${p.id}" placeholder="Jumlah" class="w-20 bg-[#0F172A] border border-[#334155] p-1 text-white rounded text-xs">
+                    </td>
+                    <td class="p-2">
+                        <input type="number" id="restock-modal-${p.id}" placeholder="Modal Baru (Opsional)" class="w-28 bg-[#0F172A] border border-[#334155] p-1 text-white rounded text-xs">
                     </td>
                     <td class="p-2 text-center">
                         <button onclick="submitRestock('${p.id}')" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-2 py-1 rounded font-bold text-[11px] active:scale-95">
@@ -1106,15 +1112,26 @@
         }
  
         async function submitRestock(id) {
-            const input = document.getElementById(`restock-qty-${id}`);
-            const jumlah = Number(input.value);
+            const inputQty = document.getElementById(`restock-qty-${id}`);
+            const inputModal = document.getElementById(`restock-modal-${id}`);
+            
+            const jumlah = Number(inputQty.value);
+            const modalBaru = Number(inputModal.value) || 0;
+            
             if (!jumlah || jumlah <= 0) return alert('Masukkan jumlah restock yang valid!');
             
-            const payload = { action: 'restock_barang', idProduk: id, jumlahTambah: jumlah };
+            const payload = { 
+                action: 'restock_barang', 
+                idProduk: id, 
+                jumlahTambah: jumlah,
+                hargaModalBaru: modalBaru 
+            };
+            
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                alert('Restock barang berhasil disimpan!');
-                input.value = '';
+                alert('Restock barang berhasil disimpan & modal rata-rata diperbarui!');
+                inputQty.value = '';
+                if(inputModal) inputModal.value = '';
                 fetchAllData();
             } catch (err) { alert('Gagal restock barang.'); }
         }
