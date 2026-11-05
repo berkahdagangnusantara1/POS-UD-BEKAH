@@ -1859,10 +1859,12 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: Right; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN</div>
+<div style="font-family: Arial, sans-serif; font-size: 11px;">
+                        <div style="text-align: Left; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">UD PANGAN MAKMUR</div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>
-                                    <b style="font-size: 15px;">UD PANGAN MAKMUR</b><br>
+                                    <b style="font-size: 15px;">No. Rekening: BSI 7343777846 AN UD PANGAN MAKMUR</b><br>
                                 </td>
                                 <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b>${orderId}</b><br>Tuan/Toko: <b>${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}</td>
                             </tr>
@@ -1880,13 +1882,12 @@
                                 </tr>
                             `).join('')}
                         </table>
+                        <div style="text-align: right; font-weight: bold; font-size: 16px; margin-bottom: 20px;">TOTAL KESELURUHAN: ${fmt(total)}</div>
+                        <table style="width: 100%; margin-top: 15px; font-size: 11px;">
 <td>
                                     ${udInfo.address ? `${udInfo.address}<br>` : ''}
                                     ${udInfo.phone ? `No. Hp: ${udInfo.phone}` : ''}
->No. Rekening:BSI 7343777846 AN UD PANGAN MAKMUR< 
                                 </td>
-                        <div style="text-align: right; font-weight: bold; font-size: 16px; margin-bottom: 20px;">TOTAL KESELURUHAN: ${fmt(total)}</div>
-                        <table style="width: 100%; margin-top: 15px; font-size: 11px;">
                             <tr>
                                 <td style="width: 50%; text-align: center;">Penerima,<br><br><br><br><b>( ${customer} )</b></td>
                                 <td style="width: 50%; text-align: center;">Hormat Kami,<br><br><br><br><b>( .................................... )</b></td>
