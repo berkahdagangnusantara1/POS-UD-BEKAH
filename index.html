@@ -666,9 +666,9 @@
             return UD_INFO_MAP[templateKey] || { address: '', phone: '', logo: '' };
         }
 
-        function getLogoHtml(logoFileName, maxHeight = '65px') {
+        function getLogoHtml(logoFileName, maxHeight = '100px') {
             if (!logoFileName || logoFileName.trim() === '') return '';
-            return `<img src="${logoFileName}" alt="Logo UD" style="max-height: ${maxHeight}; max-width: 240px; object-fit: contain; margin-bottom: 6px; display: inline-block;" onerror="this.style.display='none'">`;
+            return `<img src="${logoFileName}" alt="Logo UD" style="max-height: ${maxHeight}; max-width: 140px; object-fit: contain; margin-bottom: 6px; display: inline-block;" onerror="this.style.display='none'">`;
         }
 
 
