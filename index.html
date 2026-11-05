@@ -635,22 +635,22 @@
  
         // CONFIG ALAMAT DAN NO HP 16 UD (DAPAT DIISI DAN DIUBAH SENDIRI)
         const UD_INFO_MAP = {
-            'berkah_std': { address: '[Jl. TGH Izzuddin Bokhari,Mandalika, Kec. Sandubaya, Kota Mataram]', phone: '[0878-8242-4575]' },
+            'berkah_std': { address: 'Jl. TGH Izzuddin Bokhari,Mandalika, Kec. Sandubaya, Kota Mataram', phone: '0878-8242-4575' },
             'agro_buah': { address: '[JL JEND. SUDIRMAN GG DWI ANJANI, REMBIGA MATARAM]', phone: '[+6287 7617 96588]' },
-            'pangan_berkah': { address: '[Jl. TGH. Faesal, Mandalika, Kec. Sandubaya, Kota Mataram]', phone: '[089668685576]' },
-            'sega': { address: '[JL TORANGGA 2 SEGANTENG SUBAGAN MATARAM]', phone: '[0859 5600 7754]' },
-            'ika_sayur': { address: '[JL IMAM BONJOL TOHPATI KARANG MAS MAS MATARAM]', phone: '[081933022503]' },
-            'sahabat_army': { address: '[Jl. Blue Safir No.1, Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[0817610352]' },
-            'sumber_urip': { address: '[JL TENGGIRI, PAGUTAN MATARAM]', phone: '[+6287721254251]' },
-            'sapakira': { address: '[Jl. Senopati 3,Abian Tubuh Baru, Kec. Sandubaya, Kota Mataram]', phone: '[087 820 124 266]' },
-            'amira_firdaus': { address: '[Jl. Halmahera Raya No.66, Rembiga, Kec. Selaparang, Kota Mataram]', phone: '[089671388543]' },
-            'pangan_makmur': { address: '[Jl. Lalu Mesir,Turida, Kec. Sandubaya, Kota Mataram]', phone: '[+6282 3394 8879 6]' },
-            'tumbuh_maju': { address: '[Perumahan Graha Permata Kota, Peteluan Indah, Kec. Lingsar, Kota Mataram]', phone: '[+6281222999352]' },
-            'berkah_mbg': { address: '[Jl. Peternakan 1,Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[081233330351]' },
-            'mataram_logistik': { address: '[Jl. Pertanian,Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[087788985518]' },
-            'sayur_segar': { address: '[JL Peternakan gg SD Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[0817610351]' },
-            'bop_instansi': { address: '[JL DR SOETOMO KARANG BARU MARONG MATARAM]', phone: '[081 917 665 176]' },
-            'grosir_toko': { address: '[JL GORA 1 DASAN JANGKRIK MATARAM]', phone: '[085942520592]' }
+            'pangan_berkah': { address: 'Jl. TGH. Faesal, Mandalika, Kec. Sandubaya, Kota Mataram', phone: '089668685576' },
+            'sega': { address: 'JL TORANGGA 2 SEGANTENG SUBAGAN MATARAM', phone: '[0859 5600 7754]' },
+            'ika_sayur': { address: 'JL IMAM BONJOL TOHPATI KARANG MAS MAS MATARAM', phone: '081933022503' },
+            'sahabat_army': { address: 'Jl. Blue Safir No.1, Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610352' },
+            'sumber_urip': { address: 'JL TENGGIRI, PAGUTAN MATARAM', phone: '+6287721254251' },
+            'sapakira': { address: 'Jl. Senopati 3,Abian Tubuh Baru, Kec. Sandubaya, Kota Mataram', phone: '[087 820 124 266]' },
+            'amira_firdaus': { address: 'Jl. Halmahera Raya No.66, Rembiga, Kec. Selaparang, Kota Mataram', phone: '089671388543' },
+            'pangan_makmur': { address: '[Jl. Lalu Mesir,Turida, Kec. Sandubaya, Kota Mataram]', phone: '+6282 3394 8879 6' },
+            'tumbuh_maju': { address: 'Perumahan Graha Permata Kota, Peteluan Indah, Kec. Lingsar, Kota Mataram', phone: '+6281222999352' },
+            'berkah_mbg': { address: 'Jl. Peternakan 1,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '081233330351' },
+            'mataram_logistik': { address: 'Jl. Pertanian,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '087788985518' },
+            'sayur_segar': { address: 'JL Peternakan gg SD Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610351' },
+            'bop_instansi': { address: 'JL DR SOETOMO KARANG BARU MARONG MATARAM', phone: '081 917 665 176' },
+            'grosir_toko': { address: 'JL GORA 1 DASAN JANGKRIK MATARAM', phone: '085942520592' }
         };
 
         function getUdInfo(templateKey) {
@@ -1687,6 +1687,7 @@
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
                                 <td style="width: 50%; text-align: center;">Terima Kasih Telah Berbelanja,<br><br><br></td>
+                                <td style="width: 50%; text-align: center;">Hormat Kami,<br><br>(.................................)<br></td>
                             </tr>
                         </table>
                     </div>
@@ -1813,13 +1814,13 @@
             } else if (templateKey === 'amira_firdaus') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <h2 style="font-weight: bold; font-size: 18px; margin: 0 0 6px 0; color: #0f172a; text-align: center;">KWITANSI PEMBAYARAN FAKTUR</h2>
+                        <h2 style="font-weight: bold; font-size: 18px; margin: 0 0 6px 0; color: #0f172a; text-align: center;">KWITANSI PEMBAYARAN</h2>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>
                                     <b>UD AMIRA FIRDAUS</b><br>
                                     ${udInfo.address ? `${udInfo.address}<br>` : ''}
-                                    ${udInfo.phone ? `Telp. ${udInfo.phone}<br>` : ''}<br>
+                                    ${udInfo.phone ? `No Hp. ${udInfo.phone}<br>` : ''}<br>
                                     Kepada Yth. <b>${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}
                                 </td>
                                 <td style="text-align: right; vertical-align: top;">No. Pembayaran : <b>${orderId}</b><br>Tanggal : <b>${formattedDate}</b></td>
