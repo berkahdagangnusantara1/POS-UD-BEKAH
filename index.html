@@ -645,7 +645,7 @@
             'sapakira': { address: 'Jl. Senopati 3,Abian Tubuh Baru, Kec. Sandubaya, Kota Mataram', phone: '[087 820 124 266]' },
             'amira_firdaus': { address: 'Jl. Halmahera Raya No.66, Rembiga, Kec. Selaparang, Kota Mataram', phone: '089671388543' },
             'pangan_makmur': { address: '[Jl. Lalu Mesir,Turida, Kec. Sandubaya, Kota Mataram]', phone: '+6282 3394 8879 6' },
-            'tumbuh_maju': { address: 'Perumahan Graha Permata Kota, Peteluan Indah, Kec. Lingsar, Kota Mataram', phone: '+6281222999352' },
+            'tumbuh_maju': { address: 'Perumahan Graha Permata Kota, Bugbug, Kec. Lingsar, Lombok Barat', phone: '+6281222999352' },
             'berkah_mbg': { address: 'Jl. Peternakan 1,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '081233330351' },
             'mataram_logistik': { address: 'Jl. Pertanian,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '087788985518' },
             'sayur_segar': { address: 'JL Peternakan gg SD Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610351' },
@@ -2021,12 +2021,12 @@
                                 <tr><td colspan="2"><b>${i.nama}</b></td></tr>
                                 <tr>
                                     <td>${i.qty}x${i.harga}</td>
-                                    <td style="text-align: right;">${i.qty * i.harga}</td>
+                                    <td>${i.qty} x ${i.harga.toLocaleString('id-ID')}</td>
                                 </tr>
                             `).join('')}
                         </table>
                         --------------------------------
-                        <div style="font-weight: bold; text-align: right;">TOT: ${fmt(total)}</div>
+                        <div style="font-weight: bold; text-align: right;">TOTAL: ${fmt(total)}</div>
                         <div style="margin-top: 10px; font-size: 7pt; text-align: center;">
                             Terima kasih telah berbelanja<br><br><b>barang yang telah dibeli tidak dapat ditukar/dikembalikan</b>
                         </div>
