@@ -642,29 +642,35 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
  
-        // CONFIG ALAMAT DAN NO HP 16 UD (DAPAT DIISI DAN DIUBAH SENDIRI)
+        // CONFIG ALAMAT, NO HP DAN LOGO 16 UD (TINGGAL SALIN NAMA FILE LOGO KE PROPERTI logo)
         const UD_INFO_MAP = {
-            'berkah_std': { address: 'Jl. TGH Izzuddin Bokhari,Mandalika, Kec. Sandubaya, Kota Mataram', phone: '0878-8242-4575' },
-            'agro_buah': { address: '[JL JEND. SUDIRMAN GG DWI ANJANI, REMBIGA MATARAM]', phone: '[+6287 7617 96588]' },
-            'pangan_berkah': { address: 'Jl. TGH. Faesal, Mandalika, Kec. Sandubaya, Kota Mataram', phone: '089668685576' },
-            'sega': { address: 'JL TORANGGA 2 SEGANTENG SUBAGAN MATARAM', phone: '[0859 5600 7754]' },
-            'ika_sayur': { address: 'JL IMAM BONJOL TOHPATI KARANG MAS MAS MATARAM', phone: '081933022503' },
-            'sahabat_army': { address: 'Jl. Blue Safir No.1, Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610352' },
-            'sumber_urip': { address: 'JL TENGGIRI, PAGUTAN MATARAM', phone: '+6287721254251' },
-            'sapakira': { address: 'Jl. Senopati 3,Abian Tubuh Baru, Kec. Sandubaya, Kota Mataram', phone: '[087 820 124 266]' },
-            'amira_firdaus': { address: 'Jl. Halmahera Raya No.66, Rembiga, Kec. Selaparang, Kota Mataram', phone: '089671388543' },
-            'pangan_makmur': { address: '[Jl. Lalu Mesir,Turida, Kec. Sandubaya, Kota Mataram]', phone: '+6282 3394 8879 6' },
-            'tumbuh_maju': { address: 'Perumahan Graha Permata Kota, Bugbug, Kec. Lingsar, Lombok Barat', phone: '+6281222999352' },
-            'berkah_mbg': { address: 'Jl. Peternakan 1,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '081233330351' },
-            'mataram_logistik': { address: 'Jl. Pertanian,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '087788985518' },
-            'sayur_segar': { address: 'JL Peternakan gg SD Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610351' },
-            'bop_instansi': { address: 'JL DR SOETOMO KARANG BARU MARONG MATARAM', phone: '081 917 665 176' },
-            'grosir_toko': { address: 'JL GORA 1 DASAN JANGKRIK MATARAM', phone: '085942520592' }
+            'berkah_std': { address: 'Jl. TGH Izzuddin Bokhari,Mandalika, Kec. Sandubaya, Kota Mataram', phone: '0878-8242-4575', logo: 'logo_berkah.jpg' },
+            'agro_buah': { address: '[JL JEND. SUDIRMAN GG DWI ANJANI, REMBIGA MATARAM]', phone: '[+6287 7617 96588]', logo: 'logo_agro.jpg' },
+            'pangan_berkah': { address: 'Jl. TGH. Faesal, Mandalika, Kec. Sandubaya, Kota Mataram', phone: '089668685576', logo: 'logo_pangan_berkah.jpg' },
+            'sega': { address: 'JL TORANGGA 2 SEGANTENG SUBAGAN MATARAM', phone: '[0859 5600 7754]', logo: 'logo_sega.jpg' },
+            'ika_sayur': { address: 'JL IMAM BONJOL TOHPATI KARANG MAS MAS MATARAM', phone: '081933022503', logo: 'logo_ika.jpg' },
+            'sahabat_army': { address: 'Jl. Blue Safir No.1, Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610352', logo: 'logo_army.jpg' },
+            'sumber_urip': { address: 'JL TENGGIRI, PAGUTAN MATARAM', phone: '+6287721254251', logo: 'logo_sumber_urip.jpg' },
+            'sapakira': { address: 'Jl. Senopati 3,Abian Tubuh Baru, Kec. Sandubaya, Kota Mataram', phone: '[087 820 124 266]', logo: 'logo_sapakira.jpg' },
+            'amira_firdaus': { address: 'Jl. Halmahera Raya No.66, Rembiga, Kec. Selaparang, Kota Mataram', phone: '089671388543', logo: 'logo_amira.jpg' },
+            'pangan_makmur': { address: '[Jl. Lalu Mesir,Turida, Kec. Sandubaya, Kota Mataram]', phone: '+6282 3394 8879 6', logo: 'logo_pangan_makmur.jpg' },
+            'tumbuh_maju': { address: 'Perumahan Graha Permata Kota, Bugbug, Kec. Lingsar, Lombok Barat', phone: '+6281222999352', logo: 'logo_tumbuh_maju.jpg' },
+            'berkah_mbg': { address: 'Jl. Peternakan 1,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '081233330351', logo: 'logo_murah_rezeki.jpg' },
+            'mataram_logistik': { address: 'Jl. Pertanian,Selagalas, Kec. Sandubaya, Kota Mataram', phone: '087788985518', logo: 'logo_maju_lestari.jpg' },
+            'sayur_segar': { address: 'JL Peternakan gg SD Selagalas, Kec. Sandubaya, Kota Mataram', phone: '0817610351', logo: 'logo_seri_rezeki.jpg' },
+            'bop_instansi': { address: 'JL DR SOETOMO KARANG BARU MARONG MATARAM', phone: '081 917 665 176', logo: 'logo_sari_buah.jpg' },
+            'grosir_toko': { address: 'JL GORA 1 DASAN JANGKRIK MATARAM', phone: '085942520592', logo: 'logo_davin.jpg' }
         };
 
         function getUdInfo(templateKey) {
-            return UD_INFO_MAP[templateKey] || { address: '', phone: '' };
+            return UD_INFO_MAP[templateKey] || { address: '', phone: '', logo: '' };
         }
+
+        function getLogoHtml(logoFileName, maxHeight = '65px') {
+            if (!logoFileName || logoFileName.trim() === '') return '';
+            return `<img src="${logoFileName}" alt="Logo UD" style="max-height: ${maxHeight}; max-width: 140px; object-fit: contain; margin-bottom: 6px; display: inline-block;" onerror="this.style.display='none'">`;
+        }
+
 
         // PETA ALAMAT CUSTOMER
         const CUSTOMER_ADDRESS_MAP = {
@@ -1505,6 +1511,7 @@
                 html = `
                     <div style="border-bottom: 3px solid #1d4ed8; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
+                            ${getLogoHtml(udInfo.logo, '70px')}
                             <h1 style="font-weight: 900; font-size: 24px; color: #1d4ed8; margin: 0;">UD BERKAH MANDIRI</h1>
                             ${udInfo.phone ? `<p style="font-size: 12px; color: #334155; margin: 2px 0 0 0;">No. Hp : ${udInfo.phone}</p>` : ''}
                             ${udInfo.address ? `<p style="font-size: 11px; color: #475569; margin: 2px 0 0 0;">${udInfo.address}</p>` : ''}
@@ -1556,6 +1563,7 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px; color: #000;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 10px;">
+                            ${getLogoHtml(udInfo.logo, '60px')}
                             <h2 style="font-size: 20px; font-weight: bold; margin:0;">UD . AGRO BUAH</h2>
                             ${udInfo.address ? `<p style="margin:2px 0;">${udInfo.address}</p>` : ''}
                             ${udInfo.phone ? `<p style="margin:2px 0;">Phone: ${udInfo.phone}</p>` : ''}
@@ -1637,6 +1645,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 60%; vertical-align: top;">
+                                    ${getLogoHtml(udInfo.logo, '55px')}
                                     ${udInfo.address ? `<div style="border: 1px solid #000; padding: 8px; font-weight: bold; background: #f0fdf4;">UD PANGAN BERKAH : ${udInfo.address}</div>` : ''}
                                 </td>
                                 <td style="width: 40%; vertical-align: top; text-align: right;">
@@ -1659,6 +1668,7 @@
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px;">
                             <div>
+                                ${getLogoHtml(udInfo.logo, '50px')}
                                 <h3 style="font-weight: bold; font-size: 13px; margin: 0;">FAKTUR UD SEGA</h3>
                                 ${udInfo.address ? `<p style="margin:0;">${udInfo.address}</p>` : ''}
                                 ${udInfo.phone ? `<p style="margin:0;">No Hp: ${udInfo.phone}</p>` : ''}
@@ -1699,6 +1709,7 @@
             } else if (templateKey === 'ika_sayur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
+                        <div style="text-align: center;">${getLogoHtml(udInfo.logo, '50px')}</div>
                         <div style="background: #15803d; color: white; padding: 4px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
                             UD. IKA SAYUR - NO #${orderId}
                         </div>
@@ -1742,6 +1753,7 @@
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>
+                                    ${getLogoHtml(udInfo.logo, '60px')}
                                     <h2 style="font-weight: bold; font-size: 18px; margin: 0; color: #1e3a8a;">UD. SAHABAT ARMY</h2>
                                     ${udInfo.address ? `<p style="margin:2px 0;">${udInfo.address}</p>` : ''}
                                     ${udInfo.phone ? `<p style="margin:2px 0;">No Hp: ${udInfo.phone}</p>` : ''}
@@ -1784,6 +1796,7 @@
             } else if (templateKey === 'sumber_urip') {
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
+                        ${getLogoHtml(udInfo.logo, '45px')}
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD SUMBER URIP</h4>
                         ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
                         ${udInfo.phone ? `<p style="margin: 2px 0;">Telp: ${udInfo.phone}</p>` : ''}
@@ -1822,6 +1835,7 @@
                         <table style="width: 100%; margin-bottom: 4px;">
                             <tr>
                                 <td>
+                                    ${getLogoHtml(udInfo.logo, '50px')}
                                     <h3 style="font-weight: bold; margin: 0; color: #1d4ed8;">UD. SAPAKIRA</h3>
                                     ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
                                     ${udInfo.phone ? `<p style="margin: 2px 0;">No Hp: ${udInfo.phone}</p>` : ''}
@@ -1858,6 +1872,7 @@
             } else if (templateKey === 'amira_firdaus') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
+                        <div style="text-align: center;">${getLogoHtml(udInfo.logo, '60px')}</div>
                         <h2 style="font-weight: bold; font-size: 18px; margin: 0 0 6px 0; color: #0f172a; text-align: center;">KWITANSI PEMBAYARAN</h2>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
@@ -1887,7 +1902,7 @@
                             <tr>
                                 <td>BSI: 7358086106 a.n UD Amira Firdaus</td>
                                 <td style="text-align: right;">
-                                    <div style="border: 2px solid #000; font-weight: bold; padding: 6px; display: inline-block; background: #cbd5e1; font-size: 13px;">Total Lunas: ${fmt(total)}</div>
+                                    <div style="border: 2px solid #000; font-weight: bold; padding: 6px; display: inline-block; background: #cbd5e1; font-size: 13px;">Total: ${fmt(total)}</div>
                                 </td>
                             </tr>
                         </table>
@@ -1903,6 +1918,7 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: Right; font-weight: bold; font-size: 18px;">INVOICE PEMBAYARAN</div>
+${getLogoHtml(udInfo.logo, '60px')}
 <div style="text-align: Left; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">UD PANGAN MAKMUR</div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
@@ -1942,6 +1958,7 @@
                 // 2. UD TUMBUH MAJU - Warna Hijau (#15803d)
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
+                        <div style="text-align: center;">${getLogoHtml(udInfo.logo, '50px')}</div>
                         <div style="text-align: center; font-weight: 800; font-size: 14px; color: white; background: #15803d; padding: 6px; border-radius: 4px; margin-bottom: 6px;">INVOICE UD TUMBUH MAJU</div>
                         <div style="margin-bottom: 4px; font-size: 9px; text-align: center; color: #166534;">
                             ${udInfo.address ? udInfo.address : ''} ${udInfo.phone ? '| Hp: ' + udInfo.phone : ''}
@@ -1965,7 +1982,7 @@
                                 </tr>
                             `).join('')}
                         </table>
-                        <div style="text-align: right; font-weight: 900; font-size: 12px; color: #15803d; margin-bottom: 10px;">TOTAL LUNAS: ${fmt(total)}</div>
+                        <div style="text-align: right; font-weight: 900; font-size: 12px; color: #15803d; margin-bottom: 10px;">TOTAL: ${fmt(total)}</div>
                         <table style="width: 100%; font-size: 10px; margin-top: 10px;">
                             <tr>
                                 <td style="width: 50%; text-align: center;">Penerima,<br><br><br><b>( ${customer} )</b></td>
@@ -1979,6 +1996,7 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="border-bottom: 3px double #854d0e; padding-bottom: 6px; margin-bottom: 8px; text-align: center;">
+                            ${getLogoHtml(udInfo.logo, '60px')}
                             <h2 style="font-size: 22px; font-weight: 900; margin: 0; color: #854d0e;">UD MURAH REZEKI</h2>
                             ${udInfo.address ? `<p style="margin: 2px 0; color: #713f12;">${udInfo.address}</p>` : ''}
                             ${udInfo.phone ? `<p style="margin: 2px 0; color: #713f12;">No Hp: ${udInfo.phone}</p>` : ''}
@@ -2020,6 +2038,7 @@
                 // 4. UD MAJU LESTARI - Warna Kuning (#ca8a04 / Header Kuning Teks Hitam)
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace; border: 2px solid #ca8a04; padding: 10px; background: #fefce8;">
+                        ${getLogoHtml(udInfo.logo, '45px')}
                         <div style="background: #ca8a04; color: black; padding: 4px; font-weight: 900; font-size: 12pt; margin-bottom: 6px;">UD MAJU LESTARI</div>
                         ${udInfo.address ? `<p style="margin: 2px 0; font-weight: bold; color: #713f12;">${udInfo.address}</p>` : ''}
                         ${udInfo.phone ? `<p style="margin: 2px 0; font-weight: bold; color: #713f12;">Telp: ${udInfo.phone}</p>` : ''}
@@ -2052,6 +2071,7 @@
             } else if (templateKey === 'sayur_segar') {
                 html = `
                     <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace;">
+                        ${getLogoHtml(udInfo.logo, '40px')}
                         <b style="font-size: 10pt;">UD SERI REZEKI</b><br>
                         ${udInfo.address ? `<span>${udInfo.address}</span><br>` : ''}
                         ${udInfo.phone ? `<span>Telp: ${udInfo.phone}</span><br>` : ''}
@@ -2083,6 +2103,7 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
+                            ${getLogoHtml(udInfo.logo, '60px')}
                             <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FAKTUR NO. ${orderId}</h2>
                             <p style="margin: 2px 0; font-weight: bold;">UD SARI BUAH</p>
                             ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
@@ -2122,6 +2143,7 @@
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 4px;">
                             <div>
+                                ${getLogoHtml(udInfo.logo, '45px')}
                                 <b>UD DAVIN PRO</b><br>
                                 ${udInfo.address ? `<span style="font-size: 9px;">${udInfo.address}</span><br>` : ''}
                                 ${udInfo.phone ? `<span style="font-size: 9px;">Hp: ${udInfo.phone}</span>` : ''}
