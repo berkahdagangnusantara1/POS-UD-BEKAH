@@ -83,7 +83,7 @@
                 background: #fff !important;
             }
  
-            .no-print { display: none !important; }
+            .no-[#000] { display: none !important; }
         }
  
         .print-full-portrait {
@@ -633,6 +633,30 @@
         let selectedPriceTierMode = 'grosir';
         let currentActiveInvoiceData = null;
  
+        // CONFIG ALAMAT DAN NO HP 16 UD (DAPAT DIISI DAN DIUBAH SENDIRI)
+        const UD_INFO_MAP = {
+            'berkah_std': { address: '[Jl. TGH Izzuddin Bokhari,Mandalika, Kec. Sandubaya, Kota Mataram]', phone: '[0878-8242-4575]' },
+            'agro_buah': { address: '[JL JEND. SUDIRMAN GG DWI ANJANI, REMBIGA MATARAM]', phone: '[+6287 7617 96588]' },
+            'pangan_berkah': { address: '[Jl. TGH. Faesal, Mandalika, Kec. Sandubaya, Kota Mataram]', phone: '[089668685576]' },
+            'sega': { address: '[JL TORANGGA 2 SEGANTENG SUBAGAN MATARAM]', phone: '[0859 5600 7754]' },
+            'ika_sayur': { address: '[JL IMAM BONJOL TOHPATI KARANG MAS MAS MATARAM]', phone: '[081933022503]' },
+            'sahabat_army': { address: '[Jl. Blue Safir No.1, Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[0817610352]' },
+            'sumber_urip': { address: '[JL TENGGIRI, PAGUTAN MATARAM]', phone: '[+6287721254251]' },
+            'sapakira': { address: '[Jl. Senopati 3,Abian Tubuh Baru, Kec. Sandubaya, Kota Mataram]', phone: '[087 820 124 266]' },
+            'amira_firdaus': { address: '[Jl. Halmahera Raya No.66, Rembiga, Kec. Selaparang, Kota Mataram]', phone: '[089671388543]' },
+            'pangan_makmur': { address: '[Jl. Lalu Mesir,Turida, Kec. Sandubaya, Kota Mataram]', phone: '[+6282 3394 8879 6]' },
+            'tumbuh_maju': { address: '[Perumahan Graha Permata Kota, Peteluan Indah, Kec. Lingsar, Kota Mataram]', phone: '[+6281222999352]' },
+            'berkah_mbg': { address: '[Jl. Peternakan 1,Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[081233330351]' },
+            'mataram_logistik': { address: '[Jl. Pertanian,Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[087788985518]' },
+            'sayur_segar': { address: '[JL Peternakan gg SD Selagalas, Kec. Sandubaya, Kota Mataram]', phone: '[0817610351]' },
+            'bop_instansi': { address: '[JL DR SOETOMO KARANG BARU MARONG MATARAM]', phone: '[081 917 665 176]' },
+            'grosir_toko': { address: '[JL GORA 1 DASAN JANGKRIK MATARAM]', phone: '[085942520592]' }
+        };
+
+        function getUdInfo(templateKey) {
+            return UD_INFO_MAP[templateKey] || { address: '', phone: '' };
+        }
+
         // PETA ALAMAT CUSTOMER
         const CUSTOMER_ADDRESS_MAP = {
             'SPPG LINGSAR': 'Jl. Gora 2, Lingsar, Lombok Barat',
@@ -1404,6 +1428,7 @@
             const printArea = document.getElementById('invoice-print-area');
             const modeOverride = document.getElementById('invoice-orientation-selector').value;
             const customerAddress = getCustomerAddress(customer);
+            const udInfo = getUdInfo(templateKey);
             
             let currentCategory = 'full_portrait';
             if (['pangan_berkah', 'sahabat_army', 'pangan_makmur', 'berkah_mbg', 'bop_instansi'].includes(templateKey)) {
@@ -1437,8 +1462,8 @@
                     <div style="border-bottom: 3px solid #1d4ed8; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
                             <h1 style="font-weight: 900; font-size: 24px; color: #1d4ed8; margin: 0;">UD BERKAH MANDIRI</h1>
-                            <p style="font-size: 12px; color: #334155; margin: 2px 0 0 0;">No. Hp : 0878-8242-4575</p>
-                            <p style="font-size: 11px; color: #475569; margin: 2px 0 0 0;">JL. TGH Izzudin Bokhari Mandalika, Mataram</p>
+                            ${udInfo.phone ? `<p style="font-size: 12px; color: #334155; margin: 2px 0 0 0;">No. Hp : ${udInfo.phone}</p>` : ''}
+                            ${udInfo.address ? `<p style="font-size: 11px; color: #475569; margin: 2px 0 0 0;">${udInfo.address}</p>` : ''}
                         </div>
                         <div style="text-align: right;">
                             <h2 style="font-weight: 800; font-size: 20px; color: #1d4ed8; margin: 0; text-transform: uppercase;">FAKTUR</h2>
@@ -1488,8 +1513,8 @@
                     <div style="font-family: Arial, sans-serif; font-size: 11px; color: #000;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 10px;">
                             <h2 style="font-size: 20px; font-weight: bold; margin:0;">UD . AGRO BUAH</h2>
-                            <p style="margin:2px 0;">Jl. Jendral Sudirman gang Dwi Anjani, Rembiga, Mataram</p>
-                            <p style="margin:2px 0;">Phone: 0877-6179-6588</p>
+                            ${udInfo.address ? `<p style="margin:2px 0;">${udInfo.address}</p>` : ''}
+                            ${udInfo.phone ? `<p style="margin:2px 0;">Phone: ${udInfo.phone}</p>` : ''}
                         </div>
                         <table style="width: 100%; margin-bottom: 10px; font-size: 11px;">
                             <tr>
@@ -1546,7 +1571,7 @@
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>Pelanggan Utama:<br><b style="font-size: 14px;">${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}</td>
-                                <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b style="font-size: 13px; color: #15803d;">${orderId}</b><br>No. Hp : 0896-6868-5576</td>
+                                <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b style="font-size: 13px; color: #15803d;">${orderId}</b>${udInfo.phone ? `<br>No. Hp : ${udInfo.phone}` : ''}</td>
                             </tr>
                         </table>
                         <div style="text-align: center; font-weight: bold; font-size: 15px; margin: 8px 0; background: #86efac; padding: 8px; color: #064e3b; border-radius: 4px;">
@@ -1568,9 +1593,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 60%; vertical-align: top;">
-                                    <div style="border: 1px solid #000; padding: 8px; font-weight: bold; background: #f0fdf4;">
-                                        UD PANGAN BERKAH : JL. TGH. FAISAL, TURIDE, KEC. SANDUBAYA - MATARAM
-                                    </div>
+                                    ${udInfo.address ? `<div style="border: 1px solid #000; padding: 8px; font-weight: bold; background: #f0fdf4;">UD PANGAN BERKAH : ${udInfo.address}</div>` : ''}
                                 </td>
                                 <td style="width: 40%; vertical-align: top; text-align: right;">
                                     <p style="margin:2px 0; font-weight: bold; font-size: 16px; color: #15803d;">Total Tagihan: ${fmt(total)}</p>
@@ -1593,7 +1616,8 @@
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px;">
                             <div>
                                 <h3 style="font-weight: bold; font-size: 13px; margin: 0;">FAKTUR UD SEGA</h3>
-                                <p style="margin:0;">Jl. Torangga 2 Seganteng Mataram</p>
+                                ${udInfo.address ? `<p style="margin:0;">${udInfo.address}</p>` : ''}
+                                ${udInfo.phone ? `<p style="margin:0;">No Hp: ${udInfo.phone}</p>` : ''}
                             </div>
                             <div style="text-align: right;">
                                 <b style="font-size: 11px;">NO. ${orderId}</b><br>
@@ -1634,6 +1658,9 @@
                         <div style="background: #15803d; color: white; padding: 4px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
                             UD. IKA SAYUR - NO #${orderId}
                         </div>
+                        <div style="margin-bottom: 6px; font-size: 9px; text-align: center;">
+                            ${udInfo.address ? udInfo.address : ''} ${udInfo.phone ? '| Hp: ' + udInfo.phone : ''}
+                        </div>
                         <table style="width: 100%; margin-bottom: 6px;">
                             <tr>
                                 <td>Tagihan: <b>${customer}</b>${customerAddress ? `<br><span style="font-size: 9px;">${customerAddress}</span>` : ''}</td>
@@ -1669,7 +1696,11 @@
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td><h2 style="font-weight: bold; font-size: 18px; margin: 0; color: #1e3a8a;">UD. SAHABAT ARMY</h2>Jl. Blue Safir No. 1 Selagalas, Sandubaya Mataram</td>
+                                <td>
+                                    <h2 style="font-weight: bold; font-size: 18px; margin: 0; color: #1e3a8a;">UD. SAHABAT ARMY</h2>
+                                    ${udInfo.address ? `<p style="margin:2px 0;">${udInfo.address}</p>` : ''}
+                                    ${udInfo.phone ? `<p style="margin:2px 0;">No Hp: ${udInfo.phone}</p>` : ''}
+                                </td>
                                 <td style="text-align: right;"><h3 style="font-weight: bold; margin: 0;">NOTA PEMBAYARAN</h3>BSI 7358086246 a.n UD Sahabat Army</td>
                             </tr>
                         </table>
@@ -1709,8 +1740,8 @@
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace;">
                         <h4 style="font-weight: bold; margin: 0; font-size: 11pt;">UD SUMBER URIP</h4>
-                        <p style="margin: 2px 0;">Jl. Tenggiri Pagutan Mataram</p>
-                        <p style="margin: 2px 0;">Telp: 087721254251</p>
+                        ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
+                        ${udInfo.phone ? `<p style="margin: 2px 0;">Telp: ${udInfo.phone}</p>` : ''}
                         <div style="border-bottom: 1px dashed #000; margin: 4px 0;"></div>
                         <div style="text-align: left; margin-bottom: 4px;">
                             <span>No  : ${orderId}</span><br>
@@ -1745,7 +1776,11 @@
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <table style="width: 100%; margin-bottom: 4px;">
                             <tr>
-                                <td><h3 style="font-weight: bold; margin: 0; color: #1d4ed8;">UD. SAPAKIRA</h3>Abian Tubuh Baru, Sandubaya</td>
+                                <td>
+                                    <h3 style="font-weight: bold; margin: 0; color: #1d4ed8;">UD. SAPAKIRA</h3>
+                                    ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
+                                    ${udInfo.phone ? `<p style="margin: 2px 0;">No Hp: ${udInfo.phone}</p>` : ''}
+                                </td>
                                 <td style="text-align: right;"><br>No: <b>${orderId}</b></td>
                             </tr>
                         </table>
@@ -1781,7 +1816,12 @@
                         <h2 style="font-weight: bold; font-size: 18px; margin: 0 0 6px 0; color: #0f172a; text-align: center;">KWITANSI PEMBAYARAN FAKTUR</h2>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td><b>UD AMIRA FIRDAUS</b><br>JL. HALMAHERA RAYA NO. 66 REMBIGE, MATARAM<br>Telp. 089671388543<br><br>Kepada Yth. <b>${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}</td>
+                                <td>
+                                    <b>UD AMIRA FIRDAUS</b><br>
+                                    ${udInfo.address ? `${udInfo.address}<br>` : ''}
+                                    ${udInfo.phone ? `Telp. ${udInfo.phone}<br>` : ''}<br>
+                                    Kepada Yth. <b>${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}
+                                </td>
                                 <td style="text-align: right; vertical-align: top;">No. Pembayaran : <b>${orderId}</b><br>Tanggal : <b>${formattedDate}</b></td>
                             </tr>
                         </table>
@@ -1820,7 +1860,11 @@
                         <div style="text-align: center; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN NO. ${orderId}</div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td><b style="font-size: 15px;">UD PANGAN MAKMUR</b><br>JL. LALU MESIR, KEL. TURIDE, SANDUBAYA - MATARAM</td>
+                                <td>
+                                    <b style="font-size: 15px;">UD PANGAN MAKMUR</b><br>
+                                    ${udInfo.address ? `${udInfo.address}<br>` : ''}
+                                    ${udInfo.phone ? `No. Hp: ${udInfo.phone}` : ''}
+                                </td>
                                 <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b>${orderId}</b><br>Tuan/Toko: <b>${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}</td>
                             </tr>
                         </table>
@@ -1851,6 +1895,9 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="text-align: center; font-weight: 800; font-size: 14px; color: white; background: #15803d; padding: 6px; border-radius: 4px; margin-bottom: 6px;">INVOICE UD TUMBUH MAJU</div>
+                        <div style="margin-bottom: 4px; font-size: 9px; text-align: center; color: #166534;">
+                            ${udInfo.address ? udInfo.address : ''} ${udInfo.phone ? '| Hp: ' + udInfo.phone : ''}
+                        </div>
                         <table style="width: 100%; margin-bottom: 6px; font-size: 10px;">
                             <tr>
                                 <td>No: <b style="color: #15803d;">${orderId}</b><br>Tgl: ${formattedDate}</td>
@@ -1885,7 +1932,8 @@
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="border-bottom: 3px double #854d0e; padding-bottom: 6px; margin-bottom: 8px; text-align: center;">
                             <h2 style="font-size: 22px; font-weight: 900; margin: 0; color: #854d0e;">UD MURAH REZEKI</h2>
-                            <p style="margin: 2px 0; color: #713f12;">JL. Peternakan 1, Selagalas, Kec. Sandubaya - Mataram</p>
+                            ${udInfo.address ? `<p style="margin: 2px 0; color: #713f12;">${udInfo.address}</p>` : ''}
+                            ${udInfo.phone ? `<p style="margin: 2px 0; color: #713f12;">No Hp: ${udInfo.phone}</p>` : ''}
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
@@ -1925,7 +1973,8 @@
                 html = `
                     <div style="text-align: center; font-size: 9pt; font-family: 'Courier Prime', monospace; border: 2px solid #ca8a04; padding: 10px; background: #fefce8;">
                         <div style="background: #ca8a04; color: black; padding: 4px; font-weight: 900; font-size: 12pt; margin-bottom: 6px;">UD MAJU LESTARI</div>
-                        <p style="margin: 2px 0; font-weight: bold; color: #713f12;">Sembako Murah Lombok</p>
+                        ${udInfo.address ? `<p style="margin: 2px 0; font-weight: bold; color: #713f12;">${udInfo.address}</p>` : ''}
+                        ${udInfo.phone ? `<p style="margin: 2px 0; font-weight: bold; color: #713f12;">Telp: ${udInfo.phone}</p>` : ''}
                         <div style="border-bottom: 1px dashed #ca8a04; margin: 6px 0;"></div>
                         <div style="text-align: left; font-weight: bold;">
                             <span>ID   : ${orderId}</span><br>
@@ -1956,7 +2005,8 @@
                 html = `
                     <div style="text-align: center; font-size: 8pt; font-family: 'Courier Prime', monospace;">
                         <b style="font-size: 10pt;">UD SERI REZEKI</b><br>
-                        <span>Jl. Peternakan gg. SD Selagalas - Mataram</span><br>
+                        ${udInfo.address ? `<span>${udInfo.address}</span><br>` : ''}
+                        ${udInfo.phone ? `<span>Telp: ${udInfo.phone}</span><br>` : ''}
                         --------------------------------
                         <div style="text-align: left;">
                             <span>No: ${orderId}</span><br>
@@ -1986,7 +2036,9 @@
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
                             <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FAKTUR NO. ${orderId}</h2>
-                            <p style="margin: 2px 0;">UD SARI BUAH - MATARAM</p>
+                            <p style="margin: 2px 0; font-weight: bold;">UD SARI BUAH</p>
+                            ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
+                            ${udInfo.phone ? `<p style="margin: 2px 0;">No. Hp: ${udInfo.phone}</p>` : ''}
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
@@ -2021,7 +2073,11 @@
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 10px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 4px;">
-                            <b>UD DAVIN PRO</b>
+                            <div>
+                                <b>UD DAVIN PRO</b><br>
+                                ${udInfo.address ? `<span style="font-size: 9px;">${udInfo.address}</span><br>` : ''}
+                                ${udInfo.phone ? `<span style="font-size: 9px;">Hp: ${udInfo.phone}</span>` : ''}
+                            </div>
                             <span>No: <b>${orderId}</b></span>
                         </div>
                         <div style="margin-bottom: 4px;">Customer: <b>${customer}</b> ${customerAddress ? `(${customerAddress})` : ''} | Tgl: ${formattedDate}</div>
@@ -2144,3 +2200,4 @@
     </script>
 </body>
 </html>
+
