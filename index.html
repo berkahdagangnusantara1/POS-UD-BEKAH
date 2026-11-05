@@ -541,9 +541,18 @@
                     <div class="pos-card rounded-lg overflow-hidden">
                         <div class="p-2.5 bg-[#1E293B] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs border-b border-[#334155]">
                             <span class="font-bold text-slate-200">RIWAYAT TRANSAKSI PENJUALAN</span>
-                            <button onclick="exportToExcel()" class="w-full sm:w-auto bg-[#10B981] hover:bg-[#059669] text-slate-950 px-3 py-1.5 rounded font-bold flex items-center justify-center gap-1.5 transition">
-                                <i class="fa-solid fa-file-excel"></i> Export Excel (Laba Rugi)
-                            </button>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <div class="flex items-center gap-1.5 bg-[#0F172A] border border-[#334155] px-2 py-1 rounded text-slate-300">
+                                    <i class="fa-solid fa-calendar-day text-[#06B6D4]"></i>
+                                    <input type="date" id="filter-tanggal-laporan" onchange="renderLaporanTable()" class="bg-transparent text-white text-xs focus:outline-none cursor-pointer">
+                                    <button onclick="resetFilterTanggal()" title="Reset Filter Tanggal" class="text-slate-400 hover:text-white text-xs px-1">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                                <button onclick="exportToExcel()" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-3 py-1.5 rounded font-bold flex items-center justify-center gap-1.5 transition whitespace-nowrap">
+                                    <i class="fa-solid fa-file-excel"></i> Export Excel (Laba Rugi)
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs whitespace-nowrap min-w-[800px]">
@@ -1285,6 +1294,12 @@
             `).join('');
         }
  
+        function resetFilterTanggal() {
+            const el = document.getElementById('filter-tanggal-laporan');
+            if (el) el.value = '';
+            renderLaporanTable();
+        }
+
         function renderLaporanTable() {
             const tbody = document.getElementById('mgt-laporan-table-body');
             let totalOmset = 0, omsetHarian = 0, omsetBulanan = 0;
@@ -1293,6 +1308,13 @@
             const curDay = now.getDate();
             const curMonth = now.getMonth();
             const curYear = now.getFullYear();
+
+            const filterTanggalVal = document.getElementById('filter-tanggal-laporan')?.value; // YYYY-MM-DD
+            let filterDateObj = null;
+            if (filterTanggalVal) {
+                const parts = filterTanggalVal.split('-');
+                filterDateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            }
  
             if (!dbData.transaksi || dbData.transaksi.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>`;
@@ -1301,8 +1323,28 @@
                 document.getElementById('mgt-rekap-total').innerText = 'Rp 0';
                 return;
             }
+
+            let filteredTransactions = dbData.transaksi;
+            if (filterDateObj) {
+                filteredTransactions = dbData.transaksi.filter(t => {
+                    const rawDate = t['Tanggal'] || t['tanggal'] || t['Date'] || t['TGL'] || t['tgl'];
+                    const dObj = parseDateObject(rawDate);
+                    if (!dObj) return false;
+                    return dObj.getDate() === filterDateObj.getDate() &&
+                           dObj.getMonth() === filterDateObj.getMonth() &&
+                           dObj.getFullYear() === filterDateObj.getFullYear();
+                });
+            }
  
-            tbody.innerHTML = dbData.transaksi.map(t => {
+            if (filteredTransactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-500">Tidak ada transaksi pada tanggal yang dipilih</td></tr>`;
+                document.getElementById('mgt-rekap-harian').innerText = 'Rp 0';
+                document.getElementById('mgt-rekap-bulanan').innerText = 'Rp 0';
+                document.getElementById('mgt-rekap-total').innerText = 'Rp 0';
+                return;
+            }
+ 
+            tbody.innerHTML = filteredTransactions.map(t => {
                 const rawDate = t['Tanggal'] || t['tanggal'] || t['Date'] || t['TGL'] || t['tgl'];
                 const subtotal = Number(t['Sub Total'] || t['SubTotal'] || t['subtotal'] || t['Total']) || 0;
                 
