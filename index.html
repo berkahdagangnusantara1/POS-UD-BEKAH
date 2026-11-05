@@ -1858,7 +1858,7 @@
             } else if (templateKey === 'pangan_makmur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <div style="text-align: center; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN</div>
+                        <div style="text-align: Right; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN</div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>
@@ -1883,6 +1883,7 @@
 <td>
                                     ${udInfo.address ? `${udInfo.address}<br>` : ''}
                                     ${udInfo.phone ? `No. Hp: ${udInfo.phone}` : ''}
+>No. Rekening:BSI 7343777846 AN UD PANGAN MAKMUR< 
                                 </td>
                         <div style="text-align: right; font-weight: bold; font-size: 16px; margin-bottom: 20px;">TOTAL KESELURUHAN: ${fmt(total)}</div>
                         <table style="width: 100%; margin-top: 15px; font-size: 11px;">
