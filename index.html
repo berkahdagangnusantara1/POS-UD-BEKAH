@@ -428,16 +428,16 @@
                             </div>
                             <div>
                                 <label class="block text-slate-400 mb-1">Harga Modal Asli (Rp)</label>
-                                <input type="number" id="mgt-modal-produk" placeholder="50000" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
+                                <input type="number" step="any" id="mgt-modal-produk" placeholder="50000" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                             </div>
                             <div>
                                 <label class="block text-slate-400 mb-1">Harga Jual (Rp)</label>
-                                <input type="number" id="mgt-jual-produk" placeholder="62000" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
+                                <input type="number" step="any" id="mgt-jual-produk" placeholder="62000" class="w-full bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                             </div>
                             <div>
                                 <label class="block text-slate-400 mb-1">Jumlah Masuk & Satuan</label>
                                 <div class="flex gap-2">
-                                    <input type="number" id="mgt-qty-produk" placeholder="100" class="w-2/3 bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
+                                    <input type="number" step="any" id="mgt-qty-produk" placeholder="100" class="w-2/3 bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                                     <input type="text" id="mgt-satuan-produk" placeholder="Pcs/Kg" class="w-1/3 bg-[#0F172A] border border-[#334155] p-2 text-white rounded">
                                 </div>
                             </div>
@@ -634,7 +634,7 @@
  
     <!-- SCRIPT FRONTEND SISTEM KASIR -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWwPZywmV0OLoVEbBmrPiXece4aVgkapqhaexTb9bVbmCFp3dM3VE4kePyrBNLV8h4/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpfBuffGxEva6rqjcMnM91qe2LthF3wCJOUAZmIfCrDL68JDXAKl6LREgHnJrGRa-p/exec';
         let dbData = { produk: [], transaksi: [] };
         let cart = [];
         let selectedCategory = 'All';
@@ -832,7 +832,7 @@
  
             const exist = cart.find(x => String(x.id) === String(id));
             if (exist) {
-                exist.qty += 1;
+                exist.qty = Math.round((exist.qty + 1) * 100) / 100;
             } else {
                 const hargaModalAsli = Number(p.hargaModal) || 0;
                 const hargaJualStandar = Number(p.harga) || 0;
@@ -877,9 +877,9 @@
                         <div class="col-span-3 flex items-center justify-center gap-1 font-mono">
                             <button onclick="updateCartQty('${i.id}', -1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-minus text-[9px]"></i></button>
                             
-                            <input type="number" min="1" value="${i.qty}" 
+                            <input type="number" step="any" value="${i.qty}" 
                                    onchange="updateCartQtyManual('${i.id}', this.value)" 
-                                   class="w-10 text-center bg-[#0F172A] border border-[#334155] rounded text-xs py-0.5 text-white font-bold focus:outline-none focus:border-[#06B6D4]">
+                                   class="w-12 text-center bg-[#0F172A] border border-[#334155] rounded text-xs py-0.5 text-white font-bold focus:outline-none focus:border-[#06B6D4]">
                             
                             <button onclick="updateCartQty('${i.id}', 1)" class="w-6 h-6 bg-[#334155] text-slate-300 hover:text-white rounded flex items-center justify-center active:scale-90"><i class="fa-solid fa-plus text-[9px]"></i></button>
                         </div>
@@ -889,17 +889,18 @@
                 `;
             }).join('');
  
+            const formattedItemCount = Math.round(itemCount * 100) / 100;
             document.getElementById('cart-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
-            document.getElementById('cart-item-count').innerText = `${itemCount} Items`;
+            document.getElementById('cart-item-count').innerText = `${formattedItemCount} Items`;
             document.getElementById('mobile-cart-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
-            document.getElementById('mobile-cart-badge').innerText = itemCount;
+            document.getElementById('mobile-cart-badge').innerText = formattedItemCount;
         }
  
         function updateCartQty(id, delta) {
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
             
-            item.qty += delta;
+            item.qty = Math.round((item.qty + delta) * 100) / 100;
             if (item.qty <= 0) cart = cart.filter(x => String(x.id) !== String(id));
             renderCart();
         }
@@ -908,7 +909,7 @@
             const item = cart.find(x => String(x.id) === String(id));
             if (!item) return;
             
-            let qty = parseInt(newQtyVal);
+            let qty = parseFloat(newQtyVal);
             if (isNaN(qty) || qty <= 0) {
                 if (confirm('Hapus barang ini dari keranjang?')) {
                     cart = cart.filter(x => String(x.id) !== String(id));
@@ -919,7 +920,7 @@
                 return;
             }
  
-            item.qty = qty;
+            item.qty = Math.round(qty * 100) / 100;
             renderCart();
         }
  
@@ -953,7 +954,7 @@
                     <td class="p-2 text-center font-mono">${item.qty}</td>
                     <td class="p-2 font-mono text-amber-400 text-[11px]">${item.hargaStrataName}</td>
                     <td class="p-2">
-                        <input type="number" value="${item.harga}" onchange="updateCartItemManualPrice(${idx}, this.value)" class="w-24 bg-[#0F172A] border border-[#06B6D4] text-xs p-1.5 text-white rounded font-mono">
+                        <input type="number" step="any" value="${item.harga}" onchange="updateCartItemManualPrice(${idx}, this.value)" class="w-24 bg-[#0F172A] border border-[#06B6D4] text-xs p-1.5 text-white rounded font-mono">
                     </td>
                     <td class="p-2 text-right font-mono font-bold text-[#06B6D4]" id="subtotal-review-${idx}">
                         Rp ${(item.qty * item.harga).toLocaleString('id-ID')}
@@ -988,13 +989,14 @@
             const strataText = selectedPriceTierMode === 'ecer' ? 'Jual Harga Ecer (Modal Asli + 3%)' : 'Jual Harga Grosir (Modal Asli)';
             const custName = document.getElementById('customer-name').value || 'Umum';
             const custAddr = getCustomerAddress(custName);
+            const totalItemCount = Math.round(cart.reduce((a,b)=>a+b.qty,0) * 100) / 100;
             
             document.getElementById('verification-summary-text').innerHTML = `
                 <div>• Customer: <b>${custName}</b></div>
                 ${custAddr ? `<div>• Alamat: <b>${custAddr}</b></div>` : ''}
                 <div>• Skema: <b class="text-amber-400">${strataText}</b></div>
                 <div>• Kategori: <b>${document.getElementById('jenis-penjualan').value}</b></div>
-                <div>• Total Item: <b>${cart.reduce((a,b)=>a+b.qty,0)} Barang</b></div>
+                <div>• Total Item: <b>${totalItemCount} Barang</b></div>
                 <div>• Total Bayar: <b class="text-[#10B981]">Rp ${total.toLocaleString('id-ID')}</b></div>
             `;
             document.getElementById('confirm-verification-modal').classList.remove('hidden');
@@ -1056,7 +1058,7 @@
  
             checkoutItems.forEach(ci => {
                 const prod = dbData.produk.find(p => String(p.id) === String(ci.id));
-                if (prod) prod.stok = prod.stok - ci.qty;
+                if (prod) prod.stok = Math.round((prod.stok - ci.qty) * 100) / 100;
             });
  
             lastTransactionData = {
@@ -1130,10 +1132,10 @@
                     <td class="p-2 font-mono text-[#06B6D4]">${p.stok} ${p.satuan}</td>
                     <td class="p-2 font-mono text-slate-300">Rp ${(p.hargaModal || 0).toLocaleString('id-ID')}</td>
                     <td class="p-2">
-                        <input type="number" id="restock-qty-${p.id}" placeholder="Jumlah" class="w-20 bg-[#0F172A] border border-[#334155] p-1 text-white rounded text-xs">
+                        <input type="number" step="any" id="restock-qty-${p.id}" placeholder="Jumlah" class="w-20 bg-[#0F172A] border border-[#334155] p-1 text-white rounded text-xs">
                     </td>
                     <td class="p-2">
-                        <input type="number" id="restock-modal-${p.id}" placeholder="Modal Baru (Opsional)" class="w-28 bg-[#0F172A] border border-[#334155] p-1 text-white rounded text-xs">
+                        <input type="number" step="any" id="restock-modal-${p.id}" placeholder="Modal Baru (Opsional)" class="w-28 bg-[#0F172A] border border-[#334155] p-1 text-white rounded text-xs">
                     </td>
                     <td class="p-2 text-center">
                         <button onclick="submitRestock('${p.id}')" class="bg-[#10B981] hover:bg-[#059669] text-slate-950 px-2 py-1 rounded font-bold text-[11px] active:scale-95">
@@ -1151,7 +1153,7 @@
             const jumlah = Number(inputQty.value);
             const modalBaru = Number(inputModal.value) || 0;
             
-            if (!jumlah || jumlah <= 0) return alert('Masukkan jumlah restock yang valid!');
+            if (isNaN(jumlah) || jumlah === 0) return alert('Masukkan jumlah restock yang valid!');
             
             const payload = { 
                 action: 'restock_barang', 
@@ -1214,7 +1216,7 @@
         async function saveNewProduct() {
             const nama = document.getElementById('mgt-nama-produk').value.trim();
             const qty = document.getElementById('mgt-qty-produk').value;
-            if (!nama || !qty) return alert('Nama Produk dan Jumlah wajib diisi!');
+            if (!nama || qty === "") return alert('Nama Produk dan Jumlah wajib diisi!');
             
             const payload = {
                 action: 'barang_masuk',
@@ -1222,7 +1224,7 @@
                 kategori: document.getElementById('mgt-kategori-produk').value.trim() || 'Umum',
                 hargaModal: document.getElementById('mgt-modal-produk').value || 0,
                 hargaJual: document.getElementById('mgt-jual-produk').value || 0,
-                jumlah: qty,
+                jumlah: Number(qty) || 0,
                 satuan: document.getElementById('mgt-satuan-produk').value.trim() || 'Pcs'
             };
  
@@ -2246,4 +2248,3 @@
     </script>
 </body>
 </html>
-
