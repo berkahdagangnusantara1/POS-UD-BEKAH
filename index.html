@@ -1858,8 +1858,8 @@
             } else if (templateKey === 'pangan_makmur') {
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <div style="text-align: Right; font-weight: bold; font-size: 18px; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN</div>
-<div style="text-align: Left; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">INVOICE PEMBAYARAN</div>
+                        <div style="text-align: Right; font-weight: bold; font-size: 18px; margin-bottom: 8px;">INVOICE PEMBAYARAN</div>
+<div style="text-align: Left; font-weight: bold; font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">UD PANGAN MAKMUR</div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>
@@ -1883,7 +1883,7 @@
                         </table>
                         <div style="text-align: right; font-weight: bold; font-size: 16px; margin-bottom: 20px;">TOTAL KESELURUHAN: ${fmt(total)}</div>
                         <table style="width: 100%; margin-top: 15px; font-size: 11px;">
-<td>
+				<td>
                                     ${udInfo.address ? `${udInfo.address}<br>` : ''}
                                     ${udInfo.phone ? `No. Hp: ${udInfo.phone}` : ''}
                                 </td>
