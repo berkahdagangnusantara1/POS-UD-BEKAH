@@ -1753,7 +1753,7 @@
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
                                 <td>
-                                    ${getLogoHtml(udInfo.logo, '100px')}
+                                    ${getLogoHtml(udInfo.logo, '60px')}
                                     ${udInfo.address ? `<p style="margin:2px 0;">${udInfo.address}</p>` : ''}
                                     ${udInfo.phone ? `<p style="margin:2px 0;">No Hp: ${udInfo.phone}</p>` : ''}
                                 </td>
@@ -1998,8 +1998,8 @@ ${getLogoHtml(udInfo.logo, '60px')}
                 // 3. UD MURAH REZEKI - Warna Coklat Muda (#854d0e)
                 html = `
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
-                        <div style="border-bottom: 3px double #854d0e; padding-bottom: 6px; margin-bottom: 8px; text-align: center;">
-                            ${getLogoHtml(udInfo.logo, '100px')}
+                        <div style="border-bottom: 3px double #854d0e; padding-bottom: 4px; margin-bottom: 8px; text-align: center;">
+                            ${getLogoHtml(udInfo.logo, '100x')}
                             <h2 style="font-size: 22px; font-weight: 900; margin: 0; color: #854d0e;">UD MURAH REZEKI</h2>
                             ${udInfo.address ? `<p style="margin: 2px 0; color: #713f12;">${udInfo.address}</p>` : ''}
                             ${udInfo.phone ? `<p style="margin: 2px 0; color: #713f12;">No Hp: ${udInfo.phone}</p>` : ''}
@@ -2012,13 +2012,13 @@ ${getLogoHtml(udInfo.logo, '60px')}
                         </table>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #a16207; margin-bottom: 10px;" border="1" cellpadding="6">
                             <tr style="background: #fef3c7; text-align: center; font-weight: bold; color: #713f12;">
-                                <th style="width: 40px;">No</th><th>Item</th><th style="width: 80px;">Satuan</th><th style="width: 70px;">Vol</th><th style="width: 120px;">Harga Satuan</th><th style="width: 140px;">Subtotal</th>
+                                <th style="width: 40px;">No</th><th>Item</th><th style="width: 80px;">Satuan</th><th style="width: 70px;">Qty</th><th style="width: 120px;">Harga Satuan</th><th style="width: 140px;">Subtotal</th>
                             </tr>
                             ${items.map((i, idx) => `
                                 <tr>
                                     <td style="text-align: center;">${idx + 1}</td>
                                     <td><b>${i.nama}</b></td>
-                                    <td style="text-align: center;">${i.satuan || 'Kg'}</td>
+                                    <td style="text-align: center;">${i.satuan}</td>
                                     <td style="text-align: center;">${i.qty}</td>
                                     <td style="text-align: right;">${fmt(i.harga)}</td>
                                     <td style="text-align: right;">${fmt(i.qty * i.harga)}</td>
