@@ -2186,12 +2186,12 @@ ${getLogoHtml(udInfo.logo, '60px')}
  
         function exportToExcel() {
             if (!dbData.transaksi || dbData.transaksi.length === 0) return alert('Tidak ada data transaksi untuk di-export.');
- 
+
             let totalQtyAll = 0;
             let totalModalAll = 0;
             let totalOmsetAll = 0;
             let totalProfitAll = 0;
- 
+
             const reportRows = dbData.transaksi.map(t => {
                 const qty = Number(t['Qty'] || t['qty']) || 1;
                 const hargaJual = Number(t['Harga Jual'] || t['hargaJual']) || 0;
@@ -2205,15 +2205,15 @@ ${getLogoHtml(udInfo.logo, '60px')}
                 
                 const rawTemplateKey = t['TemplateNotaKey'] || t['templateNotaKey'] || t['TemplateNota'] || 'berkah_std';
                 const templateNama = t['TemplateNotaNama'] || t['templateNotaNama'] || INVOICE_NAME_MAP[rawTemplateKey] || 'UD BERKAH MANDIRI';
- 
+
                 let rawOrderId = String(t['Order ID'] || t['orderId'] || '');
                 let cleanOrderId = rawOrderId.replace(/^UB-/, '');
- 
+
                 totalQtyAll += qty;
                 totalModalAll += subtotalModal;
                 totalOmsetAll += subtotalOmset;
                 totalProfitAll += profit;
- 
+
                 return {
                     'Tanggal': formatDateOnly(t['Tanggal'] || t['tanggal']),
                     'Order ID': cleanOrderId,
@@ -2223,14 +2223,14 @@ ${getLogoHtml(udInfo.logo, '60px')}
                     'Jenis Penjualan': jenisPenjualan,
                     'Nama Barang': t['Nama Barang'] || t['namaBarang'] || '-',
                     'Qty': qty,
-                    'Harga Modal Laporan': 'Rp ' + hargaModal.toLocaleString('id-ID', {maximumFractionDigits: 0}),
-                    'Harga Jual': 'Rp ' + hargaJual.toLocaleString('id-ID'),
-                    'Sub Total Modal': 'Rp ' + subtotalModal.toLocaleString('id-ID', {maximumFractionDigits: 0}),
-                    'Sub Total Omset': 'Rp ' + subtotalOmset.toLocaleString('id-ID'),
-                    'Profit / Laba': 'Rp ' + profit.toLocaleString('id-ID', {maximumFractionDigits: 0})
+                    'Harga Modal Laporan': Math.round(hargaModal),
+                    'Harga Jual': Math.round(hargaJual),
+                    'Sub Total Modal': Math.round(subtotalModal),
+                    'Sub Total Omset': Math.round(subtotalOmset),
+                    'Profit / Laba': Math.round(profit)
                 };
             });
- 
+
             reportRows.push({
                 'Tanggal': 'TOTAL KESELURUHAN',
                 'Order ID': '',
@@ -2242,18 +2242,18 @@ ${getLogoHtml(udInfo.logo, '60px')}
                 'Qty': totalQtyAll,
                 'Harga Modal Laporan': '',
                 'Harga Jual': '',
-                'Sub Total Modal': 'Rp ' + totalModalAll.toLocaleString('id-ID', {maximumFractionDigits: 0}),
-                'Sub Total Omset': 'Rp ' + totalOmsetAll.toLocaleString('id-ID'),
-                'Profit / Laba': 'Rp ' + totalProfitAll.toLocaleString('id-ID', {maximumFractionDigits: 0})
+                'Sub Total Modal': Math.round(totalModalAll),
+                'Sub Total Omset': Math.round(totalOmsetAll),
+                'Profit / Laba': Math.round(totalProfitAll)
             });
- 
+
             const worksheet = XLSX.utils.json_to_sheet(reportRows);
             worksheet['!cols'] = [
                 { wch: 14 }, { wch: 16 }, { wch: 22 }, { wch: 15 },
                 { wch: 25 }, { wch: 18 }, { wch: 28 }, { wch: 10 },
                 { wch: 20 }, { wch: 16 }, { wch: 18 }, { wch: 18 }, { wch: 18 }
             ];
- 
+
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Laba Rugi POS");
             
