@@ -2108,19 +2108,18 @@ ${getLogoHtml(udInfo.logo, '60px')}
                     <div style="font-family: Arial, sans-serif; font-size: 11px;">
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px;">
                             ${getLogoHtml(udInfo.logo, '60px')}
-                            <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FAKTUR NO. ${orderId}</h2>
                             <p style="margin: 2px 0; font-weight: bold;">UD SARI BUAH</p>
                             ${udInfo.address ? `<p style="margin: 2px 0;">${udInfo.address}</p>` : ''}
                             ${udInfo.phone ? `<p style="margin: 2px 0;">No. Hp: ${udInfo.phone}</p>` : ''}
                         </div>
                         <table style="width: 100%; margin-bottom: 8px;">
                             <tr>
-                                <td>Nomor Dokumen: <b>${orderId}</b><br>Tanggal: <b>${formattedDate}</b></td>
+                                <td>Nomor Faktur: <b>${orderId}</b><br>Tanggal: <b>${formattedDate}</b></td>
                                 <td style="text-align: right;">Instansi / Pemesan:<br><b style="font-size: 13px;">${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}</td>
                             </tr>
                         </table>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 10px;" border="1" cellpadding="6">
-                            <tr style="background: #e2e8f0; text-align: center; font-weight: bold;">
+                            <tr style="background: #F07A90; text-align: center; font-weight: bold;">
                                 <th style="width: 40px;">No</th><th>Rincian Barang</th><th style="width: 80px;">Qty</th><th style="width: 120px;">Harga Satuan</th><th style="width: 140px;">Jumlah Total</th>
                             </tr>
                             ${items.map((i, idx) => `
