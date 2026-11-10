@@ -1621,14 +1621,16 @@
                 html = `
                     <div style="font-family: sans-serif; font-size: 11px;">
                         <table style="width: 100%; margin-bottom: 8px;">
+						<td style="width: 60%; vertical-align: top;">
+                                    ${getLogoHtml(udInfo.logo, '100px')}
+									${udInfo.address ? `<div style="border: 1px solid #000; padding: 8px; font-weight: bold; background: #f0fdf4;">${udInfo.address}</div>` : ''}
+                            </td>
                             <tr>
                                 <td>Pelanggan Utama:<br><b style="font-size: 14px;">${customer}</b>${customerAddress ? `<br>${customerAddress}` : ''}</td>
                                 <td style="text-align: right;">Tanggal : <b>${formattedDate}</b><br>No. Invoice: <b style="font-size: 13px; color: #15803d;">${orderId}</b>${udInfo.phone ? `<br>No. Hp : ${udInfo.phone}` : ''}</td>
                             </tr>
                         </table>
-						 <td style="width: 60%; vertical-align: top;">
-                                    ${getLogoHtml(udInfo.logo, '100px')}
-                            </td>
+						 
                         <div style="text-align: center; font-weight: bold; font-size: 15px; margin: 8px 0; background: #86efac; padding: 8px; color: #064e3b; border-radius: 4px;">
                             UD PANGAN BERKAH
                         </div>
@@ -1648,7 +1650,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 60%; vertical-align: top;">
-                                   ${udInfo.address ? `<div style="border: 1px solid #000; padding: 8px; font-weight: bold; background: #f0fdf4;">${udInfo.address}</div>` : ''}
+                                   
                                 </td>
                                 <td style="width: 40%; vertical-align: top; text-align: right;">
                                     <p style="margin:2px 0; font-weight: bold; font-size: 16px; color: #15803d;">Total Tagihan: ${fmt(total)}</p>
